@@ -45,10 +45,31 @@ const obtenerDatosContacto = async (req, res) => {
         console.error('Error al obtener datos de contacto:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+
+
+
+};
+
+
+const crearContacto = async (req, res) => {
+    try {
+
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Invalid request, missing body data' });
+        }
+
+        const contactoCreado = await Contacto.create(data);
+        res.json({ success: true, data: contactoCreado.toJSON() });
+    } catch (error) {
+        console.error('Error al crear contacto:', error.message);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
 };
 
 
 module.exports = {
     obtenerContactos,
-    obtenerDatosContacto
+    obtenerDatosContacto,
+    crearContacto
 };
