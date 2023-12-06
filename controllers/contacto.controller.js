@@ -147,27 +147,29 @@ const crearCorreo = async (req, res) => {
 
 
 const editarCorreo = async (req, res) => {
-	try {
-
+    try {
+        const data = req.body;
         if (!data) {
             return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
         }
-		const { EmailId, ...actualizacion } = data;
+        const { EmailId, ...actualizacion } = data;
 
-		const correo = await Email.findByPk(EmailId);
+        const correo = await Email.findByPk(EmailId);
 
-		if (!correo) {
-			return new Error('Correo no encontrado');
-		}
+        if (!correo) {
+            return new Error('Correo no encontrado');
+        }
 
-		await correo.update(actualizacion);
+        await correo.update(actualizacion);
 
-		console.log('Correo editado con éxito');
-		return correo.toJSON();
-	} catch (error: any) {
-		console.error('Error al editar el correo:', error.message);
-		throw error;
-	}
+        console.log('Correo editado con éxito');
+
+        return res.status(200).json({ success: true, data: correo.toJSON() });
+
+    } catch (error) {
+        console.error('Error al editar el correo:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
 };
 
 
@@ -178,5 +180,6 @@ module.exports = {
     crearContacto,
     editarContacto,
     desactivarContacto,
-    crearCorreo
+    crearCorreo,
+    editarCorreo
 };
