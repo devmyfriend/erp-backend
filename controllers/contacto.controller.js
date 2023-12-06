@@ -90,8 +90,8 @@ const editarContacto = async (req, res) => {
         console.log('Contacto editado con éxito');
         return res.json({ success: true, data: contacto.toJSON() });
     } catch (error) {
-        console.error('Error al editar el contacto:', error.message);
-        throw error;
+        console.error('Error al editar contacto:', error.message);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
 
@@ -118,15 +118,65 @@ const desactivarContacto = async (req, res) => {
         return res.json({ message: 'Contacto desactivado: ' + data.ContactoId });
 
     } catch (error) {
-        console.error('Error al desactivar el contacto:', error.message);
-        throw error;
+        console.error('Error al desactivar contacto:', error.message);
+        res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
+
+const crearCorreo = async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+
+        const contacto = await Contacto.findByPk(req.body.ContactoId);
+
+        if (!contacto) {
+
+            return res.status(404).json({ error: 'Contacto no encontrado' });
+        }
+        const correoCreado = await Email.create(data);
+
+        res.status(201).json({ success: true, data: correoCreado.toJSON() });
+    } catch (error) {
+        console.error('Error al crear correo:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
+
+
+const editarCorreo = async (req, res) => {
+	try {
+
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+		const { EmailId, ...actualizacion } = data;
+
+		const correo = await Email.findByPk(EmailId);
+
+		if (!correo) {
+			return new Error('Correo no encontrado');
+		}
+
+		await correo.update(actualizacion);
+
+		console.log('Correo editado con éxito');
+		return correo.toJSON();
+	} catch (error: any) {
+		console.error('Error al editar el correo:', error.message);
+		throw error;
+	}
+};
+
+
 
 module.exports = {
     obtenerContactos,
     obtenerDatosContacto,
     crearContacto,
     editarContacto,
-    desactivarContacto
+    desactivarContacto,
+    crearCorreo
 };
