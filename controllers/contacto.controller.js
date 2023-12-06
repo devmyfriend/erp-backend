@@ -246,6 +246,30 @@ const editarTelefono = async (req, res) => {
     }
 };
 
+const desactivarTelefono = async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+        const telefono = await Telefono.findByPk(data.TelefonoId);
+
+        if (!telefono) {
+            return res.status(404).json({ error: 'Telefono no encontrado' })
+        }
+
+        telefono.Borrado = true;
+        telefono.BorradoPor = data.BorradoPor;
+
+        await telefono.save();
+
+        console.log('Telefono desactivado con éxito');
+        res.status(200).json({ message: 'Telefono desactivado: ' + data.TelefonoId })
+    } catch (error) {
+        console.error('Error al desactivar el Telefono:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
 
 module.exports = {
     obtenerContactos,
@@ -258,5 +282,6 @@ module.exports = {
     desactivarContacto,
     crearTelefono,
     editarTelefono,
-    desactivarCorreo
+    desactivarCorreo,
+    desactivarTelefono
 };

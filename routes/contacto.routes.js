@@ -1,5 +1,5 @@
 const { Router } = require('express')
-const { obtenerContactos, obtenerDatosContacto, crearContacto, editarContacto, desactivarContacto, crearCorreo, editarCorreo, desactivarCorreo, crearTelefono, editarTelefono } = require('../controllers/contacto.controller')
+const { obtenerContactos, obtenerDatosContacto, crearContacto, editarContacto, desactivarContacto, crearCorreo, editarCorreo, desactivarCorreo, crearTelefono, editarTelefono, desactivarTelefono } = require('../controllers/contacto.controller')
 
 const router = Router()
 
@@ -13,5 +13,5 @@ router.patch('/editar/correo', editarCorreo)
 router.delete('/correo/borrar', desactivarCorreo)
 router.post('/crear/telefono', crearTelefono)
 router.patch('/editar/telefono', editarTelefono)
-
+router.delete('/telefono/borrar', desactivarTelefono)
 module.exports = router
