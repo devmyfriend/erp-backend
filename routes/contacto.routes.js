@@ -1,9 +1,10 @@
 const { Router } = require('express')
-const { obtenerContactos, obtenerDatosContacto, crearContacto, editarContacto, desactivarContacto, crearCorreo, editarCorreo, desactivarCorreo, crearTelefono, editarTelefono, desactivarTelefono } = require('../controllers/contacto.controller')
+const { obtenerContactos, obtenerDatosContacto, crearContacto, editarContacto, desactivarContacto, crearCorreo, editarCorreo, desactivarCorreo, crearTelefono, editarTelefono, desactivarTelefono, buscarContacto } = require('../controllers/contacto.controller')
 
 const router = Router()
 
 router.get('/:id', obtenerContactos)
+router.post('/buscar', buscarContacto)
 router.get('/detalle/:id', obtenerDatosContacto)
 router.post('/crear', crearContacto)
 router.patch('/editar', editarContacto)

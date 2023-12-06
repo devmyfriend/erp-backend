@@ -1,6 +1,8 @@
 const Contacto = require('../models/contacto.model');
 const Email = require('../models/email.model');
 const Telefono = require('../models/telefono.model');
+const { Op } = require('sequelize');
+
 
 const obtenerContactos = async (req, res) => {
     try {
@@ -20,6 +22,30 @@ const obtenerContactos = async (req, res) => {
         console.error('Error al obtener contactos:', error.message);
         res.status(500).json({ error: 'Internal Server Error' });
     }
+};
+
+const buscarContacto = async (req, res) => {
+	try {
+
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+		const result = await Contacto.findAll({
+			attributes: ['ContactoId', 'SucursalId', 'Nombres', 'Puesto'],
+			where: {
+				Nombres: {
+					[Op.like]: `%${data.Nombre}%`,
+				},
+				SucursalId: data.SucursalId,
+				Borrado: 0
+			},
+		});
+        res.status(201).json({ success: true, data: result });
+	} catch (error) {
+		console.error('Error al obtener datos de contacto:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+	}
 };
 
 const obtenerDatosContacto = async (req, res) => {
@@ -283,5 +309,6 @@ module.exports = {
     crearTelefono,
     editarTelefono,
     desactivarCorreo,
-    desactivarTelefono
+    desactivarTelefono,
+    buscarContacto
 };
