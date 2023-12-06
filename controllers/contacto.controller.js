@@ -200,6 +200,25 @@ const desactivarCorreo = async (req, res) => {
     }
 };
 
+const crearTelefono = async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+        const contacto = await Contacto.findByPk(req.body.ContactoId);
+
+        if (!contacto) {
+
+            return res.status(404).json({ error: 'Contacto no encontrado' });
+        }
+        const telefonoCreado = await Telefono.create(data);
+        return res.status(200).json(telefonoCreado.toJSON())
+    } catch (error) {
+        console.error('Error al agregar el telefono:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
 module.exports = {
     obtenerContactos,
     obtenerDatosContacto,
@@ -209,5 +228,6 @@ module.exports = {
     crearCorreo,
     editarCorreo,
     desactivarContacto,
-    desactivarCorreo
+    desactivarCorreo,
+    crearTelefono
 };
