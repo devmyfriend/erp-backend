@@ -1,13 +1,5 @@
 const { Sequelize } = require("sequelize");
 
-const datosconexion = {
-    usuario: 'dev',
-    password: 'Cyber2000',
-    catalogo: 'erpmf',
-    puerto: '3307',
-    host: 'lachosoft.cloud'
-}
-
 
 PORT = 3000
 const Mariadb = new Sequelize('erpmf', 'dev', 'Cyber2000', {

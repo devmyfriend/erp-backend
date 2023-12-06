@@ -68,8 +68,37 @@ const crearContacto = async (req, res) => {
 };
 
 
+const editarContacto = async (req, res) => {
+    try {
+
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+
+        const { ContactoId, ...actualizacion } = data;
+
+        const contacto = await Contacto.findByPk(ContactoId);
+
+        if (!contacto) {
+
+            return res.status(400).json({ error: 'Contacto no encontrado' });
+        }
+
+        await contacto.update(actualizacion);
+
+        console.log('Contacto editado con éxito');
+        return res.json({ success: true, data: contacto.toJSON() });
+    } catch (error) {
+        console.error('Error al editar el contacto:', error.message);
+        throw error;
+    }
+};
+
+
 module.exports = {
     obtenerContactos,
     obtenerDatosContacto,
-    crearContacto
+    crearContacto,
+    editarContacto
 };
