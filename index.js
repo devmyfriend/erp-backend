@@ -18,11 +18,13 @@ Mariadb.Conexion().then()
 
 const ruta ={
     test: '/api/v1/test',
-    pais: '/api/v1/pais'
+    pais: '/api/v1/pais',
+    contacto :'/api/v1/contacto'
 }
 
 app.use( ruta.test, require( './routes/test.routes' ) )
 app.use( ruta.pais, require( './routes/pais.routes' ) )
+app.use( ruta.contacto, require( './routes/contacto.routes' ) )
 
 //fin de zona de rutas
 
