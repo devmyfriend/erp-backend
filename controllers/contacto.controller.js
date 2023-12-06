@@ -157,7 +157,7 @@ const editarCorreo = async (req, res) => {
         const correo = await Email.findByPk(EmailId);
 
         if (!correo) {
-            return new Error('Correo no encontrado');
+            return res.status(404).json({ error: 'Correo no encontrado' });
         }
 
         await correo.update(actualizacion);
@@ -173,6 +173,32 @@ const editarCorreo = async (req, res) => {
 };
 
 
+const desactivarCorreo = async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+        const correo = await Email.findByPk(data.EmailId);
+
+        if (!correo) {
+            return res.status(404).json({ error: 'Correo no encontrado' });
+        }
+
+        correo.Borrado = true;
+        correo.BorradoPor = data.BorradoPor;
+
+        await correo.save();
+
+        console.log('Correo desactivado con éxito');
+
+        return res.status(200).json({ message: 'Correo desactivado: ' + data.EmailId })
+
+    } catch (error) {
+        console.error('Error al desactivar el Correo:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
 
 module.exports = {
     obtenerContactos,
@@ -181,5 +207,7 @@ module.exports = {
     editarContacto,
     desactivarContacto,
     crearCorreo,
-    editarCorreo
+    editarCorreo,
+    desactivarContacto,
+    desactivarCorreo
 };
