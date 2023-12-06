@@ -219,6 +219,34 @@ const crearTelefono = async (req, res) => {
         return res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
 };
+
+
+const editarTelefono = async (req, res) => {
+    try {
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+
+        const { TelefonoId, ...actualizacion } = data;
+
+        const tel = await Telefono.findByPk(TelefonoId);
+
+        if (!tel) {
+            return res.status(404).json({ error: 'Telefono no encontrado' })
+        }
+
+        await tel.update(actualizacion);
+
+        console.log('Telefono editado con éxito');
+        return res.status(200).json(tel.toJSON())
+    } catch (error) {
+        console.error('Error al editar el Telefono:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
+
+
 module.exports = {
     obtenerContactos,
     obtenerDatosContacto,
@@ -228,6 +256,7 @@ module.exports = {
     crearCorreo,
     editarCorreo,
     desactivarContacto,
-    desactivarCorreo,
-    crearTelefono
+    crearTelefono,
+    editarTelefono,
+    desactivarCorreo
 };
