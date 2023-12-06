@@ -82,7 +82,7 @@ const editarContacto = async (req, res) => {
 
         if (!contacto) {
 
-            return res.status(400).json({ error: 'Contacto no encontrado' });
+            return res.status(404).json({ error: 'Contacto no encontrado' });
         }
 
         await contacto.update(actualizacion);
@@ -95,10 +95,38 @@ const editarContacto = async (req, res) => {
     }
 };
 
+const desactivarContacto = async (req, res) => {
+    try {
+
+        const data = req.body;
+        if (!data) {
+            return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+        }
+        const contacto = await Contacto.findByPk(data.ContactoId);
+
+        if (!contacto) {
+            return res.status(404).json({ error: 'Contacto no encontrado' });
+        }
+
+        contacto.Borrado = true;
+        contacto.BorradoPor = data.BorradoPor;
+
+        await contacto.save();
+
+        console.log('Contacto desactivado con éxito');
+
+        return res.json({ message: 'Contacto desactivado: ' + data.ContactoId });
+
+    } catch (error) {
+        console.error('Error al desactivar el contacto:', error.message);
+        throw error;
+    }
+};
 
 module.exports = {
     obtenerContactos,
     obtenerDatosContacto,
     crearContacto,
-    editarContacto
+    editarContacto,
+    desactivarContacto
 };
