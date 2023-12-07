@@ -93,6 +93,52 @@ const crearContacto = async (req, res) => {
     }
 };
 
+const agregarDetalleContacto = async (req, res) => {
+    try {
+        const data = req.body;
+
+        if (!data || !data.ContactoId || !data.CreadoPor || !data.Correos || !data.Telefonos) {
+            return res.status(400).json({ error: 'Cuerpo de la petición inválido' });
+        }
+
+
+        const contacto = await Contacto.findByPk(data.ContactoId);
+        if (!contacto) {
+            return res.status(404).json({ error: 'Contacto no encontrado' });
+        }
+
+
+        const correosCreados = await Promise.all(data.Correos.map(async (correo) => {
+            return await Email.create({
+                Email: correo.correo,
+                ContactoId: data.ContactoId,
+                CreadoPor: data.CreadoPor
+            });
+        }));
+
+
+        const telefonosCreados = await Promise.all(data.Telefonos.map(async (telefono) => {
+            return await Telefono.create({
+                NumeroTelefonico: telefono.telefono,
+                ContactoId: data.ContactoId,
+                CreadoPor: data.CreadoPor
+            });
+        }));
+
+
+        res.status(201).json({
+            success: true,
+            data: {
+                correos: correosCreados.map(correo => correo.toJSON()),
+                telefonos: telefonosCreados.map(telefono => telefono.toJSON())
+            }
+        });
+    } catch (error) {
+        console.error('Error al agregar detalles de contacto:', error.message);
+        return res.status(500).json({ success: false, error: 'Internal Server Error' });
+    }
+};
+
 
 const editarContacto = async (req, res) => {
     try {
@@ -310,5 +356,6 @@ module.exports = {
     editarTelefono,
     desactivarCorreo,
     desactivarTelefono,
-    buscarContacto
+    buscarContacto,
+    agregarDetalleContacto
 };
