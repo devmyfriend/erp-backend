@@ -18,4 +18,3 @@ router.patch('/editar/telefono', editarTelefono)
 router.delete('/telefono/borrar', desactivarTelefono)
 module.exports = router
 
-//Fix
