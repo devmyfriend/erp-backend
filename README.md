@@ -81,11 +81,9 @@ $ npm run lint
 │
 ├── README
 │
-│
 ├── app.js
 │
 ├── index.js
-│
 │
 ├── DockerFile
 │ 
