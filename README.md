@@ -2,7 +2,7 @@
 
 ## Instalación
 ### 1. Clonar el repositorio
-    $ git clone https://github.com/devmfcancun/erp-js.git
+    $ git clone https://github.com/devmyfriend/erp-backend.git
 ### 2. Dependencias
 ```bash
 
