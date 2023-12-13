@@ -9,6 +9,6 @@ const test = ( req, res=Response )=>{
     })
 }
 
-module.exports ={
+export const methods ={
     test
 }
