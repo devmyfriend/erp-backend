@@ -54,9 +54,6 @@ Ctrl + Shift + P
 # Desarrollo:
 $ npm run dev
 
-# Compilar el proyecto:
-$ npm run build
-
 # Modo producción:
 $ npm run start
 
@@ -67,14 +64,6 @@ $ npm run lint
 
 
 
-### Corrección de errores -> fix
-
-```bash
-#Ejemplo
-
-$ git commit -m 'fix: conexion con la base de datos'
-
-```
 ## Estructura de carpetas
 ```bash
 ├─ src
@@ -102,15 +91,22 @@ $ git commit -m 'fix: conexion con la base de datos'
 │ 
 └── docke-compose.yaml
 ```
+```bash
+# en progreso...
 
+```
 ## Swagger
-
 #### Swagger es una herramienta usada para documentación de API y testing
 
 #### Una vez la aplicacon se este ejecutando debe entrar en la siguiente URL:
 
     http://localhost:3000/api/
 
+
+```bash
+# en progreso...
+
+```
 
 ## Formato de los commits
 #### Nota:
@@ -143,6 +139,15 @@ $ git commit -m 'rf: se movieron los modulos a la carpta src/ y se actualizaron 
 #Ejemplo
 
 $ git commit -m 'ft: ruta para obtener los paises agregada'
+
+```
+
+### Corrección de errores -> fix
+
+```bash
+#Ejemplo
+
+$ git commit -m 'fix: conexion con la base de datos'
 
 ```
 
