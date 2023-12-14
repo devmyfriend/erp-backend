@@ -93,15 +93,126 @@ router.post('/crear/datos', schemas.agregarDetalleContacto, (req, res) => {
 	}
 	return contactoController.agregarDetalleContacto(req, res);
 });
+
 router.patch('/editar', schemas.actualizarContactoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
 	return contactoController.editarContacto(req, res);
 });
-router.delete('/borrar', contactoController.desactivarContacto);
-router.post('/crear/correo', contactoController.crearCorreo);
-router.patch('/editar/correo', contactoController.editarCorreo);
-router.delete('/correo/borrar', contactoController.desactivarCorreo);
-router.post('/crear/telefono', contactoController.crearTelefono);
-router.patch('/editar/telefono', contactoController.editarTelefono);
-router.delete('/telefono/borrar', contactoController.desactivarTelefono);
+router.delete('/borrar', schemas.desactivarContactoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+	return contactoController.desactivarContacto(req, res);
+});
+router.post('/crear/correo', schemas.crearCorreoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+
+	return contactoController.crearCorreo(req, res);
+});
+router.patch('/editar/correo', schemas.editarCorreoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+
+	return contactoController.editarCorreo(req, res);
+});
+router.delete('/correo/borrar', schemas.desactivarCorreoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+
+	return contactoController.desactivarCorreo(req, res);
+});
+router.post('/crear/telefono', schemas.crearTelefonoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+	return contactoController.crearTelefono(req, res);
+});
+router.patch('/editar/telefono', schemas.editarTelefonoSchema, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+
+	return contactoController.editarTelefono(req, res);
+});
+router.delete(
+	'/telefono/borrar',
+	schemas.desactivarTelefonoSchema,
+	(req, res) => {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			const uniqueErrorMessages = errors.array().map(error => error.msg);
+			const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+			return res.status(400).json({
+				status: 'Error de validación',
+				errors: uniqueErrors,
+			});
+		}
+		return contactoController.desactivarTelefono(req, res);
+	},
+);
 
 export default router;

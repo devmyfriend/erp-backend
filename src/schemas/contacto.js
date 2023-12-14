@@ -178,7 +178,11 @@ export const crearTelefonoSchema = [
 		.notEmpty()
 		.withMessage('El campo NumeroTelefonico no puede estar vacío')
 		.isString()
-		.withMessage('El campo NumeroTelefonico debe un string'),
+		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto')
+		.isLength({ min: 10, max: 14 })
+		.withMessage(
+			'El campo NumeroTelefonico debe tener entre 10 y 14 caracteres',
+		),
 	body('ContactoId')
 		.notEmpty()
 		.withMessage('El campo ContactoId no puede estar vacío')
@@ -201,7 +205,11 @@ export const editarTelefonoSchema = [
 		.notEmpty()
 		.withMessage('El campo NumeroTelefonico no puede estar vacío')
 		.isString()
-		.withMessage('El campo NumeroTelefonico debe ser un número entero'),
+		.withMessage('El campo NumeroTelefonico debe ser un número entero')
+		.isLength({ min: 10, max: 14 })
+		.withMessage(
+			'El campo NumeroTelefonico debe tener entre 10 y 14 caracteres',
+		),
 	body('ActualizadoPor')
 		.notEmpty()
 		.withMessage('El campo ActualizadoPor no puede estar vacío')
