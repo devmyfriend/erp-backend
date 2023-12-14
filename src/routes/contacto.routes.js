@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { methods as contactoController } from '../controllers/contacto.controller.js';
 import { validationResult, param } from 'express-validator';
-import { BuscarContactoSchema } from '../schemas/contacto.js';
+import * as schemas from '../schemas/contacto.js';
 const router = Router();
 
 router.get(
@@ -25,7 +25,7 @@ router.get(
 
 router.post(
 	'/buscar',
-	BuscarContactoSchema,
+	schemas.BuscarContactoSchema,
 
 	(req, res) => {
 		const errors = validationResult(req);
@@ -60,9 +60,42 @@ router.get(
 		return contactoController.obtenerDatosContacto(req, res);
 	},
 );
-router.post('/crear', contactoController.crearContacto);
-router.post('/crear/datos', contactoController.agregarDetalleContacto);
-router.patch('/editar', contactoController.editarContacto);
+router.post(
+	'/crear',
+	schemas.crearContactoSchema,
+
+	(req, res) => {
+		const errors = validationResult(req);
+
+		if (!errors.isEmpty()) {
+			const uniqueErrorMessages = errors.array().map(error => error.msg);
+			const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+			return res.status(400).json({
+				status: 'Error de validación',
+				errors: uniqueErrors,
+			});
+		}
+		return contactoController.crearContacto(req, res);
+	},
+);
+router.post('/crear/datos', schemas.agregarDetalleContacto, (req, res) => {
+	const errors = validationResult(req);
+
+	if (!errors.isEmpty()) {
+		const uniqueErrorMessages = errors.array().map(error => error.msg);
+		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+
+		return res.status(400).json({
+			status: 'Error de validación',
+			errors: uniqueErrors,
+		});
+	}
+	return contactoController.agregarDetalleContacto(req, res);
+});
+router.patch('/editar', schemas.actualizarContactoSchema, (req, res) => {
+	return contactoController.editarContacto(req, res);
+});
 router.delete('/borrar', contactoController.desactivarContacto);
 router.post('/crear/correo', contactoController.crearCorreo);
 router.patch('/editar/correo', contactoController.editarCorreo);

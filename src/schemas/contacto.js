@@ -80,6 +80,37 @@ export const actualizarContactoSchema = [
 		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
 
+export const agregarDetalleContacto = [
+	body('ContactoId')
+		.isInt()
+		.withMessage('ContactoId debe ser un número entero.')
+		.notEmpty()
+		.withMessage('ContactoId no debe estar vacío.'),
+	body('CreadoPor')
+		.isInt()
+		.withMessage('CreadoPor debe ser un número entero.')
+		.notEmpty()
+		.withMessage('CreadoPor no debe estar vacío.'),
+
+	body('Correos')
+		.isArray()
+		.withMessage('Correos debe ser un array.')
+		.notEmpty()
+		.withMessage('Correos no debe estar vacío.'),
+	body('Correos.*.correo')
+		.isEmail()
+		.withMessage('Cada correo debe ser un email válido.'),
+
+	body('Telefonos')
+		.isArray()
+		.withMessage('Telefonos debe ser un array.')
+		.notEmpty()
+		.withMessage('Telefonos no debe estar vacío.'),
+	body('Telefonos.*.telefono')
+		.isMobilePhone()
+		.withMessage('Cada teléfono debe ser un número de teléfono válido.'),
+];
+
 export const desactivarContactoSchema = [
 	body('ContactoId')
 		.notEmpty()
