@@ -71,6 +71,8 @@ $ npm run lint
 │   │
 │   ├───database
 │   │
+│   ├── middlewares
+│   │
 │   ├───models
 │   │
 │   ├───routes

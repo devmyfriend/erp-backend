@@ -1,218 +1,93 @@
 import { Router } from 'express';
 import { methods as contactoController } from '../controllers/contacto.controller.js';
-import { validationResult, param } from 'express-validator';
+import { param } from 'express-validator';
 import * as schemas from '../schemas/contacto.js';
+import * as middleware from '../middlewares/express-validator.js';
 const router = Router();
 
 router.get(
 	'/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			const uniqueErrorMessages = errors.array().map(error => error.msg);
-			const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-			return res.status(400).json({
-				status: 'Error de validación',
-				errors: uniqueErrors,
-			});
-		}
-		return contactoController.obtenerContactos(req, res);
-	},
+	middleware.validateSchema,
+	contactoController.obtenerContactos,
 );
 
 router.post(
 	'/buscar',
 	schemas.BuscarContactoSchema,
-
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			const uniqueErrorMessages = errors.array().map(error => error.msg);
-			const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-			return res.status(400).json({
-				status: 'Error de validación',
-				errors: uniqueErrors,
-			});
-		}
-		return contactoController.buscarContacto(req, res);
-	},
+	middleware.validateSchema,
+	contactoController.buscarContacto,
 );
 router.get(
 	'/detalle/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			const uniqueErrorMessages = errors.array().map(error => error.msg);
-			const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-			return res.status(400).json({
-				status: 'Error de validación',
-				errors: uniqueErrors,
-			});
-		}
-		return contactoController.obtenerDatosContacto(req, res);
-	},
+	middleware.validateSchema,
+	contactoController.obtenerDatosContacto,
 );
 router.post(
 	'/crear',
 	schemas.crearContactoSchema,
-
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			const uniqueErrorMessages = errors.array().map(error => error.msg);
-			const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-			return res.status(400).json({
-				status: 'Error de validación',
-				errors: uniqueErrors,
-			});
-		}
-		return contactoController.crearContacto(req, res);
-	},
+	middleware.validateSchema,
+	contactoController.crearContacto,
 );
-router.post('/crear/datos', schemas.agregarDetalleContacto, (req, res) => {
-	const errors = validationResult(req);
+router.post(
+	'/crear/datos',
+	schemas.agregarDetalleContacto,
+	middleware.validateSchema,
+	contactoController.agregarDetalleContacto,
+);
 
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+router.patch(
+	'/editar',
+	schemas.actualizarContactoSchema,
+	middleware.validateSchema,
+	contactoController.editarContacto,
+);
 
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-	return contactoController.agregarDetalleContacto(req, res);
-});
+router.delete(
+	'/borrar',
+	schemas.desactivarContactoSchema,
+	middleware.validateSchema,
+	contactoController.desactivarContacto,
+);
+router.post(
+	'/crear/correo',
+	schemas.crearCorreoSchema,
+	middleware.validateSchema,
+	contactoController.crearCorreo,
+);
 
-router.patch('/editar', schemas.actualizarContactoSchema, (req, res) => {
-	const errors = validationResult(req);
+router.patch(
+	'/editar/correo',
+	schemas.editarCorreoSchema,
+	middleware.validateSchema,
+	contactoController.editarCorreo,
+);
 
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
+router.delete(
+	'/correo/borrar',
+	schemas.desactivarCorreoSchema,
+	middleware.validateSchema,
+	contactoController.desactivarCorreo,
+);
 
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-	return contactoController.editarContacto(req, res);
-});
-router.delete('/borrar', schemas.desactivarContactoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-	return contactoController.desactivarContacto(req, res);
-});
-router.post('/crear/correo', schemas.crearCorreoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-
-	return contactoController.crearCorreo(req, res);
-});
-router.patch('/editar/correo', schemas.editarCorreoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-
-	return contactoController.editarCorreo(req, res);
-});
-router.delete('/correo/borrar', schemas.desactivarCorreoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-
-	return contactoController.desactivarCorreo(req, res);
-});
-router.post('/crear/telefono', schemas.crearTelefonoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-	return contactoController.crearTelefono(req, res);
-});
-router.patch('/editar/telefono', schemas.editarTelefonoSchema, (req, res) => {
-	const errors = validationResult(req);
-
-	if (!errors.isEmpty()) {
-		const uniqueErrorMessages = errors.array().map(error => error.msg);
-		const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-		return res.status(400).json({
-			status: 'Error de validación',
-			errors: uniqueErrors,
-		});
-	}
-
-	return contactoController.editarTelefono(req, res);
-});
+router.post(
+	'/crear/telefono',
+	schemas.crearTelefonoSchema,
+	middleware.validateSchema,
+	contactoController.crearTelefono,
+);
+router.patch(
+	'/editar/telefono',
+	schemas.editarTelefonoSchema,
+	middleware.validateSchema,
+	contactoController.editarTelefono,
+);
 router.delete(
 	'/telefono/borrar',
 	schemas.desactivarTelefonoSchema,
-	(req, res) => {
-		const errors = validationResult(req);
-
-		if (!errors.isEmpty()) {
-			const uniqueErrorMessages = errors.array().map(error => error.msg);
-			const uniqueErrors = [...new Set(uniqueErrorMessages)];
-
-			return res.status(400).json({
-				status: 'Error de validación',
-				errors: uniqueErrors,
-			});
-		}
-		return contactoController.desactivarTelefono(req, res);
-	},
+	middleware.validateSchema,
+	contactoController.desactivarTelefono,
 );
 
 export default router;
