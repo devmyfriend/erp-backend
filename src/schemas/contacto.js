@@ -198,7 +198,8 @@ export const BuscarContactoSchema = [
 		.isString()
 		.withMessage('El campo Nombre debe ser una cadena de texto'),
 	body('SucursalId')
-		.optional()
 		.isInt()
-		.withMessage('El campo SucursalId debe ser un número entero'),
+		.withMessage('El campo SucursalId debe ser un número entero')
+		.notEmpty()
+		.withMessage('El campo  SucursalId no puede estar vacío'),
 ];
