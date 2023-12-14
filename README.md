@@ -87,6 +87,8 @@ $ npm run lint
 │
 ├── index.js
 │
+├── swagger.options.js
+│
 ├── DockerFile
 │ 
 └── docke-compose.yaml
