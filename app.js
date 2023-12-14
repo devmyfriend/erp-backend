@@ -45,20 +45,20 @@ const App = {
 
 		function handleError(err, req, res, next) {
 			console.error(err);
-			res.status(500).json({ error: 'Internal server error' });
+			res.status(500).json({ error: 'Error interno del servidor' });
 		}
 
 		// Middleware para manejo de errores
 		app.use((err, req, res, next) => {
 			console.error(err);
-			res.status(500).send('[ERROR] Ocurrió un error en el servidor ');
+			res.status(500).send('[ERROR] Ocurrió un error en el servidor');
 		});
 
 		async function startServer() {
 			await connectDatabase();
 			app.use(handleError);
 			app.listen(PORT, () => {
-				console.log(`[ERP] API se ejecuta en http://localhost:${PORT}`);
+				console.log(`[ERP-API] se ejecuta en http://localhost:${PORT}`);
 			});
 		}
 
