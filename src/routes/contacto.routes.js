@@ -116,6 +116,47 @@ router.post(
 	middleware.validateSchema,
 	contactoController.buscarContacto,
 );
+/**
+ * @swagger
+ * /api/v1/contacto/detalle/{id}:
+ *   get:
+ *     summary: Obtener detalles del contacto por ID
+ *     tags: [Contactos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del contacto
+ *     responses:
+ *       200:
+ *         description: Detalles del contacto incluyendo email y teléfono
+ *         content:
+ *           application/json:
+ *             example:
+ *               email:
+ *                 - EmailId: 1
+ *                   ContactoId: 1
+ *                   Email: "contacto@example.com"
+ *               telefono:
+ *                 - TelefonoId: 1
+ *                   ContactoId: 1
+ *                   NumeroTelefonico: "1234567890"
+ *       400:
+ *         description: Error de validación. Los datos proporcionados no son válidos.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error de validación"
+ *               errors: ["El parametro debe ser un entero"]
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
+ */
 
 router.get(
 	'/detalle/:id',
