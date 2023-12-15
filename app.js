@@ -11,6 +11,12 @@ import contactoRoutes from './src/routes/contacto.routes.js';
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
 
+// Swagger
+
+import swaggerUI from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import { options } from './swagger.options.js';
+
 dotenv.config();
 
 const App = {
@@ -22,6 +28,10 @@ const App = {
 		app.use(cors());
 		app.use(express.json());
 		app.use(morgan('dev'));
+
+		// Swagger
+		const specs = swaggerJsDoc(options);
+		app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 		// Rutas
 		app.use('/api/v1/test', testRoutes);
