@@ -4,6 +4,55 @@ import { param } from 'express-validator';
 import * as schemas from '../schemas/contacto.js';
 import * as middleware from '../middlewares/express-validator.js';
 const router = Router();
+/**
+ * @swagger
+ * tags:
+ *   - name: Contactos
+ *     description: Operaciones relacionadas con los contactos segun la sucursal
+ *
+ *   - name: Correos
+ *     description: Operaciones relacionadas con los correos segun el contacto
+ *
+ *   - name: Telefonos
+ *     description: Operaciones relacionadas con los telefono segun el contacto
+ */
+
+/**
+ * @swagger
+ * /api/v1/contacto/{id}:
+ *   get:
+ *     summary: Obtener contactos por ID de sucursal
+ *     tags: [Contactos]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la sucursal
+ *     responses:
+ *       200:
+ *         description: Lista de contactos de la sucursal
+ *         content:
+ *           application/json:
+ *             example:
+ *               - ContactoId: 1
+ *                 SucursalId: 1010
+ *                 Nombres: Sebastian
+ *                 Puesto: Gerente
+ *       400:
+ *         description: Error en la solicitud
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Parámetro inválido"
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
+ */
 
 router.get(
 	'/:id',
@@ -12,12 +61,62 @@ router.get(
 	contactoController.obtenerContactos,
 );
 
+/**
+ * @swagger
+ * /api/v1/contacto/buscar:
+ *   post:
+ *     summary: Buscar contacto por nombre y sucursal
+ *     tags: [Contactos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Nombre:
+ *                 type: string
+ *                 description: Nombre del contacto a buscar
+ *               SucursalId:
+ *                 type: integer
+ *                 description: ID de la sucursal a la que pertenece el contacto
+ *           example:
+ *             Nombre: "Juan"
+ *             SucursalId: 1010
+ *     responses:
+ *       201:
+ *         description: Contacto encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               data:
+ *                 - ContactoId: 2
+ *                   SucursalId: 1010
+ *                   Nombres: "Juan"
+ *                   Puesto: "Gerente"
+ *       400:
+ *         description: Error de validación. Los datos proporcionados no son válidos.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error de validación"
+ *               errors: ["Mensaje de error 1", "Mensaje de error 2"]
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
+ */
+
 router.post(
 	'/buscar',
 	schemas.BuscarContactoSchema,
 	middleware.validateSchema,
 	contactoController.buscarContacto,
 );
+
 router.get(
 	'/detalle/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
