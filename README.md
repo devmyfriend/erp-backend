@@ -93,22 +93,16 @@ $ npm run lint
 │ 
 └── docke-compose.yaml
 ```
-```bash
-# en progreso...
 
-```
 ## Swagger
 #### Swagger es una herramienta usada para documentación de API y testing
 
 #### Una vez la aplicacon se este ejecutando debe entrar en la siguiente URL:
 
-    http://localhost:3000/api/
+    http://localhost:3000/docs
 
 
-```bash
-# en progreso...
 
-```
 
 ## Formato de los commits
 #### Nota:
