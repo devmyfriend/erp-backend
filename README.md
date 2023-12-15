@@ -15,11 +15,11 @@ $ npm install
 ```bash
 # Antes de ejecutar el servidor, asegurate de crear tu archivo .env
 
-DB_USER=dev
-DB_PASSWORD='Cyber2000'
-DB_HOST=lachosoft.cloud
-DB_NAME='erpmf'
-DB_PORT=3307
+DB_USER=
+DB_PASSWORD=
+DB_HOST=
+DB_NAME=
+DB_PORT=
 PORT=3000
 
 ```
