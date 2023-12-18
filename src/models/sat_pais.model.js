@@ -15,6 +15,9 @@ export const Pais = Connection.define(
 		},
 	},
 	{
+		sequelize: Connection,
+		modelName: 'SAT_Pais',
+		tableName: 'SAT_Pais',
 		freezeTableName: false,
 	},
 );
