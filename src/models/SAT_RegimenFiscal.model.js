@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const RegimenFiscal = Connection.define(
+export const regimenFiscal = Connection.define(
     'SAT_RegimenFiscal',
     {
         ClaveRegimenFiscal: {

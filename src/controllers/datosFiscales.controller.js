@@ -498,7 +498,7 @@ import { Pais } from "../models/sat_pais.model.js";
     };
 
 
-    module.exports = {
+    export const methods = {
         obtenerIdEmpresa,
         buscarIdEmpresa,
         crearIdEmpresa,

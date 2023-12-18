@@ -1,7 +1,7 @@
 import { Municipio } from '../models/SAT_Municipio.model.js';
 import { Estado } from "../models/SAT_Estado.model.js";
 import { Localidad } from "../models/SAT_Localidad.model.js";
-import { CodigosPostal } from "../model/SAT_CodigosPostal.model.js";
+import { CodigoPostal } from "../models/SAT_CodigosPostal.model.js";
 
 const obtenerSAT_Municipio = async ( req, res = response ) =>{
     try {
@@ -113,7 +113,7 @@ const obtenerSAT_Colonias = async ( req, res = response ) =>{
 const obtenerCodigosPostal = async ( req, res = Response ) =>{
     try{
         
-        const listadocodigos = await CodigosPostal.findAll({
+        const listadocodigos = await CodigoPostal.findAll({
             attributes:[ 'CodigoPostal', 'ClaveEstado', 'ClaveMunicipio', 'ClaveLocalidad' ],
             order:[ [ 'CodigoPostal',  'ASC' ] ]
         })
@@ -167,7 +167,7 @@ const obtenerSAT_Estado = async ( req, res = Response ) =>{
     }
 }
 
-    module.exports = {
+export const methods = {
         obtenerSAT_Municipio,
         obtenerSAT_Localidad,
         obtenerSAT_Estado,

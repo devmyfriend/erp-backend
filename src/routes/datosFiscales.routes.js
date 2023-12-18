@@ -1,5 +1,8 @@
 import { Router } from 'express';
-import { methods as datosFiscalesController } from '../controllers/datosFiscales.controller.js';
+import { methods } from '../controllers/datosFiscales.controller.js';
+import { param } from 'express-validator';
+import * as schemas from '../schemas/datosFiscales.js';
+import * as middleware from '../middlewares/express-validator.js';
 const router = Router();
 
 // GET - /api/datosFiscales
@@ -7,38 +10,39 @@ router.get(
 	'/empresa',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	middleware.validateSchema,
-	datosFiscalesController.obtenerIdEmpresa);
+	schemas.buscarRFC,
+	methods.obtenerIdEmpresa);
 
 router.get(
 	'/rfc',
 	schemas.buscarRFC,
 	middleware.validateSchema,
-	datosFiscalesController.obtenerRFC);
+	methods.obtenerRFC);
 
-router.get('/descripcion', datosFiscalesController.obtenerDescripcion);
+router.get('/descripcion', methods.obtenerDescripcion);
 
-router.get('/pais', datosFiscalesController.obtenerPais);
+router.get('/pais', methods.obtenerPais);
 
-router.get('/personafisica', datosFiscalesController.obtenerPersonaFisica);
+router.get('/personafisica', methods.obtenerPersonaFisica);
 
-router.get('/personamoral', datosFiscalesController.obtenerPersonaMoral);
+router.get('/personamoral', methods.obtenerPersonaMoral);
 
-router.get('/taxId', datosFiscalesController.obtenerTaxId);
+router.get('/taxId', methods.obtenerTaxId);
 
-router.get('/regimenFiscal', datosFiscalesController.obtenerRegimenFiscal);
+router.get('/regimenFiscal', methods.obtenerRegimenFiscal);
 
-router.get('/nombreComercial', datosFiscalesController.obtenerNombreComercial);
+router.get('/nombreComercial', methods.obtenerNombreComercial);
 
 // POST - /api/datosFiscales
-router.post('/empresa/crear', datosFiscalesController.crearIdEmpresa);
+router.post('/empresa/crear', methods.crearIdEmpresa);
 
 // UPDATE - /api/datosFiscales
-router.patch('/empresa/editar', datosFiscalesController.editarIdEmpresa);
+router.patch('/empresa/editar', methods.editarIdEmpresa);
 
 // DELETE - /api/datosFiscales
 router.delete(
 	'/empresa/desactivar',
-	datosFiscalesController.desactivarIdEmpresa,
+	methods.desactivarIdEmpresa,
 );
 
 export default router;
