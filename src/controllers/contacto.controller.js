@@ -8,7 +8,6 @@ const obtenerContactos = async (req, res) => {
 		const idSucursal = req.params.id;
 
 		const contactos = await Contacto.findAll({
-			attributes: ['ContactoId', 'SucursalId', 'Nombres', 'Puesto'],
 			where: {
 				SucursalId: idSucursal,
 				Borrado: 0,
@@ -29,7 +28,6 @@ const buscarContacto = async (req, res) => {
 			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
 		}
 		const result = await Contacto.findAll({
-			attributes: ['ContactoId', 'SucursalId', 'Nombres', 'Puesto'],
 			where: {
 				Nombres: {
 					[Op.like]: `%${data.Nombre}%`,
@@ -217,11 +215,11 @@ const crearCorreo = async (req, res) => {
 
 const editarCorreo = async (req, res) => {
 	try {
-		const data = req.body;
-		if (!data) {
+		const dta = req.body;
+		if (!dta) {
 			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
 		}
-		const { EmailId, ...actualizacion } = data;
+		const { EmailId, ...actualizacion } = dta;
 
 		const correo = await Email.findByPk(EmailId);
 
@@ -233,7 +231,7 @@ const editarCorreo = async (req, res) => {
 
 		console.log('Correo editado con éxito');
 
-		return res.status(200).json({ success: true, data: correo.toJSON() });
+		return res.status(200).json({ success: true, data: dta });
 	} catch (error) {
 		console.error('Error al editar el correo:', error.message);
 		return res
