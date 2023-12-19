@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from '../controllers/datosFiscales.controller.js';
+import { methods } from '../controllers/datos.fiscales.controller.js';
 import { param } from 'express-validator';
 import * as schemas from '../schemas/datosFiscales.js';
 import * as middleware from '../middlewares/express-validator.js';
@@ -7,11 +7,11 @@ const router = Router();
 
 // GET - /api/datosFiscales
 router.get(
-	'/empresa',
+	'/datosFiscales/empresa/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	middleware.validateSchema,
 	schemas.buscarRFC,
-	methods.obtenerIdEmpresa);
+	methods.buscarIdEmpresa);
 
 router.get(
 	'/rfc',
@@ -34,6 +34,7 @@ router.get('/regimenFiscal', methods.obtenerRegimenFiscal);
 router.get('/nombreComercial', methods.obtenerNombreComercial);
 
 // POST - /api/datosFiscales
+
 router.post('/empresa/crear', methods.crearIdEmpresa);
 
 // UPDATE - /api/datosFiscales

@@ -1,4 +1,4 @@
-import { Pais } from '../models/sat_pais.model.js';
+import { Pais } from '../models/sat.pais.model.js';
 
 const obtenerPaises = async (req, res = Response) => {
 	try {

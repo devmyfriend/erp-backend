@@ -1,6 +1,6 @@
-import { EntidadNegocio } from "../models/orgEntidadesNegocio.model.js";
-import { regimenFiscal } from "../models/SAT_regimenFiscal.model.js";
-import { Pais } from "../models/sat_pais.model.js";
+import { EntidadNegocio } from "../models/orgEntidadesnegocio.model.js";
+import { regimenFiscal } from "../models/sat.regimen.fiscal.model.js";
+import { Pais } from "../models/sat.pais.model.js";
 
  const obtenerIdEmpresa = async ( req, res) =>{
         try{ 
@@ -16,6 +16,7 @@ import { Pais } from "../models/sat_pais.model.js";
     };
 
     const buscarIdEmpresa = async ( req, res) =>{
+        console.log('hola 123');
         try{
            const data = req.body;
            if(!data) {

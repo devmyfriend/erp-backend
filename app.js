@@ -7,8 +7,8 @@ import morgan from 'morgan';
 import testRoutes from './src/routes/test.routes.js';
 import paisRoutes from './src/routes/pais.routes.js';
 import contactoRoutes from './src/routes/contacto.routes.js';
-import datosDomicilio from './src/routes/datosDomicilio.routes.js';
-import datosFiscales from './src/routes/datosFiscales.routes.js';
+import datosDomicilio from './src/routes/datos.domicilio.routes.js';
+import datosFiscales from './src/routes/datos.fiscales.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';

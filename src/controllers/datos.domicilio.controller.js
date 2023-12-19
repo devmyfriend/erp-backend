@@ -1,9 +1,11 @@
-import { Municipio } from '../models/SAT_Municipio.model.js';
-import { Estado } from "../models/SAT_Estado.model.js";
-import { Localidad } from "../models/SAT_Localidad.model.js";
-import { CodigoPostal } from "../models/SAT_CodigosPostal.model.js";
+import { Municipio } from '../models/sat.municipio.model.js';
+import { Estado } from "../models/sat.estado.model.js";
+import { Colonia } from "../models/sat.colonias.model.js";
+import { Localidad } from "../models/sat.localidad.model.js";
+import { CodigoPostal } from "../models/sat.codigos.postal.model.js";
 
-const obtenerSAT_Municipio = async ( req, res = response ) =>{
+const obtenerSATMunicipio = async ( req, res) =>{
+    console.log('aqui estoy')
     try {
                 
                 const listadoMunicipio = await Municipio.findAll({
@@ -29,34 +31,43 @@ const obtenerSAT_Municipio = async ( req, res = response ) =>{
             message: 'No se pudo obtener la informacion solicitada'
         })
     }
-}
+};
 
-const buscarSAT_Municipio = async ( req, res) =>{
+console.log('controlador ejecutado')
+const buscarSATMunicipio = async ( req, res) =>{
     try {
-        const data = req.body;
-        if (!data) {
-            return res.status(400).json({ error: 'Cuerpo de la peticion invalido'});
-        }
-        const result = await Municipio.findAll({
-            attributes:[ 'ClaveMunicipio', 'ClaveEstado', 'Nombre' ],
-            where: {
-                Nombre: {
-                    [Op.like]: `%${data.Nombre}%`
-                },
-                ClaveEstado: data.ClaveEstado,
-                Borrado: 0
-                },
-            });
-            res.status(201).json({ success: true, data: result });
-        } catch (error) {
-            console.log('Erorr al obtener los datos del Municipio', error.message);
-            res.status(500).json({error: 'Internal Server Error'});
-        }
-}
+        console.log('aqui estoy');
+        const claveMunicipio = req.params.id; 
 
-const obtenerSAT_Localidad = async ( req, res = Response ) =>{
+        const municipio = await Municipio.findOne({
+            where: {
+                ClaveMunicipio: claveMunicipio,
+            },
+            attributes: ['ClaveMunicipio', 'ClaveEstado', 'Nombre'],
+        });
+
+        if (!municipio) {
+            return res.status(400).send({
+                status: 'Error',
+                message: 'No se encontró el municipio solicitado',
+            });
+        }
+
+        return res.status(200).send({
+            status: 'Ok',
+            municipio,
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'No se pudo obtener la información solicitada',
+        });
+    }
+};
+
+const obtenerSATLocalidad = async ( req, res = Response ) =>{
     try{
-            
             const listadoLocalidad = await Localidad.findAll({
                 attributes:[ 'ClaveLocalidad', 'Nombre' ],
                 order:[ [ 'ClaveLocalidad',  'ASC' ] ]
@@ -82,10 +93,10 @@ const obtenerSAT_Localidad = async ( req, res = Response ) =>{
     }
 }
 
-const obtenerSAT_Colonias = async ( req, res = response ) =>{
+const obtenerSATColonias = async ( req, res = response ) =>{
     try{
         
-        const listadoColonias = await SAT_Colonias.findAll({
+        const listadoColonias = await Colonia.findAll({
             attributes:[ 'ClaveColonia', 'Nombre', 'CodigoPostal'],
             order:[ [ 'ClaveColonia',  'ASC' ] ]
         })
@@ -139,38 +150,40 @@ const obtenerCodigosPostal = async ( req, res = Response ) =>{
     }
 }
 
-const obtenerSAT_Estado = async ( req, res = Response ) =>{
+const obtenerSATEstado = async ( req, res = Response ) =>{
+    console.log('aqui estoy estado')
     try {
             
-            const listadoEstado = await Estado.findAll({
-                attributes:[ 'ClaveEstado', 'Nombre' ],
-                order:[ [ 'ClaveEstado',  'ASC' ] ]
-            })
-    
-            if(!listadoEstado){
-                return res.status(400).send({
-                    status: 'Error',
-                    message: 'No se encontraron estados en listados'
-                })
-            }
-    
-            return res.status(200).send({
-                status: 'Ok',
-                listadoEstado
-            })
-    } catch (error) {
-        console.log( error )
-        return res.status(500).send({
-            status: 'Error',
-            message: 'No se pudo obtener la información solicitada'
+        const listadoEstado = await Estado.findAll({
+            attributes:[ 'ClaveEstado', 'Nombre' ],
+            order:[ [ 'ClaveEstado',  'ASC' ] ]
         })
-    }
+
+        if(!listadoEstado){
+            return res.status(400).send({
+                status: 'Error',
+                message: 'No se encontraron estados en listados'
+            })
+        }
+
+        return res.status(200).send({
+            status: 'Ok',
+            listadoEstado
+        })
+} catch (error) {
+    console.log( error )
+    return res.status(500).send({
+        status: 'Error',
+        message: 'No se pudo obtener la información solicitada'
+    })
 }
+};
 
 export const methods = {
-        obtenerSAT_Municipio,
-        obtenerSAT_Localidad,
-        obtenerSAT_Estado,
-        obtenerSAT_Colonias,
-        obtenerCodigosPostal
+        obtenerSATMunicipio,
+        obtenerSATLocalidad,
+        obtenerSATEstado,
+        obtenerSATColonias,
+        buscarSATMunicipio,
+        obtenerCodigosPostal,
     }
