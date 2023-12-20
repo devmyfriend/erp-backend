@@ -9,13 +9,13 @@ const router = Router();
  * @swagger
  * tags:
  *      - name: SAT
- *      - description: Operaciones relacionadas con los catalogos del SAT
+ *        description: Operaciones relacionadas con los catalogos del SAT
  * */
 
 /**
  * @swagger
  * /api/v1/domicilio/{id}:
- *   get:
+ *   get:im
  *     summary: Obtener municipios por ID de Municipio
  *     tags: [SAT]
  *     parameters:
@@ -187,5 +187,106 @@ router.get('/sat/codigospostal', datosDomicilioController.obtenerCodigosPostal);
  *                     example: "Aguascalientes"
  */
 router.get('/sat/estado', datosDomicilioController.obtenerSATEstado);
+
+/**
+ * @swagger
+ * /api/v1/domicilio/sat/{codigoPostal}:
+ *   get:
+ *     summary: Obtener colonias por código postal del SAT
+ *     tags: [SAT]
+ *     parameters:
+ *       - in: path
+ *         name: codigoPostal
+ *         required: true
+ *         description: Código postal
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de colonias para el código postal dado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   idColonia:
+ *                     type: integer
+ *                   claveColonia:
+ *                     type: string
+ *                     example: "001"
+ *                   codigoPostal:
+ *                     type: string
+ *                     example: "77509"
+ *                   nombre:
+ *                     type: string
+ *                     example: "Colonia 1"
+ */
+router.get('/sat/:codigoPostal', datosDomicilioController.obtenerColoniasPorCodigoPostal);
+
+/**
+ * @swagger
+ * /api/v1/domicilio/sat/municipio/{claveEstado}:
+ *   get:
+ *     summary: Obtener municipios por clave de estado
+ *     tags: [SAT]
+ *     parameters:
+ *       - in: path
+ *         name: claveEstado
+ *         required: true
+ *         description: Clave del estado
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de municipios para la clave de estado dada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveMunicipio:
+ *                     type: string
+ *                   ClaveEstado:
+ *                     type: string
+ *                   Nombre:
+ *                     type: string
+ */
+router.get('/sat/municipio/:claveEstado', datosDomicilioController.obtenerMunicipiosPorClaveEstado);
+
+/**
+ * @swagger
+ * /api/v1/domicilio/sat/localidad/{claveEstado}:
+ *   get:
+ *     summary: Obtener localidades por clave de estado
+ *     tags: [SAT]
+ *     parameters:
+ *       - in: path
+ *         name: claveEstado
+ *         required: true
+ *         description: Clave del estado
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de localidades para la clave de estado dada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveLocalidad:
+ *                     type: string
+ *                   ClaveEstado:
+ *                     type: string
+ *                   Nombre:
+ *                     type: string
+ */
+router.get('/sat/localidad/:claveEstado', datosDomicilioController.obtenerLocalidadesPorClaveEstado);
 
 export default router;
