@@ -40,7 +40,7 @@ const App = {
 		app.use('/api/v1/pais', paisRoutes);
 		app.use('/api/v1/contacto', contactoRoutes);
 		app.use('/api/v1/domicilio', datosDomicilio);
-		app.use('/api/v1/datosFiscales', datosFiscales);
+		app.use('/api/v1/fiscales', datosFiscales);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});

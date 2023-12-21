@@ -13,7 +13,7 @@ export const EntidadNegocio = Connection.define(
                 max: 10
             }
         },
-        EsPropietario: {
+        EsPropietaria: {
             type: DataTypes.TINYINT,
             validate: {
                 max: 1
@@ -36,10 +36,6 @@ export const EntidadNegocio = Connection.define(
         },
         ClavePais: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                max: 3
-            }
         },
         TaxId: {
             type: DataTypes.STRING,
@@ -51,10 +47,7 @@ export const EntidadNegocio = Connection.define(
         },
         ClaveRegimenFisca: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                max: 3
-            }
+            allowNull: false
         },
         PersonaFisica:{
             type: DataTypes.TINYINT,
@@ -69,11 +62,16 @@ export const EntidadNegocio = Connection.define(
             }
         },
         Estatus: {
-            type: DataTypes.INTEGER,
-            validate: {
-                max: 11
-            }
+            type: DataTypes.INTEGER
         },
+        BorradoPor: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
+          BorradoEn: {
+            type: DataTypes.DATE,
+            allowNull: true,
+          },
     }, {
         sequelize: Connection,
         modelName: 'orgEntidadesNegocio',

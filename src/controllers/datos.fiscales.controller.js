@@ -16,19 +16,22 @@ import { Pais } from "../models/sat.pais.model.js";
     };
 
     const buscarIdEmpresa = async ( req, res) =>{
-        console.log('hola 123');
+        console.log('aqui estoy idempresa');
         try{
-           const data = req.body;
-           if(!data) {
-            return res.status(400).json({error: 'Cuerpo de la peticion invalida'});
+           const id = req.params.id;
+           if(!id) {
+            return res.status(400).json({error: 'ID de la entidad de negocio no proporcionado'});
            }
-           const result = await EntidadNegocio.findAll({
-            attributes: ['EntidadNegocioId', 'EsPropietario', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonaMoral', 'NombreOficial', 'Estatus'],
+           const result = await EntidadNegocio.findOne({
+            attributes: ['EntidadNegocioId', 'EsPropietaria', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonalMoral', 'NombreOficial', 'Estatus'],
             where: {
-                EntidadNegocioId: data.EntidadNegocioId
+                EntidadNegocioId: id
             },
         });
-        res.status(201).json({success: true, data: result});
+        if (!result) {
+            return res.status(404).json({error: 'No se encontró la entidad de negocio con el ID proporcionado'});
+        }
+        res.status(200).json({success: true, data: result});
         } catch (error) {
             console.log('Error al buscar el id de la empresa', error.message);
             res.status(500).json({error: 'Internal Server Error'});
@@ -39,25 +42,15 @@ import { Pais } from "../models/sat.pais.model.js";
         try {
             const data = req.body;
             if (!data) {
-                return res.status(400).json({ error: 'Cuerpo de la peticion invalida' });
+                return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
             }
-            const result = await EntidadNegocio.create({
-                EntidadNegocioId: data.EntidadNegocioId,
-                EsPropietario: data.EsPropietario,
-                RFC: data.RFC,
-                NombreComercial: data.NombreComercial,
-                ClavePais: data.ClavePais,
-                TaxId: data.TaxId,
-                ClaveRegimenFiscal: data.ClaveRegimenFiscal,
-                PersonaFisica: data.PersonaFisica,
-                PersonaMoral: data.PersonaMoral,
-                NombreOficial: data.NombreOficial,
-                Estatus: data.Estatus
-            });
-            res.status(201).json({ success: true, data: result.toJSON() });
+    
+            const nuevaEntidad = await EntidadNegocio.create(data);
+            console.log('Entidad de negocio creada con éxito');
+            return res.status(201).json({ success: true, data: nuevaEntidad });
         } catch (error) {
-            console.log('Error al crear el id de la empresa', error.message);
-            res.status(500).json({ error: 'Internal Server Error' });
+            console.error('Error al crear entidad de negocio:', error.message);
+            res.status(500).json({ success: false, error: 'Internal Server Error' });
         }
     };
 
@@ -87,25 +80,27 @@ import { Pais } from "../models/sat.pais.model.js";
     };
 
     const desactivarIdEmpresa = async (req, res) => {
+        console.log('aqui estoy desactivar empresa');
         try {
             const data = req.body;
             if (!data) {
                 return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
             }
-            const entidadNegocio = await EntidadNegocio.findByPk(data.EntidadNegocioId);
-
-            if (!entidadNegocio) {
+            const entidad = await EntidadNegocio.findByPk(data.EntidadId);
+    
+            if (!entidad) {
                 return res.status(404).json({ error: 'Entidad de negocio no encontrada' });
             }
-
-            entidadNegocio.Borrrado = true;
-            entidadNegocio.BorradoPor = data.BorradoPor;
-
-            await entidadNegocio.save();
-
+    
+            entidad.Borrado = true;
+            entidad.BorradoPor = data.BorradoPor;
+            entidad.BorradoEn = new Date();
+    
+            await entidad.save();
+    
             console.log('Entidad de negocio desactivada con éxito');
-
-            return res.status(200).json({ message: 'Entidad de negocio desactivada: ' + data.EntidadNegocioId });
+    
+            return res.json({ message: 'Entidad de negocio desactivada: ' + data.EntidadId });
         } catch (error) {
             console.error('Error al desactivar entidad de negocio:', error.message);
             res.status(500).json({ success: false, error: 'Internal Server Error' });
