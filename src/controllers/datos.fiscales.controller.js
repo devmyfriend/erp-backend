@@ -434,18 +434,6 @@ import { Pais } from "../models/sat.pais.model.js";
         }
     };
 
-    const obtenerRegimenFiscal = async (req, res) => {
-        try {
-            const regimenFiscal = await EntidadNegocio.findAll({
-                attributes: ['ClaveRegimenFiscal'],
-            });
-            res.json(regimenFiscal);
-        } catch (error) {
-            console.log('Error al obtener el regimen fiscal', error.message);
-            res.status(500).json({error: 'Internal Server Error'});
-        }
-    };
-    
     const buscarRegimenFiscal = async (req, res) => {
         try{ 
             const data = req.body;
@@ -495,7 +483,15 @@ import { Pais } from "../models/sat.pais.model.js";
             res.status(500).json({error: 'Internal Server Error'});
         }
     };
-
+    const obtenerRegimenesFiscales = async (req, res) => {
+        try {
+            const regimenes = await regimenFiscal.findAll();
+            res.json(regimenes);
+        } catch (error) {
+            console.log('Error al obtener los regímenes fiscales', error.message);
+            res.status(500).json({error: 'Internal Server Error'});
+        }
+    };
 
     export const methods = {
         obtenerIdEmpresa,
@@ -521,7 +517,7 @@ import { Pais } from "../models/sat.pais.model.js";
         buscarPersonaMoral,
         obtenerTaxId,
         buscarTaxId,
-        obtenerRegimenFiscal,
+        obtenerRegimenesFiscales,
         buscarRegimenFiscal,
         obtenerNombreComercial,
         buscarNombreComercial

@@ -24,6 +24,7 @@ export const regimenFiscal = Connection.define(
         sequelize: Connection,
         modelName: 'SAT_RegimenFiscal',
         tableName: 'SAT_RegimenFiscal',
+        timestamps: false,
         freezeTableName: false,
     },
 );

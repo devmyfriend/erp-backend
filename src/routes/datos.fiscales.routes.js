@@ -350,4 +350,36 @@ router.delete(
     datosFiscalesController.desactivarIdEmpresa,
 );
 
+/**
+ * @swagger
+ * /api/v1/fiscales/regimenes/listado:
+ *   get:
+ *     summary: Obtener la lista de regímenes fiscales
+ *     tags: [Datos Fiscales]
+ *     responses:
+ *       200:
+ *         description: La lista de regímenes fiscales
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveRegimenFiscal:
+ *                     type: string
+ *                   Descripcion:
+ *                     type: string
+ *                   Fisica:
+ *                     type: boolean
+ *                   Moral:
+ *                     type: boolean
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get(
+    '/regimenes/listado',
+    datosFiscalesController.obtenerRegimenesFiscales,
+);
+
 export default router;
