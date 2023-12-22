@@ -63,11 +63,51 @@ router.get(
 	datosFiscalesController.buscarIdEmpresa,
 );
 
-// router.get(
-// 	'/rfc',
-// 	schemas.buscarRFC,
-// 	middleware.validateSchema,
-// 	datosFiscalesController.obtenerRFC);
+/**
+ * @swagger
+ * /api/v1/datosFiscales/buscarIdRFC/{rfc}:
+ *   get:
+ *     summary: Buscar una entidad de negocio por RFC
+ *     tags: [Datos Fiscales]
+ *     parameters:
+ *       - in: path
+ *         name: rfc
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: RFC de la entidad de negocio a buscar
+ *     responses:
+ *       200:
+ *         description: Entidad de negocio encontrada con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/EntidadNegocio'
+ *       400:
+ *         description: RFC no proporcionado
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "RFC no proporcionado"
+ *       404:
+ *         description: No se encontró la entidad de negocio con el RFC proporcionado
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "No se encontró la entidad de negocio con el RFC proporcionado"
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
+ */
+router.get('/buscarPorRFC/:rfc', datosFiscalesController.buscarIdRFC);
 
 // router.get('/descripcion', datosFiscalesController.obtenerDescripcion);
 
@@ -103,6 +143,11 @@ router.get(
  *         - PersonaMoral
  *         - NombreOficial
  *         - Estatus
+ *         - CreadoPor
+ *         - ActualizadoPor
+ *         - logo
+ *         - BorradoPor
+ *         - BorradoEn
  *       properties:
  *         EntidadNegocioId:
  *           type: integer
@@ -128,16 +173,31 @@ router.get(
  *         PersonaFisica:
  *           type: integer
  *           description: Si la entidad es una persona física
- *         PersonaMoral:
+ *         PersonalMoral:
  *           type: integer
  *           description: Si la entidad es una persona moral
  *         NombreOficial:
  *           type: string
  *           description: El nombre oficial de la entidad
  *         Estatus:
- *           type: string
+ *           type: integer
  *           description: El estatus de la entidad
- *
+ *         CreadoPor:
+ *           type: string
+ *           description: El ID del usuario que creó la entidad
+ *         ActualizadoPor:
+ *           type: integer
+ *           description: El ID del usuario que actualizó la entidad
+ *         logo:
+ *           type: string
+ *           description: El logo de la entidad
+ *         BorradoPor:
+ *           type: string
+ *           description: El ID del usuario que borró la entidad
+ *         BorradoEn:
+ *           type: string
+ *           format: string
+ *           description: La fecha en que se borró la entidad
  * /api/v1/fiscales/empresa/crear:
  *   post:
  *     summary: Crear una nueva entidad de negocio
@@ -166,9 +226,9 @@ router.get(
  *         description: Internal Server Error
  */
 router.post(
-	'/empresa/crear',
-	middleware.validateSchema,
-	datosFiscalesController.crearIdEmpresa,
+    '/empresa/crear',
+    middleware.validateSchema,
+    datosFiscalesController.crearIdEmpresa,
 );
 
 // UPDATE - /api/datosFiscales

@@ -42,12 +42,12 @@ import { Pais } from "../models/sat.pais.model.js";
         try {
             const data = req.body;
             if (!data) {
-                return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+                return res.status(400).json({ error: 'Invalid request, missing body data' });
             }
     
             const nuevaEntidad = await EntidadNegocio.create(data);
             console.log('Entidad de negocio creada con éxito');
-            return res.status(201).json({ success: true, data: nuevaEntidad });
+            return res.status(201).json({ success: true, data: nuevaEntidad.toJSON() });
         } catch (error) {
             console.error('Error al crear entidad de negocio:', error.message);
             res.status(500).json({ success: false, error: 'Internal Server Error' });
@@ -190,21 +190,24 @@ import { Pais } from "../models/sat.pais.model.js";
     
 
     const buscarIdRFC = async (req, res) => {
-        try{ 
-            const data = req.body;
-            if(!data) {
-                return res.status(400).json({error: 'Cuerpo de la peticion invalida'});
+        try {
+            const rfc = req.params.rfc;
+            if (!rfc) {
+                return res.status(400).json({ error: 'RFC no proporcionado' });
             }
-            const result = await EntidadNegocio.findAll({
-                attributes: ['EntidadNegocioId', 'EsPropietario', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFiscal', 'PersonaFisica', 'PersonaMoral', 'NombreOficial', 'Estatus'],
+            const result = await EntidadNegocio.findOne({
+                attributes: ['EntidadNegocioId', 'EsPropietaria', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonalMoral', 'NombreOficial', 'Estatus'],
                 where: {
-                    RFC: data.RFC
+                    RFC: rfc
                 },
             });
-            res.status(201).json({success: true, data: result});
+            if (!result) {
+                return res.status(404).json({ error: 'No se encontró la entidad de negocio con el RFC proporcionado' });
+            }
+            res.status(200).json({ success: true, data: result });
         } catch (error) {
-            console.log('Error al buscar el RFC de la empresa', error.message);
-            res.status(500).json({error: 'Internal Server Error'});
+            console.log('Error al buscar la empresa por RFC', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     };
 

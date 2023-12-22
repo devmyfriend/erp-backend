@@ -25,10 +25,7 @@ export const EntidadNegocio = Connection.define(
         },
         RFC: {
             type: DataTypes.STRING,
-            allowNull: false,
-            validate: {
-                max: 13
-            }
+            allowNull: false
         },
         NombreComercial: {
             type: DataTypes.STRING,
@@ -64,6 +61,18 @@ export const EntidadNegocio = Connection.define(
         Estatus: {
             type: DataTypes.INTEGER
         },
+        CreadoPor: {
+            type: DataTypes.STRING,
+            allowNull: true
+        },
+        ActualizadoPor: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
+        logo: {
+            type: DataTypes.STRING,
+            allowNull: true,
+          },
         BorradoPor: {
             type: DataTypes.STRING,
             allowNull: true,
