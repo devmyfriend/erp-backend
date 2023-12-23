@@ -7,11 +7,7 @@ export const EntidadNegocio = Connection.define(
         EntidadNegocioId: {
             type: DataTypes.INTEGER,
             autoIncrement: true,
-            primaryKey: true,
-            allowNull: false,
-            validate: {
-                max: 10
-            }
+            primaryKey: true
         },
         EsPropietaria: {
             type: DataTypes.TINYINT,
@@ -20,31 +16,26 @@ export const EntidadNegocio = Connection.define(
             }
         },
         NombreOficial: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         RFC: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         NombreComercial: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         ClavePais: {
             type: DataTypes.STRING,
         },
         TaxId: {
             type: DataTypes.STRING,
-            allowNull: false,
             validate: {
                 max: 16
             
             }
         },
         ClaveRegimenFisca: {
-            type: DataTypes.STRING,
-            allowNull: false
+            type: DataTypes.STRING
         },
         PersonaFisica:{
             type: DataTypes.TINYINT,
@@ -66,8 +57,7 @@ export const EntidadNegocio = Connection.define(
             allowNull: true
         },
         ActualizadoPor: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
+			type: DataTypes.INTEGER
 		},
         logo: {
             type: DataTypes.STRING,

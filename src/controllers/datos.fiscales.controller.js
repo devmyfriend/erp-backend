@@ -1,6 +1,8 @@
 import { EntidadNegocio } from "../models/orgEntidadesnegocio.model.js";
 import { regimenFiscal } from "../models/sat.regimen.fiscal.model.js";
 import { Pais } from "../models/sat.pais.model.js";
+import { Connection } from "../database/mariadb.database.js";
+import { Domicilio } from "../models/orgDomicilios.model.js";
 
  const obtenerIdEmpresa = async ( req, res) =>{
         try{ 
@@ -38,6 +40,7 @@ import { Pais } from "../models/sat.pais.model.js";
         }
     };
 
+    // funcion original
     const crearIdEmpresa = async (req, res) => {
         try {
             const data = req.body;
@@ -53,6 +56,50 @@ import { Pais } from "../models/sat.pais.model.js";
             res.status(500).json({ success: false, error: 'Internal Server Error' });
         }
     };
+
+    // con domiclio 
+    // const crearIdEmpresa = async (req, res) => {
+    //     try {
+    //         const data = req.body;
+    //         if (!data) {
+    //             return res.status(400).json({ error: 'Invalid request, missing body data' });
+    //         }
+    
+    //         const nuevaEntidad = await EntidadNegocio.create(data);
+    //         console.log('Entidad de negocio creada con éxito');
+    //         return res.status(201).json({ success: true, data: nuevaEntidad.toJSON() });
+    //     } catch (error) {
+    //         console.error('Error al crear entidad de negocio:', error.message);
+    //         console.error('Detalles del error:', error); // Imprimir el error completo
+    //         res.status(500).json({ success: false, error: 'Internal Server Error' });
+    //     }
+    // };
+
+    // const crearIdEmpresa = async (req, res) => {
+    //     const transaction = await Connection.transaction();
+    //     try {
+    //         const entidadData = req.body.entidad;
+    //         const domicilioData = req.body.domicilio;
+    
+    //         if (!entidadData || !domicilioData) {
+    //             return res.status(400).json({ error: 'Invalid request, missing entity or domicile data' });
+    //         }
+    
+    //         const nuevaEntidad = await EntidadNegocio.create(entidadData, { transaction });
+    
+    //         const nuevoDomicilio = await Domicilio.create({
+    //             ...domicilioData,
+    //             EntidadNegocioId: nuevaEntidad.EntidadNegocioId,
+    //         }, { transaction });
+    
+    //         await transaction.commit();
+    
+    //         return res.status(201).json({ success: true, data: { entidad: nuevaEntidad, domicilio: nuevoDomicilio } });
+    //     } catch (error) {
+    //         await transaction.rollback();
+    //         return res.status(500).json({ error: 'Internal Server Error' });
+    //     }
+    // };
 
     const editarIdEmpresa = async (req, res) => {
         try {
