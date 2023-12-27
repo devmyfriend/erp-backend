@@ -30,8 +30,14 @@ export const EntidadNegocio = Connection.define(
         TaxId: {
             type: DataTypes.STRING,
             validate: {
-                max: 16
-            
+                is: {
+                    args: /^[0-9]{9}$/,
+                    msg: "TaxId debe tener exactamente 9 digitos"
+                },
+                len: {
+                    args: [9, 9],
+                    msg: "TaxId debe tener exactamente 9 digitos"
+                }
             }
         },
         ClaveRegimenFisca: {

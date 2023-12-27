@@ -231,6 +231,114 @@ router.post(
     datosFiscalesController.crearIdEmpresa,
 );
 
+// /**
+//  * @swagger
+//  * components:
+//  *   schemas:
+//  *     crearEmpresaSchema:
+//  *       type: object
+//  *       required:
+//  *         - EntidadNegocioId
+//  *         - EsPropietaria
+//  *         - RFC
+//  *         - NombreComercial
+//  *         - ClavePais
+//  *         - TaxId
+//  *         - ClaveRegimenFisca
+//  *         - PersonaFisica
+//  *         - PersonaMoral
+//  *         - NombreOficial
+//  *         - Estatus
+//  *         - CreadoPor
+//  *         - ActualizadoPor
+//  *         - logo
+//  *         - BorradoPor
+//  *         - BorradoEn
+//  *       properties:
+//  *         EntidadNegocioId:
+//  *           type: integer
+//  *           description: El ID de la entidad de negocio
+//  *         EsPropietaria:
+//  *           type: boolean
+//  *           description: Si la entidad es propietaria
+//  *         RFC:
+//  *           type: string
+//  *           description: El RFC de la entidad
+//  *         NombreComercial:
+//  *           type: string
+//  *           description: El nombre comercial de la entidad
+//  *         ClavePais:
+//  *           type: string
+//  *           description: La clave del país de la entidad
+//  *         TaxId:
+//  *           type: string
+//  *           description: El ID de impuestos de la entidad
+//  *         ClaveRegimenFisca:
+//  *           type: string
+//  *           description: La clave del régimen fiscal de la entidad
+//  *         PersonaFisica:
+//  *           type: integer
+//  *           description: Si la entidad es una persona física
+//  *         PersonalMoral:
+//  *           type: integer
+//  *           description: Si la entidad es una persona moral
+//  *         NombreOficial:
+//  *           type: string
+//  *           description: El nombre oficial de la entidad
+//  *         Estatus:
+//  *           type: integer
+//  *           description: El estatus de la entidad
+//  *         CreadoPor:
+//  *           type: string
+//  *           description: El ID del usuario que creó la entidad
+//  *         ActualizadoPor:
+//  *           type: integer
+//  *           description: El ID del usuario que actualizó la entidad
+//  *         logo:
+//  *           type: string
+//  *           description: El logo de la entidad
+//  *         BorradoPor:
+//  *           type: string
+//  *           description: El ID del usuario que borró la entidad
+//  *         BorradoEn:
+//  *           type: string
+//  *           format: string
+//  *           description: La fecha en que se borró la entidad
+//  * /api/v1/fiscales/empresa/crear:
+//  *   post:
+//  *     summary: Crear una nueva entidad de negocio
+//  *     tags: [Datos Fiscales]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             $ref: '#/components/schemas/crearEmpresaSchema'
+//  *     responses:
+//  *       201:
+//  *         description: Entidad de negocio creada con éxito
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                 data:
+//  *                   $ref: '#/components/schemas/crearEmpresaSchema'
+//  *       400:
+//  *         description: Datos de entrada inválidos
+//  *       500:
+//  *         description: Internal Server Error
+//  */
+// router.post(
+//     '/empresa/crear',
+//     middleware.validateSchema,
+//     datosFiscalesController.crearIdEmpresa,
+// );
+
+
+
 // UPDATE - /api/datosFiscales
 
 /**
