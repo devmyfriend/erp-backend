@@ -3,9 +3,6 @@ import { Connection } from "../../database/mariadb.database.js";
 
 const obtenerListado = async (req, res = Response) => {
     try{
-/*         const offset = 0;
-        const limit = 5;
-        const propiedad = false; */
         const offset = req.params.offset || 0;
         const limit = req.params.limit || 5;
         const propiedad = req.params.propiedad || false;
