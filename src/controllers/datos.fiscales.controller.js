@@ -1,234 +1,203 @@
-import { EntidadNegocio } from "../models/orgEntidadesnegocio.model.js";
+import { EntidadNegocio, Domicilio } from '../models/datos.entidad.negocio.domicilios.model.js';
 import { regimenFiscal } from "../models/sat.regimen.fiscal.model.js";
 import { Pais } from "../models/sat.pais.model.js";
-import { Domicilio } from "../models/orgDomicilios.model.js";
 
- const obtenerIdEmpresa = async ( req, res) =>{
-        try{ 
-
-            const idEmpresa = await EntidadNegocio.findAll({
-                attributes: ['EntidadNegocioId','EsPropietaria','RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonalMoral', 'NombreOficial', 'Estatus']
-            });
-                res.json(idEmpresa);
-        }catch (error) { 
-            console.log('Error al obtener el id de la empresa', error.message);
-            res.status(500).json({error: 'Internal Server Error'});
-        }
-    };
-
-    const buscarIdEmpresa = async ( req, res) =>{
-        console.log('aqui estoy idempresa');
-        try{
-           const id = req.params.id;
-           if(!id) {
-            return res.status(400).json({error: 'ID de la entidad de negocio no proporcionado'});
-           }
-           const result = await EntidadNegocio.findOne({
+const obtenerIdEmpresa = async (req, res) => {
+    try {
+        const id = req.params.id; // Asegúrate de que el ID se pasa como un parámetro en la URL
+        const empresa = await EntidadNegocio.findByPk(id, {
             attributes: ['EntidadNegocioId', 'EsPropietaria', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonalMoral', 'NombreOficial', 'Estatus'],
-            where: {
-                EntidadNegocioId: id
-            },
+            include: [{
+                model: Domicilio,
+                as: 'domicilio', // Utiliza el mismo alias que definiste en la relación
+                attributes: ['DomicilioId', 'EntidadNegocioId', 'SucursalId', 'AlmacenId', 'Calle', 'NumeroExt', 'NumeroInt', 'CodigoPostal', 'ClaveEstado', 'ClaveMunicipio', 'ClaveLocalidad', 'ClaveColonia', 'ClavePais']
+            }]
         });
-        if (!result) {
-            return res.status(404).json({error: 'No se encontró la entidad de negocio con el ID proporcionado'});
+        console.log(empresa)
+        if (!empresa) {
+            return res.status(404).json({ error: 'No se encontró la empresa con el ID proporcionado' });
         }
-        res.status(200).json({success: true, data: result});
+
+        res.json(empresa);
+    } catch (error) {
+        console.log('Error al obtener el id de la empresa', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+const buscarIdEmpresa = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const empresa = await EntidadNegocio.findByPk(id, {
+            attributes: ['EntidadNegocioId', 'EsPropietaria', 'RFC', 'NombreComercial', 'ClavePais', 'TaxId', 'ClaveRegimenFisca', 'PersonaFisica', 'PersonalMoral', 'NombreOficial', 'Estatus'],
+            include: [{
+                model: Domicilio,
+                as: 'domicilio',
+                attributes: ['DomicilioId', 'EntidadNegocioId', 'SucursalId', 'AlmacenId', 'Calle', 'NumeroExt', 'NumeroInt', 'CodigoPostal', 'ClaveEstado', 'ClaveMunicipio', 'ClaveLocalidad', 'ClaveColonia', 'ClavePais']
+            }]
+        });
+
+        if (!empresa) {
+            return res.status(404).json({ error: 'No se encontró la empresa con el ID proporcionado' });
+        }
+
+        if (!empresa.domicilio) {
+            return res.status(404).json({ error: 'No se encontró un domicilio asociado con la empresa' });
+        }
+
+        res.json(empresa);
+         } catch (error) {
+             console.log('Error al obtener el id de la empresa', error.message);
+             res.status(500).json({ error: 'Internal Server Error' });
+         }
+};
+
+const crearIdEmpresa = async (req, res) => {
+    try {
+
+
+    const { entidad } = req.body
+
+        const propiedadesEntidad = {
+            ClavePais: entidad.ClavePais,
+            EsPropietaria: entidad.EsPropietaria || false,
+            ClaveRegimenFisca: entidad.ClaveRegimenFisca,
+            NombreComercial: entidad.NombreComercial,
+            NombreOficial: entidad.NombreOficial || '',
+            TaxId: entidad.TaxId,
+            PersonaFisica: entidad.PersonaFisica,
+            PersonalMoral: entidad.PersonalMoral,
+            RFC: entidad.RFC || '',
+            Estatus: entidad.Estatus,
+            logo: entidad.logo,
+            CreadoPor: entidad.CreadoPor,
+            ActualizadoPor: entidad.ActualizadoPor,
+            BorradoPor: entidad.BorradoPor,
+            BorradoEn: entidad.BorradoEn
+        }
+        // console.log(entidad1)
+       const resultEntidad = await EntidadNegocio.create(propiedadesEntidad);
+        const { dataValues } = resultEntidad
+        console.log('hola soy entidad', dataValues.EntidadNegocioId)
+        const empresa = dataValues
+
+    const { domicilio } = req.body
+
+        const propiedadesDomicilio = {
+            EntidadNegocioId: empresa.EntidadNegocioId,
+            SucursalId: domicilio.SucursalId || 1010, // no hay datos de sucursal todavia
+            AlmacenId: domicilio.AlmacenId || 12, // no hay datos de almacen todavia
+            Calle: domicilio.Calle,
+            NumeroExt: domicilio.NumeroExt,
+            NumeroInt: domicilio.NumeroInt,
+            CodigoPostal: domicilio.CodigoPostal,
+            ClaveEstado: domicilio.ClaveEstado,
+            ClaveMunicipio: domicilio.ClaveMunicipio,
+            ClaveLocalidad: domicilio.ClaveLocalidad,
+            ClaveColonia: domicilio.ClaveColonia,
+            ClavePais: domicilio.ClavePais
+        }
+        
+        const resultDomicilio = await Domicilio.create(propiedadesDomicilio)
+        console.log('hola soy domicilio', resultDomicilio.DomicilioId)
+        console.log(resultDomicilio)
+
+        
+            return res.status(200).json({
+                status: "Ok",
+                message: "Entidad de negocio creada con éxito",
+                empresa: resultEntidad,
+                domicilio: resultDomicilio
+            });
         } catch (error) {
-            console.log('Error al buscar el id de la empresa', error.message);
-            res.status(500).json({error: 'Internal Server Error'});
+            console.error('Error al crear entidad de negocio:', error.stack);
+            res.status(500).json({ success: false, error: error.stack });
         }
-    };
-
-    // funcion original
-    // const crearIdEmpresa = async (req, res) => {
-    //     try {
-    //         const data = req.body;
-    //         if (!data) {
-    //             return res.status(400).json({ error: 'Invalid request, missing body data' });
-    //         }
-    
-    //         const nuevaEntidad = await EntidadNegocio.create(data);
-    //         console.log('Entidad de negocio creada con éxito');
-    //         return res.status(201).json({ success: true, data: nuevaEntidad.toJSON() });
-    //     } catch (error) {
-    //         console.error('Error al crear entidad de negocio:', error.message);
-    //         res.status(500).json({ success: false, error: 'Internal Server Error' });
-    //     }
-    // };
-
-    // con domiclio 
-    // const crearIdEmpresa = async (req, res) => {
-    //     try {
-    //         const data = req.body;
-    //         if (!data) {
-    //             return res.status(400).json({ error: 'Invalid request, missing body data' });
-    //         }
-    
-    //         const nuevaEntidad = await EntidadNegocio.create(data);
-    //         console.log('Entidad de negocio creada con éxito');
-    //         return res.status(201).json({ success: true, data: nuevaEntidad.toJSON() });
-    //     } catch (error) {
-    //         console.error('Error al crear entidad de negocio:', error.message);
-    //         console.error('Detalles del error:', error); // Imprimir el error completo
-    //         res.status(500).json({ success: false, error: 'Internal Server Error' });
-    //     }
-    // };
+};
 
 
-    // funcion con domicilio
-    // const crearIdEmpresa = async (req, res) => {
-    //     try {
-    //         const entidadData = req.body;
-    
-    //         if (!entidadData) {
-    //             return res.status(400).json({ error: 'Invalid request, missing entity data' });
-    //         }
-    
-    //         const nuevaEntidad = await EntidadNegocio.create(entidadData);
-    //         console.log('Entidad de negocio creada con éxito');
-
-    //         const nuevoDomicilio = await Domicilio.create({
-    //             EntidadNegocioId: nuevaEntidad.EntidadNegocioId,
-    //             SucursalId: 1,
-    //             AlmacenId: 1,
-    //             Calle: 'Calle predeterminada',
-    //             NumeroExt: '0',
-    //             NumeroInt: '0',
-    //             CodigoPostal: '00000',
-    //             ClaveEstado: 'EST',
-    //             ClaveMunicipio: 'MUN',
-    //             ClaveLocalidad: 'LOC',
-    //             ClaveColonia: 'COL',
-    //             ClavePais: 'PAIS'
-    //         });
-    //         console.log('Domicilio creado con éxito');
-    
-    //         return res.status(201).json({ success: true, data: { entidad: nuevaEntidad, domicilio: nuevoDomicilio } });
-    //     } catch (error) {
-    //         console.error('Error al crear entidad de negocio:', error.message);
-    //         console.error('Detalles del error:', error); // Imprimir el error completo
-    //         res.status(500).json({ success: false, error: 'Internal Server Error' });
-    //     }
-    // };
-
-    const crearIdEmpresa = async (req, res) => {
-        try {
-    
-
-        const { entidad } = req.body
-
-            const propiedadesEntidad = {
-                ClavePais: entidad.ClavePais,
-                EsPropietaria: entidad.EsPropietaria || false,
-                ClaveRegimenFisca: entidad.ClaveRegimenFisca,
-                NombreComercial: entidad.NombreComercial,
-                NombreOficial: entidad.NombreOficial || '',
-                TaxId: entidad.TaxId,
-                PersonaFisica: entidad.PersonaFisica,
-                PersonalMoral: entidad.PersonalMoral,
-                RFC: entidad.RFC || '',
-                Estatus: entidad.Estatus,
-                logo: entidad.logo,
-                CreadoPor: entidad.CreadoPor,
-                ActualizadoPor: entidad.ActualizadoPor,
-                BorradoPor: entidad.BorradoPor,
-                BorradoEn: entidad.BorradoEn
-            }
-            // console.log(entidad1)
-           const resultEntidad = await EntidadNegocio.create(propiedadesEntidad);
-            const { dataValues } = resultEntidad
-            console.log('hola soy entidad', dataValues.EntidadNegocioId)
-            const empresa = dataValues
-
-        const { domicilio } = req.body
-
-            const propiedadesDomicilio = {
-                EntidadNegocioId: empresa.EntidadNegocioId,
-                SucursalId: domicilio.SucursalId || 1010, // no hay datos de sucursal todavia
-                AlmacenId: domicilio.AlmacenId || 12, // no hay datos de almacen todavia
-                Calle: domicilio.Calle,
-                NumeroExt: domicilio.NumeroExt,
-                NumeroInt: domicilio.NumeroInt,
-                CodigoPostal: domicilio.CodigoPostal,
-                ClaveEstado: domicilio.ClaveEstado,
-                ClaveMunicipio: domicilio.ClaveMunicipio,
-                ClaveLocalidad: domicilio.ClaveLocalidad,
-                ClaveColonia: domicilio.ClaveColonia,
-                ClavePais: domicilio.ClavePais
-            }
-            
-            const resultDomicilio = await Domicilio.create(propiedadesDomicilio)
-            console.log('hola soy domicilio', resultDomicilio.DomicilioId)
-            console.log(resultDomicilio)
-
-            
-                return res.status(200).json({
-                    status: "Ok",
-                    message: "Entidad de negocio creada con éxito",
-                    empresa: resultEntidad,
-                    domicilio: resultDomicilio
-                });
-            } catch (error) {
-                console.error('Error al crear entidad de negocio:', error.stack);
-                res.status(500).json({ success: false, error: error.stack });
-            }
-    };
-
-
-    
     const editarIdEmpresa = async (req, res) => {
         try {
-            const data = req.body;
-            if (!data) {
-                return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+            const EntidadNegocioId = req.params.id;
+            const { EntidadNegocioId: _, ...datosEmpresa } = req.body.entidad;
+            const { SucursalId, ...datosDomicilio } = req.body.domicilio;
+    
+            const empresa = await EntidadNegocio.findByPk(EntidadNegocioId);
+            if (!empresa) {
+                return res.status(404).json({ error: 'No se encontró la empresa con el ID proporcionado' });
             }
     
-            const { EntidadNegocioId, ...actualizacion } = data;
-    
-            const entidadNegocio = await EntidadNegocio.findByPk(EntidadNegocioId);
-    
-            if (!entidadNegocio) {
-                return res.status(404).json({ error: 'Entidad de negocio no encontrada' });
+            const domicilio = await Domicilio.findOne({ where: { EntidadNegocioId: EntidadNegocioId } });
+            if (!domicilio) {
+                return res.status(404).json({ error: 'No se encontró un domicilio asociado con la empresa' });
             }
     
-            await entidadNegocio.update(actualizacion);
+            await EntidadNegocio.update(datosEmpresa, { where: { EntidadNegocioId: EntidadNegocioId } });
+            await Domicilio.update(datosDomicilio, { where: { EntidadNegocioId: EntidadNegocioId } });
     
-            console.log('Entidad de negocio editada con éxito');
-            return res.json({ success: true, data: entidadNegocio.toJSON() });
+            res.json({ success: true, message: 'Empresa y domicilio actualizados con éxito' });
         } catch (error) {
-            console.error('Error al editar entidad de negocio:', error.message);
-            res.status(500).json({ success: false, error: 'Internal Server Error' });
+            console.log('Error al actualizar la empresa', error.message);
+            res.status(500).json({ error: 'Internal Server Error' });
         }
     };
+    
+    // const editarIdEmpresa = async (req, res) => {
+    //     try {
+    //         const data = req.body;
+    //         if (!data) {
+    //             return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+    //         }
+    
+    //         const { EntidadNegocioId, ...actualizacion } = data;
+    
+    //         const entidadNegocio = await EntidadNegocio.findByPk(EntidadNegocioId);
+    
+    //         if (!entidadNegocio) {
+    //             return res.status(404).json({ error: 'Entidad de negocio no encontrada' });
+    //         }
+    
+    //         await entidadNegocio.update(actualizacion);
+    
+    //         console.log('Entidad de negocio editada con éxito');
+    //         return res.json({ success: true, data: entidadNegocio.toJSON() });
+    //     } catch (error) {
+    //         console.error('Error al editar entidad de negocio:', error.message);
+    //         res.status(500).json({ success: false, error: 'Internal Server Error' });
+    //     }
+    // };
 
     const desactivarIdEmpresa = async (req, res) => {
         console.log('aqui estoy desactivar empresa');
         try {
-            const data = req.body;
-            if (!data) {
-                return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
+            const { id } = req.params;
+            if (!id) {
+                return res.status(400).json({ error: 'ID de la entidad de negocio no proporcionado' });
             }
-            const entidad = await EntidadNegocio.findByPk(data.EntidadId);
-    
+            const entidad = await EntidadNegocio.findByPk(id);
+            console.log(id);
             if (!entidad) {
                 return res.status(404).json({ error: 'Entidad de negocio no encontrada' });
             }
     
-            entidad.Borrado = true;
-            entidad.BorradoPor = data.BorradoPor;
+            if (entidad.Estatus === 0) {
+                return res.status(400).json({ error: 'La entidad de negocio ya está desactivada' });
+            }
+    
+            entidad.Estatus = 0;
+            entidad.BorradoPor = req.body.BorradoPor;
             entidad.BorradoEn = new Date();
     
             await entidad.save();
     
             console.log('Entidad de negocio desactivada con éxito');
-    
-            return res.json({ message: 'Entidad de negocio desactivada: ' + data.EntidadId });
-        } catch (error) {
+            res.status(200).json({ success: true, message: 'Entidad de negocio desactivada con éxito' });
+        }
+        catch (error) {
             console.error('Error al desactivar entidad de negocio:', error.message);
             res.status(500).json({ success: false, error: 'Internal Server Error' });
         }
     };
-    
 
     const obtenerRFC = async (req, res) => {
         try {

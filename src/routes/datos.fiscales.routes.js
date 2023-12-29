@@ -25,12 +25,12 @@ const router = Router();
  *         description: Datos fiscales de la empresa
  *         content:
  *           application/json:
- *             schema:
+ *             Entidad:
  *               type: object
  *               properties:
  *                 EntidadNegocioId:
  *                   type: integer
- *                 EsPropietario:
+ *                 EsPropietaria:
  *                   type: boolean
  *                 RFC:
  *                   type: string
@@ -44,12 +44,41 @@ const router = Router();
  *                   type: string
  *                 PersonaFisica:
  *                   type: boolean
- *                 PersonaMoral:
+ *                 PersonalMoral:
  *                   type: boolean
  *                 NombreOficial:
  *                   type: string
  *                 Estatus:
- *                   type: string
+ *                   type: integer
+ *                 Domicilio:
+ *                   type: object
+ *                   properties:
+ *                     DomicilioId:
+ *                       type: integer
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *                     SucursalId:
+ *                       type: integer
+ *                     AlmacenId:
+ *                       type: integer
+ *                     Calle:
+ *                       type: string
+ *                     NumeroExt:
+ *                       type: string
+ *                     NumeroInt:
+ *                       type: string
+ *                     CodigoPostal:
+ *                       type: string
+ *                     ClaveEstado:
+ *                       type: string
+ *                     ClaveMunicipio:
+ *                       type: string
+ *                     ClaveLocalidad:
+ *                       type: string
+ *                     ClaveColonia:
+ *                       type: string
+ *                     ClavePais:
+ *                       type: string
  *       400:
  *         description: ID de la entidad de negocio no proporcionado
  *       404:
@@ -58,9 +87,9 @@ const router = Router();
  *         description: Internal Server Error
  */
 router.get(
-	'/:id',
-	param('id', 'El parametro debe ser un entero').isNumeric(),
-	datosFiscalesController.buscarIdEmpresa,
+    '/:id',
+    param('id', 'El parametro debe ser un entero').isNumeric(),
+    datosFiscalesController.buscarIdEmpresa,
 );
 
 /**
@@ -132,72 +161,81 @@ router.get('/buscarPorRFC/:rfc', datosFiscalesController.buscarIdRFC);
  *     crearEmpresaSchema:
  *       type: object
  *       required:
- *         - EntidadNegocioId
- *         - EsPropietaria
- *         - RFC
- *         - NombreComercial
- *         - ClavePais
- *         - TaxId
- *         - ClaveRegimenFisca
- *         - PersonaFisica
- *         - PersonaMoral
- *         - NombreOficial
- *         - Estatus
- *         - CreadoPor
- *         - ActualizadoPor
- *         - logo
- *         - BorradoPor
- *         - BorradoEn
+ *         - entidad
+ *         - domicilio
  *       properties:
- *         EntidadNegocioId:
- *           type: integer
- *           description: El ID de la entidad de negocio
- *         EsPropietaria:
- *           type: boolean
- *           description: Si la entidad es propietaria
- *         RFC:
- *           type: string
- *           description: El RFC de la entidad
- *         NombreComercial:
- *           type: string
- *           description: El nombre comercial de la entidad
- *         ClavePais:
- *           type: string
- *           description: La clave del país de la entidad
- *         TaxId:
- *           type: string
- *           description: El ID de impuestos de la entidad
- *         ClaveRegimenFisca:
- *           type: string
- *           description: La clave del régimen fiscal de la entidad
- *         PersonaFisica:
- *           type: integer
- *           description: Si la entidad es una persona física
- *         PersonalMoral:
- *           type: integer
- *           description: Si la entidad es una persona moral
- *         NombreOficial:
- *           type: string
- *           description: El nombre oficial de la entidad
- *         Estatus:
- *           type: integer
- *           description: El estatus de la entidad
- *         CreadoPor:
- *           type: string
- *           description: El ID del usuario que creó la entidad
- *         ActualizadoPor:
- *           type: integer
- *           description: El ID del usuario que actualizó la entidad
- *         logo:
- *           type: string
- *           description: El logo de la entidad
- *         BorradoPor:
- *           type: string
- *           description: El ID del usuario que borró la entidad
- *         BorradoEn:
- *           type: string
- *           format: string
- *           description: La fecha en que se borró la entidad
+ *         entidad:
+ *           type: object
+ *           required:
+ *             - EsPropietaria
+ *             - RFC
+ *             - NombreComercial
+ *             - ClavePais
+ *             - TaxId
+ *             - ClaveRegimenFisca
+ *             - PersonaFisica
+ *             - PersonalMoral
+ *             - NombreOficial
+ *             - Estatus
+ *             - CreadoPor
+ *             - ActualizadoPor
+ *             - logo
+ *             - BorradoPor
+ *             - BorradoEn
+ *           properties:
+ *             EsPropietaria:
+ *               type: boolean
+ *             RFC:
+ *               type: string
+ *             NombreComercial:
+ *               type: string
+ *             ClavePais:
+ *               type: string
+ *             TaxId:
+ *               type: string
+ *             ClaveRegimenFisca:
+ *               type: string
+ *             PersonaFisica:
+ *               type: boolean
+ *             PersonalMoral:
+ *               type: boolean
+ *             NombreOficial:
+ *               type: string
+ *             Estatus:
+ *               type: integer
+ *             logo:
+ *               type: string
+ *             CreadoPor:
+ *               type: string
+ *             ActualizadoPor:
+ *               type: string
+ *             BorradoPor:
+ *               type: string
+ *             BorradoEn:
+ *               type: string
+ *         domicilio:
+ *           type: object
+ *           properties:
+ *             AlmacenId:
+ *               type: integer
+ *             Calle:
+ *               type: string
+ *             NumeroExt:
+ *               type: string
+ *             NumeroInt:
+ *               type: string
+ *             CodigoPostal:
+ *               type: string
+ *             ClaveEstado:
+ *               type: string
+ *             ClaveMunicipio:
+ *               type: string
+ *             ClaveLocalidad:
+ *               type: string
+ *             ClaveColonia:
+ *               type: string
+ *             ClavePais:
+ *               type: string
  * /api/v1/fiscales/empresa/crear:
  *   post:
  *     summary: Crear una nueva entidad de negocio
@@ -227,9 +265,118 @@ router.get('/buscarPorRFC/:rfc', datosFiscalesController.buscarIdRFC);
  */
 router.post(
     '/empresa/crear',
+    schemas.crearIdEmpresaSchema,
     middleware.validateSchema,
     datosFiscalesController.crearIdEmpresa,
 );
+
+
+// /**
+//  * @swagger
+//  * components:
+//  *   schemas:
+//  *     crearEmpresaSchema:
+//  *       type: object
+//  *       required:
+//  *         - EntidadNegocioId
+//  *         - EsPropietaria
+//  *         - RFC
+//  *         - NombreComercial
+//  *         - ClavePais
+//  *         - TaxId
+//  *         - ClaveRegimenFisca
+//  *         - PersonaFisica
+//  *         - PersonaMoral
+//  *         - NombreOficial
+//  *         - Estatus
+//  *         - CreadoPor
+//  *         - ActualizadoPor
+//  *         - logo
+//  *         - BorradoPor
+//  *         - BorradoEn
+//  *       properties:
+//  *         EntidadNegocioId:
+//  *           type: integer
+//  *           description: El ID de la entidad de negocio
+//  *         EsPropietaria:
+//  *           type: boolean
+//  *           description: Si la entidad es propietaria
+//  *         RFC:
+//  *           type: string
+//  *           description: El RFC de la entidad
+//  *         NombreComercial:
+//  *           type: string
+//  *           description: El nombre comercial de la entidad
+//  *         ClavePais:
+//  *           type: string
+//  *           description: La clave del país de la entidad
+//  *         TaxId:
+//  *           type: string
+//  *           description: El ID de impuestos de la entidad
+//  *         ClaveRegimenFisca:
+//  *           type: string
+//  *           description: La clave del régimen fiscal de la entidad
+//  *         PersonaFisica:
+//  *           type: integer
+//  *           description: Si la entidad es una persona física
+//  *         PersonalMoral:
+//  *           type: integer
+//  *           description: Si la entidad es una persona moral
+//  *         NombreOficial:
+//  *           type: string
+//  *           description: El nombre oficial de la entidad
+//  *         Estatus:
+//  *           type: integer
+//  *           description: El estatus de la entidad
+//  *         CreadoPor:
+//  *           type: string
+//  *           description: El ID del usuario que creó la entidad
+//  *         ActualizadoPor:
+//  *           type: integer
+//  *           description: El ID del usuario que actualizó la entidad
+//  *         logo:
+//  *           type: string
+//  *           description: El logo de la entidad
+//  *         BorradoPor:
+//  *           type: string
+//  *           description: El ID del usuario que borró la entidad
+//  *         BorradoEn:
+//  *           type: string
+//  *           format: string
+//  *           description: La fecha en que se borró la entidad
+//  * /api/v1/fiscales/empresa/crear:
+//  *   post:
+//  *     summary: Crear una nueva entidad de negocio
+//  *     tags: [Datos Fiscales]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             $ref: '#/components/schemas/crearEmpresaSchema'
+//  *     responses:
+//  *       201:
+//  *         description: Entidad de negocio creada con éxito
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                 data:
+//  *                   $ref: '#/components/schemas/crearEmpresaSchema'
+//  *       400:
+//  *         description: Datos de entrada inválidos
+//  *       500:
+//  *         description: Internal Server Error
+//  */
+// router.post(
+//     '/empresa/crear',
+//     schemas.crearIdEmpresaSchema,
+//     middleware.validateSchema,
+//     datosFiscalesController.crearIdEmpresa,
+// );
 
 // /**
 //  * @swagger
@@ -343,10 +490,17 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/fiscales/empresa/editar:
+ * /api/v1/fiscales/empresa/editar/{id}:
  *   patch:
  *     summary: Editar datos fiscales de la empresa
  *     tags: [Datos Fiscales]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la empresa a editar
+ *         schema:
+ *           type: integer
  *     requestBody:
  *       required: true
  *       content:
@@ -354,28 +508,50 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
- *                 type: integer
- *               EsPropietaria:
- *                 type: boolean
- *               RFC:
- *                 type: string
- *               NombreComercial:
- *                 type: string
- *               ClavePais:
- *                 type: string
- *               TaxId:
- *                 type: string
- *               ClaveRegimenFisca:
- *                 type: string
- *               PersonaFisica:
- *                 type: boolean
- *               PersonaMoral:
- *                 type: boolean
- *               NombreOficial:
- *                 type: string
- *               Estatus:
- *                 type: integer
+ *               entidad:
+ *                 type: object
+ *                 properties:
+ *                   EsPropietaria:
+ *                     type: boolean
+ *                   RFC:
+ *                     type: string
+ *                   NombreComercial:
+ *                     type: string
+ *                   ClavePais:
+ *                     type: string
+ *                   TaxId:
+ *                     type: string
+ *                   ClaveRegimenFisca:
+ *                     type: string
+ *                   PersonaFisica:
+ *                     type: boolean
+ *                   PersonaMoral:
+ *                     type: boolean
+ *                   NombreOficial:
+ *                     type: string
+ *                   Estatus:
+ *                     type: integer
+ *               domicilio:
+ *                 type: object
+ *                 properties:
+ *                   Calle:
+ *                     type: string
+ *                   NumeroExt:
+ *                     type: string
+ *                   NumeroInt:
+ *                     type: string
+ *                   CodigoPostal:
+ *                     type: string
+ *                   ClaveEstado:
+ *                     type: string
+ *                   ClaveMunicipio:
+ *                     type: string
+ *                   ClaveLocalidad:
+ *                     type: string
+ *                   ClaveColonia:
+ *                     type: string
+ *                   ClavePais:
+ *                     type: string
  *     responses:
  *       200:
  *         description: Datos fiscales de la empresa editados con éxito
@@ -395,35 +571,103 @@ router.post(
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/empresa/editar', datosFiscalesController.editarIdEmpresa);
+router.patch('/empresa/editar/:id', datosFiscalesController.editarIdEmpresa);
+
+// /**
+//  * @swagger
+//  * /api/v1/fiscales/empresa/editar:
+//  *   patch:
+//  *     summary: Editar datos fiscales de la empresa
+//  *     tags: [Datos Fiscales]
+//  *     requestBody:
+//  *       required: true
+//  *       content:
+//  *         application/json:
+//  *           schema:
+//  *             type: object
+//  *             properties:
+//  *               entidad:
+//  *                 type: object
+//  *                 properties:
+//  *                   EsPropietaria:
+//  *                     type: boolean
+//  *                   RFC:
+//  *                     type: string
+//  *                   NombreComercial:
+//  *                     type: string
+//  *                   ClavePais:
+//  *                     type: string
+//  *                   TaxId:
+//  *                     type: string
+//  *                   ClaveRegimenFisca:
+//  *                     type: string
+//  *                   PersonaFisica:
+//  *                     type: boolean
+//  *                   PersonaMoral:
+//  *                     type: boolean
+//  *                   NombreOficial:
+//  *                     type: string
+//  *                   Estatus:
+//  *                     type: integer
+//  *               domicilio:
+//  *                 type: object
+//  *                 properties:
+//  *                   AlmacenId:
+//  *                     type: integer
+//  *                   Calle:
+//  *                     type: string
+//  *                   NumeroExt:
+//  *                     type: string
+//  *                   NumeroInt:
+//  *                     type: string
+//  *                   CodigoPostal:
+//  *                     type: string
+//  *                   ClaveEstado:
+//  *                     type: string
+//  *                   ClaveMunicipio:
+//  *                     type: string
+//  *                   ClaveLocalidad:
+//  *                     type: string
+//  *                   ClaveColonia:
+//  *                     type: string
+//  *                   ClavePais:
+//  *                     type: string
+//  *     responses:
+//  *       200:
+//  *         description: Datos fiscales de la empresa editados con éxito
+//  *         content:
+//  *           application/json:
+//  *             schema:
+//  *               type: object
+//  *               properties:
+//  *                 success:
+//  *                   type: boolean
+//  *                 data:
+//  *                   $ref: '#/components/schemas/EntidadNegocio'
+//  *       400:
+//  *         description: Cuerpo de la petición inválido
+//  *       404:
+//  *         description: Entidad de negocio no encontrada
+//  *       500:
+//  *         description: Internal Server Error
+//  */
+// router.patch('/empresa/editar', datosFiscalesController.editarIdEmpresa);
 
 // DELETE - /api/datosFiscales
 
 /**
  * @swagger
- * /api/v1/fiscales/empresa/borrar:
+ * /api/v1/fiscales/empresa/desactivar/{id}:
  *   delete:
  *     summary: Desactivar una entidad de negocio
  *     tags: [Datos Fiscales]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - EntidadId
- *               - BorradoPor
- *             properties:
- *               EntidadId:
- *                 type: integer
- *                 description: ID de la entidad de negocio a desactivar
- *               BorradoPor:
- *                 type: integer
- *                 description: ID del usuario que realiza la desactivación
- *           example:
- *             EntidadId: 1
- *             BorradoPor: 2
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la entidad de negocio a desactivar
+ *         schema:
+ *           type: integer
  *     responses:
  *       200:
  *         description: Entidad de negocio desactivada con éxito
@@ -453,8 +697,7 @@ router.patch('/empresa/editar', datosFiscalesController.editarIdEmpresa);
  */
 
 router.delete(
-    '/empresa/borrar',
-    middleware.validateSchema,
+    '/empresa/desactivar/:id',
     datosFiscalesController.desactivarIdEmpresa,
 );
 

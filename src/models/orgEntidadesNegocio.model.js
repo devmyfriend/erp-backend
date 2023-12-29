@@ -19,7 +19,8 @@ export const EntidadNegocio = Connection.define(
             type: DataTypes.STRING
         },
         RFC: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            unique: true
         },
         NombreComercial: {
             type: DataTypes.STRING

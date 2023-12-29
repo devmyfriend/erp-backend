@@ -8,3 +8,5 @@ EntidadNegocio.hasOne(Domicilio, {
 Domicilio.belongsTo(EntidadNegocio, {
     foreignKey: 'EntidadNegocioId',
 })
+
+export { EntidadNegocio, Domicilio };
