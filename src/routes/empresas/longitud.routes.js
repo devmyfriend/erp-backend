@@ -1,8 +1,7 @@
-const { Router } = require('express');
-const { obtenerLongitudListado } = require('../../controllers/empresas/longitud.controller')
+import { Router } from "express";
+import { methods as longitudController } from '../../controllers/empresas/longitud.controller.js';
+const router = Router()
 
-const router =  Router()
+router.get( '/:propiedad', longitudController.obtenerLongitud )
 
-router.get( '/', obtenerLongitudListado )
-
-module.exports = router
+export default router;

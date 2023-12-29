@@ -1,13 +1,15 @@
-const { DataTypes } = require('sequelize');
-const { Mariadb } = require('../../database/mariadb.database');
+import { DataTypes } from 'sequelize';
+import { Connection } from '../../database/mariadb.database.js';
 
-const LongitudListado = Mariadb.define('LongitudEmpresas', {
-    Longitud: {
-        type: DataTypes.INTEGER,
+export const Longitud = Connection.define(
+    'LongitudEmpresas',{
+        Longitud:{
+            type: DataTypes.INTEGER,
+        },
+    },{
+        sequelize: Connection,
+        modelName: 'LongitudEmpresas',
+        tableName: 'LongitudEmpresas',
+        freezeTableName: true,
     },
-    }, {
-    freezeTableName: true,
-    tableName: 'LongitudEmpresas',
-    });
-
-module.exports = LongitudListado;
+);

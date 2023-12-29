@@ -1,28 +1,31 @@
-const { Response } = require('express');
-const { Sequelize } = require('sequelize');
-const { Mariadb } = require('../../database/mariadb.database');
+import { Longitud } from '../../models/empresas/longitud.model.js';
+import { Sequelize } from 'sequelize';
+import { Connection } from '../../database/mariadb.database.js';
 
-const obtenerLongitudListado = async (req, res = Response) => {
+
+const obtenerLongitud = async (req, res = Response) => {
     try{
-        const propiedad = req.query.propiedad || false;
-        const resultado = await Mariadb.query(
+        const propiedad = req.params.propiedad || false;
+        
+        const longitudEmpresas = await Connection.query(
             `CALL LongitudEmpresas(${propiedad})`,
             {
                 type: Sequelize.QueryTypes.RAW,
             }
         );
 
-        if (!resultado || resultado.length === 0) {
+        if (!longitudEmpresas){
             return res.status(400).send({
                 status: 'Error',
-                message: 'No se encontraron empresas en el listado paginado',
+                message: 'No se obtuvo la longitud del listado empresas',
             });
         }
-        const listadoEmpresas = resultado[0].total;
+
+        const resultado = longitudEmpresas[0].total;
 
         return res.status(200).send({
             status: 'Ok',
-            LongitudListado: listadoEmpresas,
+            resultado,
         });
     } catch (error) {
         console.log(error);
@@ -33,6 +36,6 @@ const obtenerLongitudListado = async (req, res = Response) => {
     }
 };
 
-module.exports = {
-    obtenerLongitudListado,
+export const methods = {
+    obtenerLongitud,
 };
