@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import testRoutes from './src/routes/test.routes.js';
 import paisRoutes from './src/routes/pais.routes.js';
 import contactoRoutes from './src/routes/contacto.routes.js';
+import sucursalesRoutes from './src/routes/sucursal.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -37,6 +38,7 @@ const App = {
 		app.use('/api/v1/test', testRoutes);
 		app.use('/api/v1/pais', paisRoutes);
 		app.use('/api/v1/contacto', contactoRoutes);
+		app.use('/api/v1/sucursales', sucursalesRoutes);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
