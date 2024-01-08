@@ -9,6 +9,8 @@ import paisRoutes from './src/routes/pais.routes.js';
 import contactoRoutes from './src/routes/contacto.routes.js';
 import datosDomicilio from './src/routes/datos.domicilio.routes.js';
 import datosFiscales from './src/routes/datos.fiscales.routes.js';
+import coloniasRoutes from './src/routes/colonias.routes.js';
+
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -41,6 +43,7 @@ const App = {
 		app.use('/api/v1/contacto', contactoRoutes);
 		app.use('/api/v1/domicilio', datosDomicilio);
 		app.use('/api/v1/fiscales', datosFiscales);
+		app.use('/api/v1/colonias', coloniasRoutes);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
