@@ -1,6 +1,7 @@
 import { param } from 'express-validator';
 import { methods } from '../controllers/sucursal.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
+import * as schemas from '../schemas/sucursal.js';
 import { Router } from 'express';
 
 const router = Router();
@@ -12,19 +13,6 @@ const router = Router();
  *
  */
 
-
-/*
-  {
-    "SucursalId": 1010,
-    "NombreSucursal": "Sucursal de prueba",
-    "EntidadNegocioId": 1,
-    "ClavePais": "MEX",
-    "NombreEstado": "Quintana Roo",
-    "CodigoPostal": "37753",
-    "Calle": "Calle 135."
-  }
-
-*/
 /**
  * @swagger
  * /api/v1/sucursal/{id_empresa}:
@@ -68,8 +56,15 @@ const router = Router();
 router.get(
 	'/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
-    middleware.validateSchema,
+	middleware.validateSchema,
 	methods.obtenerSucursales,
+);
+
+router.post(
+	'/crear',
+	schemas.crearSucursal,
+	middleware.validateSchema,
+	methods.crearSucursal,
 );
 
 export default router;
