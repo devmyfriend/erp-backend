@@ -38,7 +38,7 @@ const App = {
 		app.use('/api/v1/test', testRoutes);
 		app.use('/api/v1/pais', paisRoutes);
 		app.use('/api/v1/contacto', contactoRoutes);
-		app.use('/api/v1/sucursales', sucursalesRoutes);
+		app.use('/api/v1/sucursal', sucursalesRoutes);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
