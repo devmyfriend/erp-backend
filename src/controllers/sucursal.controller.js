@@ -1,7 +1,7 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-import { Sucursal } from '../models/sucursal.model.js';
+// import { Sucursal } from '../models/sucursal.model.js';
 
-import { Domicilio } from '../models/domicilios.model.js';
+// import { Domicilio } from '../models/domicilios.model.js';
 
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
@@ -22,9 +22,7 @@ const obtenerSucursales = async (req, res) => {
 };
 
 const crearSucursal = async (req, res) => {
-	//const { empresa, datos } = req.body;
-
-	
+	// const { empresa, datos } = req.body;
 	try {
 		// const validarNombre = await Sucursal.findOne({
 		// 	where: {
@@ -50,7 +48,7 @@ const crearSucursal = async (req, res) => {
 
 		// res.json(sucursalDatos);
 
-		res.json("{}");
+		res.json('{}');
 	} catch (error) {
 		console.error('Error al obtener las sucursales:', error.message);
 		res.status(500).json({ error: 'Error al obtener las sucursales' });
