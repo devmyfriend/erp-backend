@@ -1,5 +1,6 @@
+import { param } from 'express-validator';
 import { methods } from '../controllers/sucursal.controller.js';
-
+import * as middleware from '../middlewares/express-validator.js';
 import { Router } from 'express';
 
 const router = Router();
@@ -12,15 +13,27 @@ const router = Router();
  */
 
 
+/*
+  {
+    "SucursalId": 1010,
+    "NombreSucursal": "Sucursal de prueba",
+    "EntidadNegocioId": 1,
+    "ClavePais": "MEX",
+    "NombreEstado": "Quintana Roo",
+    "CodigoPostal": "37753",
+    "Calle": "Calle 135."
+  }
+
+*/
 /**
  * @swagger
- * /api/v1/sucursal:
+ * /api/v1/sucursal/{id_empresa}:
  *   get:
- *     summary: Obtener contactos por ID de sucursal
+ *     summary: Obtener sucursales por ID de empresa
  *     tags: [Sucursal]
  *     parameters:
  *       - in: path
- *         name: id
+ *         name: id_empresa
  *         required: true
  *         schema:
  *           type: integer
@@ -31,23 +44,32 @@ const router = Router();
  *         content:
  *           application/json:
  *             example:
- *               - ContactoId: 1
- *                 SucursalId: 1010
- *                 Nombres: Sebastian
+ *               - SucursalId: 1
+ *                 NombreSucursal: nombre sucursal
+ *                 EntidadNegocioId: 1
  *                 Puesto: Gerente
+ *                 ClavePais: MEX
+ *                 NombreEstado: Quintana Roo
+ *                 CodigoPostal: 37753
+ *                 Calle: Calle 135.
  *       400:
  *         description: Error en la solicitud
  *         content:
  *           application/json:
  *             example:
- *               error: "Parámetro inválido"
+ *               errors: [Parámetro inválido]
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Error interno del servidor"
+ *               error: "Error al obtener las sucursales"
  */
-router.get('/:id', methods.obtenerSucursales);
+router.get(
+	'/:id',
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+    middleware.validateSchema,
+	methods.obtenerSucursales,
+);
 
 export default router;
