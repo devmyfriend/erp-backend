@@ -39,8 +39,6 @@ export const Colonia = Connection.define(
 
                     const lastId = lastColonia ? lastColonia.idColonia : 0;
 
-                    console.log("[DataType]: " + lastId);
-
                     colonia.ClaveColonia = `P${(lastId + 1).toString().slice(-3)}`;
                 } catch (error) {
                     console.error("Error generando la ClaveColonia: ", error);
