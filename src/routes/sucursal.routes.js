@@ -10,7 +10,7 @@ const router = Router();
  * @swagger
  * tags:
  *   - name: Sucursal
- *     description: Operaciones relacionadas la sucursal
+ *     description: Operaciones relacionadas a la sucursal
  *
  */
 
