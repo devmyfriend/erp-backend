@@ -51,10 +51,13 @@ const crearSucursal = async (req, res) => {
 			DomicilioId: crearSucursal.SucursalId,
 		});
 
-		res.json({ sucursal: crearSucursal, direccion: sucursalDatos });
+		res.status(200).json({
+			status: 200,
+			message: 'Se ha creado la sucursal ',
+		});
 	} catch (error) {
-		console.error('Error al obtener las sucursales:', error);
-		res.status(500).json({ error: 'Error al crear sucursale' });
+		console.error('Error al crear la sucursal:', error);
+		res.status(500).json({ error: 'Error al crear la sucursal' });
 	}
 };
 
@@ -62,18 +65,25 @@ export const desactivarSucursal = async (req, res) => {
 	try {
 		const sucursal = await Sucursal.findOne({
 			where: {
-				SucursalId: req.params.id,
+				SucursalId: req.body.SucursalId,
 				Borrado: 0,
 			},
 		});
 
 		if (!sucursal) {
+			console.log('hola');
 			return res
 				.status(404)
 				.json({ starus: 404, message: 'La sucursal no existe' });
 		}
 
-		res.status(200).json(sucursal);
+		sucursal.Borrado = true;
+		sucursal.BorradoPor = req.body.BorradoPor;
+
+		await sucursal.save();
+		res
+			.status(200)
+			.json({ message: 'Sucursal desactivada: ' + sucursal.SucursalId });
 	} catch (error) {
 		return res.status(500).json(error.message);
 	}

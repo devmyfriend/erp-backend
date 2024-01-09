@@ -48,12 +48,14 @@ export const crearSucursal = [
 		.not()
 		.isEmpty()
 		.withMessage('El código postal es obligatorio y debe ser un string.'),
-
 	body('datos.*.ClaveEstado')
 		.isString()
+		.withMessage('La clave del estado es obligatoria y debe ser un string.')
 		.not()
 		.isEmpty()
-		.withMessage('La clave del estado es obligatoria y debe ser un string.'),
+		.withMessage('La clave del estado no puede estar vacía.')
+		.isLength({ min: 3, max: 3 })
+		.withMessage('La clave del estado debe ser un string de 3 dígitos.'),
 
 	body('datos.*.ClaveMunicipio')
 		.isString()
