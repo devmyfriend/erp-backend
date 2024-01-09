@@ -1,7 +1,8 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-// import { Sucursal } from '../models/sucursal.model.js';
+import { Sucursal } from '../models/sucursal.model.js';
+import { SucursalDomicilio } from '../models/sucursal.domicilio.model.js';
 
-// import { Domicilio } from '../models/domicilios.model.js';
+import { Domicilio } from '../models/domicilios.model.js';
 
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
@@ -22,40 +23,64 @@ const obtenerSucursales = async (req, res) => {
 };
 
 const crearSucursal = async (req, res) => {
-	// const { empresa, datos } = req.body;
+	const { sucursal, datos } = req.body;
+
 	try {
-		// const validarNombre = await Sucursal.findOne({
-		// 	where: {
-		// 		Nombre: empresa[0].Nombre,
-		// 	},
-		// });
+		const validarNombre = await Sucursal.findOne({
+			where: {
+				Nombre: sucursal[0].Nombre,
+			},
+		});
 
-		// if (validarNombre) {
-		// 	return res.status(409).json({
-		// 		status: 409,
-		// 		error: 'El nombre de la sucursal ya esta en uso',
-		// 	});
-		// }
+		if (validarNombre) {
+			return res.status(409).json({
+				status: 409,
+				error: 'El nombre de la sucursal ya esta en uso',
+			});
+		}
 
-		// // const sucursal = await Sucursal.create({ CreadoPor, ...empresa[0] });
+		const crearSucursal = await Sucursal.create(sucursal[0]);
 
-		// const sucursalDatos = await Domicilio.create({
-		// 	EntidadNegocioId: empresa[0].EntidadNegocioId,
-		// 	CreadoPor: empresa[0].CreadoPor,
-		// 	SucursalId: 111,
-		// 	...datos[0],
-		// });
+		const sucursalDatos = await Domicilio.create({
+			CreadoPor: sucursal[0].CreadoPor,
+			...datos[0],
+		});
 
-		// res.json(sucursalDatos);
+		await SucursalDomicilio.create({
+			SucursalId: sucursalDatos.DomicilioId,
+			DomicilioId: crearSucursal.SucursalId,
+		});
 
-		res.json('{}');
+		res.json({ sucursal: crearSucursal, direccion: sucursalDatos });
 	} catch (error) {
-		console.error('Error al obtener las sucursales:', error.message);
-		res.status(500).json({ error: 'Error al obtener las sucursales' });
+		console.error('Error al obtener las sucursales:', error);
+		res.status(500).json({ error: 'Error al crear sucursale' });
+	}
+};
+
+export const desactivarSucursal = async (req, res) => {
+	try {
+		const sucursal = await Sucursal.findOne({
+			where: {
+				SucursalId: req.params.id,
+				Borrado: 0,
+			},
+		});
+
+		if (!sucursal) {
+			return res
+				.status(404)
+				.json({ starus: 404, message: 'La sucursal no existe' });
+		}
+
+		res.status(200).json(sucursal);
+	} catch (error) {
+		return res.status(500).json(error.message);
 	}
 };
 
 export const methods = {
 	obtenerSucursales,
 	crearSucursal,
+	desactivarSucursal,
 };

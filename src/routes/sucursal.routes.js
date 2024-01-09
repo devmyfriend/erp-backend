@@ -67,4 +67,10 @@ router.post(
 	methods.crearSucursal,
 );
 
+router.delete(
+	'/eliminar/:id',
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+	middleware.validateSchema,
+	methods.desactivarSucursal,
+);
 export default router;

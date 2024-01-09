@@ -6,21 +6,9 @@ export const Domicilio = Connection.define(
     {
         DomicilioId: {
             type: DataTypes.INTEGER.UNSIGNED.ZEROFILL,
-            allowNull: false,
             primaryKey: true,
-            autoIncrement: true
-        },
-        EntidadNegocioId: {
-            type: DataTypes.INTEGER.UNSIGNED.ZEROFILL,
-            allowNull: false
-        },
-        SucursalId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        AlmacenId: {
-            type: DataTypes.INTEGER,
-            allowNull: true
+			allowNull: false,
+			autoIncrement: true,
         },
         Calle: {
             type: DataTypes.STRING(255),

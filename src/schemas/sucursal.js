@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 export const crearSucursal = [
-	body('empresa.*.Nombre')
+	body('sucursal.*.Nombre')
 		.isString()
 		.not()
 		.isEmpty()
@@ -11,14 +11,14 @@ export const crearSucursal = [
 			'El nombre de la empresa es obligatorio y debe ser un string.',
 		),
 
-	body('empresa.*.EntidadNegocioId')
+	body('sucursal.*.EntidadNegocioId')
 		.isInt()
 		.exists()
 		.withMessage(
 			'El ID de la entidad de negocio es obligatorio y debe ser un número entero.',
 		),
 
-	body('empresa.*.CreadoPor')
+	body('sucursal.*.CreadoPor')
 		.isInt()
 		.exists()
 		.withMessage(
