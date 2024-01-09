@@ -71,12 +71,7 @@ const obtenerDatosContacto = async (req, res) => {
 const crearContacto = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res
-				.status(400)
-				.json({ error: 'Invalid request, missing body data' });
-		}
-
+	
 		const contactoCreado = await Contacto.create(data);
 		res.json({ success: true, data: contactoCreado.toJSON() });
 	} catch (error) {

@@ -7,7 +7,7 @@ export const validateSchema = (req, res, next) => {
 		const uniqueErrors = [...new Set(uniqueErrorMessages)];
 
 		return res.status(400).json({
-			status: 'Error de validación',
+			status: 'Error',
 			errors: uniqueErrors,
 		});
 	}

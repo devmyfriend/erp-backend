@@ -9,19 +9,7 @@ export const Domicilio = Connection.define(
             autoIncrement: true,
             primaryKey: true,
             allowNull: false,
-        },
-        EntidadNegocioId: {
-            type: DataTypes.INTEGER,
-            allowNull: false,
-        },
-        SucursalId: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
-        AlmacenId: {
-            type: DataTypes.INTEGER,
-            allowNull: true,
-        },
+        },  
         Calle: {
             type: DataTypes.STRING,
             allowNull: false,

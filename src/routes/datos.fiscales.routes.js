@@ -183,8 +183,6 @@ router.get('/buscarPorRFC/:rfc', datosFiscalesController.buscarIdRFC);
  *             - BorradoPor
  *             - BorradoEn
  *           properties:
- *             EsPropietaria:
- *               type: boolean
  *             RFC:
  *               type: string
  *             NombreComercial:
@@ -193,11 +191,11 @@ router.get('/buscarPorRFC/:rfc', datosFiscalesController.buscarIdRFC);
  *               type: string
  *             TaxId:
  *               type: string
- *             ClaveRegimenFisca:
+ *             ClaveRegimenFiscal:
  *               type: string
  *             PersonaFisica:
  *               type: boolean
- *             PersonalMoral:
+ *             PersonaMoral:
  *               type: boolean
  *             NombreOficial:
  *               type: string

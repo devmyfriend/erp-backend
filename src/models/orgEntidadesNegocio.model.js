@@ -30,18 +30,8 @@ export const EntidadNegocio = Connection.define(
         },
         TaxId: {
             type: DataTypes.STRING,
-            validate: {
-                is: {
-                    args: /^[0-9]{9}$/,
-                    msg: "TaxId debe tener exactamente 9 digitos"
-                },
-                len: {
-                    args: [9, 9],
-                    msg: "TaxId debe tener exactamente 9 digitos"
-                }
-            }
         },
-        ClaveRegimenFisca: {
+        ClaveRegimenFiscal: {
             type: DataTypes.STRING
         },
         PersonaFisica:{
@@ -50,7 +40,7 @@ export const EntidadNegocio = Connection.define(
                 max: 1
             }
         },
-        PersonalMoral:{
+        PersonaMoral:{
             type: DataTypes.TINYINT,
             validate: {
                 max: 1
@@ -74,14 +64,15 @@ export const EntidadNegocio = Connection.define(
             type: DataTypes.STRING,
             allowNull: true,
           },
-          BorradoEn: {
-            type: DataTypes.DATE,
-            allowNull: true,
-          },
+        BorradoEn: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
     }, {
         sequelize: Connection,
         modelName: 'orgEntidadesNegocio',
         tableName: 'orgEntidadesNegocio',
+        timestamps: false,
         freezeTableName: false
     }
 );

@@ -33,10 +33,8 @@ const obtenerSATMunicipio = async ( req, res) =>{
     }
 };
 
-console.log('controlador ejecutado')
 const buscarSATMunicipio = async ( req, res) =>{
     try {
-        console.log('aqui estoy');
         const claveMunicipio = req.params.id; 
 
         const municipio = await Municipio.findOne({
@@ -93,7 +91,7 @@ const obtenerSATLocalidad = async ( req, res = Response ) =>{
     }
 }
 
-const obtenerSATColonias = async ( req, res = response ) =>{
+const obtenerSATColonias = async ( req, res) =>{
     try{
         
         const listadoColonias = await Colonia.findAll({
@@ -121,6 +119,39 @@ const obtenerSATColonias = async ( req, res = response ) =>{
         })
     }
 }
+
+// const crearColonia = async ( req, res) => {
+//     console.log('soy el body', req.body
+//     try {
+//         const { idColonias, claveColonia, codigoPostal, nombre, EsPropietaria } = req.body;
+//         console.log(req.body);
+//         const colonia = await Colonia.create({
+//             idColonias,
+//             claveColonia,
+//             codigoPostal,
+//             nombre,
+//             EsPropietaria
+//         });
+//          if (!colonia ) {
+//             return res.status(400).send({
+//                 status: 'Error',
+//                 message: 'Ocurrio un error al crear la Colonia'
+//             })
+//          }
+
+//         return res.status(200).send({
+//             status: 'Ok',
+//             colonia
+//         });
+//     } catch( error ) {
+//         console.log( error )
+//         return res.status(500).send({
+//             status: 'Error',
+//             message: 'No se pudo obtener la información solicitada'
+//         })
+//     }
+// }
+
 const obtenerCodigosPostal = async ( req, res = Response ) =>{
     try{
         
