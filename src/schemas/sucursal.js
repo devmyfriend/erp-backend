@@ -61,7 +61,9 @@ export const crearSucursal = [
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave del municipio es obligatoria y debe ser un string.'),
+		.withMessage('La clave del municipio es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 3 })
+		.withMessage('La clave del municipio debe ser un string de 3 dígitos.'),
 
 	body('datos.*.ClaveLocalidad')
 		.isString()
@@ -69,17 +71,23 @@ export const crearSucursal = [
 		.isEmpty()
 		.withMessage(
 			'La clave de la localidad es obligatoria y debe ser un string.',
-		),
+		)
+		.isLength({ min: 2, max: 2 })
+		.withMessage('La clave localidad debe ser un string de 2 dígitos.'),
 
 	body('datos.*.ClaveColonia')
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave de la colonia es obligatoria y debe ser un string.'),
+		.withMessage('La clave de la colonia es obligatoria y debe ser un string.')
+		.isLength({ min: 4, max: 4 })
+		.withMessage('La clave colonia debe ser un string de 4 dígitos.'),
 
 	body('datos.*.ClavePais')
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave del país es obligatoria y debe ser un string.'),
+		.withMessage('La clave del país es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 3 })
+		.withMessage('La clave país debe ser un string de 3 dígitos.'),
 ];
