@@ -66,6 +66,20 @@ const editarSucursal = async (req, res) => {
 	const { sucursal, datos } = req.body;
 
 	try {
+		const validarsucursal = await Sucursal.findOne({
+			where: {
+				SucursalId: sucursal[0].SucursalId,
+				Borrado: 0,
+			},
+		});
+
+		if (!validarsucursal) {
+			return res.status(404).json({
+				status: 404,
+				error: 'No se ha encontrado la sucursal solicitada',
+			});
+		}
+
 		const validarNombre = await Sucursal.findOne({
 			where: {
 				Nombre: sucursal[0].Nombre ? sucursal[0].Nombre : 'nill',
@@ -87,12 +101,6 @@ const editarSucursal = async (req, res) => {
 			...{ ActualizadoPor: sucursal[0].ActualizadoPor },
 		};
 
-		await Sucursal.update(actualizacionSucursal, {
-			where: {
-				SucursalId: actualizacionSucursal.SucursalId,
-			},
-		});
-
 		const buscarDomicilio = await SucursalDomicilio.findOne({
 			where: {
 				SucursalId: sucursal[0].SucursalId,
@@ -106,6 +114,12 @@ const editarSucursal = async (req, res) => {
 					'El domicilio nos fue asignado correctamete, contacta al administrador',
 			});
 		}
+
+		await Sucursal.update(actualizacionSucursal, {
+			where: {
+				SucursalId: actualizacionSucursal.SucursalId,
+			},
+		});
 
 		const domicilioActual = await Domicilio.findByPk(
 			buscarDomicilio.dataValues.DomicilioId,
