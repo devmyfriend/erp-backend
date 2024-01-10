@@ -54,6 +54,8 @@ router.get(
 );
 
 console.log('ruta ejecutada');
+
+
 /**
  * @swagger
  * /api/v1/domicilio/sat/municipio:
@@ -187,6 +189,63 @@ router.get('/sat/codigospostal', datosDomicilioController.obtenerCodigosPostal);
  *                     example: "Aguascalientes"
  */
 router.get('/sat/estado', datosDomicilioController.obtenerSATEstado);
+
+/**
+ * @swagger
+ * /api/vi/domicilio/sat/estado/{pais}:
+ *  get:
+ *    summary: Obtener los estados dependiendo del país
+ *    tags: [SAT]
+ *    parameters:
+ *      - in: path
+ *        name: pais
+ *        schema:
+ *          type: string
+ *        required: true
+ *        description: El nombre del país
+ *    responses:
+ *      200:
+ *        description: Lista de estados por país
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  ClaveEstado:
+ *                    type: string
+ *                    example: "MEX"
+ *                  Nombre:
+ *                    type: string
+ *                    example: "México"
+ */
+router.get('/sat/estado/:pais', datosDomicilioController.obtenerEstadosPorPais);
+
+/**
+ * @swagger
+ * /api/vi/domicilio/sat/pais:
+ *  get:
+ *    summary: Obtener los países
+ *    tags: [SAT]
+ *    responses:
+ *      200:
+ *        description: Lista de países
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: array
+ *              items:
+ *                type: object
+ *                properties:
+ *                  ClavePais:
+ *                    type: string
+ *                    example: "MEX"
+ *                  Nombre:
+ *                    type: string
+ *                    example: "México"
+ */
+router.get('/sat/pais', datosDomicilioController.obtenerPaises);
 
 /**
  * @swagger

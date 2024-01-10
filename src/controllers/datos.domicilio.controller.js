@@ -3,6 +3,10 @@ import { Estado } from "../models/sat.estado.model.js";
 import { Colonia } from "../models/sat.colonias.model.js";
 import { Localidad } from "../models/sat.localidad.model.js";
 import { CodigoPostal } from "../models/sat.codigos.postal.model.js";
+import { Pais } from "../models/sat.pais.model.js";
+
+
+
 
 const obtenerSATMunicipio = async ( req, res) =>{
     console.log('aqui estoy')
@@ -151,7 +155,6 @@ const obtenerCodigosPostal = async ( req, res = Response ) =>{
 }
 
 const obtenerSATEstado = async ( req, res = Response ) =>{
-    console.log('aqui estoy estado')
     try {
             
         const listadoEstado = await Estado.findAll({
@@ -178,6 +181,37 @@ const obtenerSATEstado = async ( req, res = Response ) =>{
     })
 }
 };
+
+// filtrar Estados por País 
+const obtenerEstadosPorPais = async ( req, res = Response ) =>{
+    try{
+        const pais = req.params.pais;
+
+        const listadoEstados = await Estado.findAll({
+            where: { ClavePais: pais },
+            attributes: [ 'ClaveEstado', 'ClavePais', 'Nombre'],
+            order:[ [ 'Nombre', 'ASC' ] ]
+        })
+
+        if(listadoEstados.length === 0){
+            return res.status(400).send({
+                 status: 'Error',
+                 message: 'No se encontraron colonias para el código postal proporcionado'
+            })
+        }
+
+        return res.status(200).send({
+             status: 'Ok',
+             listadoEstados,
+        })
+    } catch ( error ){
+        console.log ( error )
+        return res.status(500).send({
+            status: 'Error',
+            message: 'No se pudo obtener la información solicitada'
+        })
+    }
+}
 
 /* filtrar colonia x codigoPostal */
 const obtenerColoniasPorCodigoPostal = async ( req, res = Response ) =>{
@@ -273,6 +307,33 @@ const obtenerLocalidadesPorClaveEstado = async ( req, res = Response ) =>{
     }
 }
 
+const obtenerPaises = async ( req, res = Response ) =>{
+    try{
+        const listadoPaises = await Pais.findAll({
+            attributes:[ 'ClavePais', 'Descripcion' ],
+            order:[ [ 'Descripcion',  'ASC' ] ]
+        })
+
+        if(listadoPaises.length === 0){
+            return res.status(400).send({
+                 status: 'Error',
+                 message: 'No se encontraron paises en listados'
+            })
+        }
+
+        return res.status(200).send({
+             status: 'Ok',
+             listadoPaises
+        })
+    }catch( error ){
+        console.log( error )
+        return res.status(500).send({
+             status: 'Error',
+             message: 'No se pudo obtener la información solicitada'
+        })
+    }
+}
+
 export const methods = {
         obtenerSATMunicipio,
         obtenerSATLocalidad,
@@ -283,4 +344,6 @@ export const methods = {
         obtenerLocalidadesPorClaveEstado,
         obtenerMunicipiosPorClaveEstado,
         obtenerCodigosPostal,
+        obtenerEstadosPorPais,
+        obtenerPaises,
     }

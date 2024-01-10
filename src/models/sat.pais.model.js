@@ -4,7 +4,7 @@ import { Connection } from '../database/mariadb.database.js';
 export const Pais = Connection.define(
 	'SAT_Pais',
 	{
-		clave: {
+		ClavePais: {
 			type: DataTypes.STRING,
 			autoIncrement: false,
 			primaryKey: true,
