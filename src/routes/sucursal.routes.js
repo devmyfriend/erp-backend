@@ -219,4 +219,10 @@ router.delete(
 	methods.desactivarSucursal,
 );
 
+router.patch(
+	'/editar',
+	schemas.editarSucursal,
+	middleware.validateSchema,
+	methods.editarSucursal,
+);
 export default router;

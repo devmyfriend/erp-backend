@@ -62,6 +62,79 @@ const crearSucursal = async (req, res) => {
 	}
 };
 
+const editarSucursal = async (req, res) => {
+	const { sucursal, datos } = req.body;
+
+	try {
+		const validarNombre = await Sucursal.findOne({
+			where: {
+				Nombre: sucursal[0].Nombre ? sucursal[0].Nombre : 'nill',
+			},
+		});
+
+		if (validarNombre) {
+			return res.status(409).json({
+				status: 409,
+				error: 'El nombre de la sucursal ya esta en uso',
+			});
+		}
+
+		const sucursalActual = await Sucursal.findByPk(sucursal[0].SucursalId);
+
+		const actualizacionSucursal = {
+			...sucursalActual.dataValues,
+			...sucursal[0],
+			...{ ActualizadoPor: sucursal[0].ActualizadoPor },
+		};
+
+		await Sucursal.update(actualizacionSucursal, {
+			where: {
+				SucursalId: actualizacionSucursal.SucursalId,
+			},
+		});
+
+		const buscarDomicilio = await SucursalDomicilio.findOne({
+			where: {
+				SucursalId: sucursal[0].SucursalId,
+			},
+		});
+
+		if (!buscarDomicilio) {
+			return res.status(400).json({
+				status: 400,
+				error:
+					'El domicilio nos fue asignado correctamete, contacta al administrador',
+			});
+		}
+
+		const domicilioActual = await Domicilio.findByPk(
+			buscarDomicilio.dataValues.DomicilioId,
+		);
+
+		const actualizacionDomicilio = {
+			...domicilioActual.dataValues,
+			...datos[0],
+			...{ ActaulizadoPor: sucursal[0].ActualizadoPor },
+		};
+
+		await Domicilio.update(actualizacionDomicilio, {
+			where: {
+				DomicilioId: actualizacionDomicilio.DomicilioId,
+			},
+		});
+		return res.status(200).json({
+			message: 'Sucursal actualizada',
+			data: {
+				sucursal: actualizacionSucursal,
+				domicilio: actualizacionDomicilio,
+			},
+		});
+	} catch (error) {
+		console.error('Error al crear la sucursal:', error);
+		res.status(500).json({ error: 'Error al crear la sucursal' });
+	}
+};
+
 export const desactivarSucursal = async (req, res) => {
 	try {
 		const sucursal = await Sucursal.findOne({
@@ -94,4 +167,5 @@ export const methods = {
 	obtenerSucursales,
 	crearSucursal,
 	desactivarSucursal,
+	editarSucursal,
 };

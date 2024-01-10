@@ -50,16 +50,8 @@ export const Domicilio = Connection.define(
             type: DataTypes.INTEGER,
             allowNull: true
         },
-        createdAt: {
-            type: DataTypes.DATE,
-            allowNull: true
-        },
-        ActualizadoPor: {
+        ActaulizadoPor: {
             type: DataTypes.INTEGER,
-            allowNull: true
-        },
-        updatedAt: {
-            type: DataTypes.DATE,
             allowNull: true
         },
         BorradoPor: {
