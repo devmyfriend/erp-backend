@@ -30,20 +30,5 @@ export const Colonia = Connection.define(
         tableName: 'SAT_Colonias',
         timestamps: false,
         freezeTableName: true,
-        hooks: {
-            beforeCreate: async (colonia, options) => {
-                try {
-                    const lastColonia = await Colonia.findOne({
-                        order: [['idColonia', 'DESC']],
-                    });
-
-                    const lastId = lastColonia ? lastColonia.idColonia : 0;
-
-                    colonia.ClaveColonia = `P${(lastId + 1).toString().slice(-3)}`;
-                } catch (error) {
-                    console.error("Error generando la ClaveColonia: ", error);
-                }
-            },
-        },
     },
 );
