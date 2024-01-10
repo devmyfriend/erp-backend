@@ -219,6 +219,114 @@ router.delete(
 	methods.desactivarSucursal,
 );
 
+/**
+ * @swagger
+ * /api/v1/sucursal/editar:
+ *   patch:
+ *     summary: Actualizar detalles de una sucursal
+ *     tags: [Sucursal]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               sucursal:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     SucursalId:
+ *                       type: integer
+ *                       description: ID de la sucursal a actualizar
+ *                     Nombre:
+ *                       type: string
+ *                       description: Nombre nuevo de la sucursal
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *                       description: ID de la entidad de negocio asociada
+ *                     ActualizadoPor:
+ *                       type: integer
+ *                       description: ID del usuario que actualiza la sucursal
+ *               datos:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     Calle:
+ *                       type: string
+ *                       description: Calle de la sucursal
+ *                     NumeroExt:
+ *                       type: string
+ *                       description: Número exterior de la sucursal
+ *                     NumeroInt:
+ *                       type: string
+ *                       description: Número interior de la sucursal
+ *                     CodigoPostal:
+ *                       type: string
+ *                       description: Código postal de la sucursal
+ *                     ClaveEstado:
+ *                       type: string
+ *                       description: Clave del estado
+ *                     ClaveMunicipio:
+ *                       type: string
+ *                       description: Clave del municipio
+ *                     ClaveLocalidad:
+ *                       type: string
+ *                       description: Clave de la localidad
+ *                     ClaveColonia:
+ *                       type: string
+ *                       description: Clave de la colonia
+ *                     ClavePais:
+ *                       type: string
+ *                       description: Clave del país
+ *           example:
+ *             sucursal:
+ *               - SucursalId: 1
+ *                 Nombre: "Sucursal Central"
+ *                 EntidadNegocioId: 5
+ *                 ActualizadoPor: 3
+ *             datos:
+ *               - Calle: "Principal"
+ *                 NumeroExt: "123"
+ *                 NumeroInt: "A"
+ *                 CodigoPostal: "45678"
+ *                 ClaveEstado: "EST"
+ *                 ClaveMunicipio: "MUN"
+ *                 ClaveLocalidad: "LOC"
+ *                 ClaveColonia: "COL"
+ *                 ClavePais: "PAI"
+ *     responses:
+ *       200:
+ *         description: Sucursal actualizada con éxito
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "Sucursal actualizada"
+ *
+ *       400:
+ *         description: Error de validación. Los datos proporcionados no son válidos.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error de validación"
+ *               errors: ["Mensaje de error 1", "Mensaje de error 2"]
+ *       409:
+ *         description: Conflicto. El nombre de la sucursal ya está en uso.
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: 409
+ *               errors: "El nombre de la sucursal ya esta en uso"
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error al actualizar la sucursal"
+ */
+
 router.patch(
 	'/editar',
 	schemas.editarSucursal,

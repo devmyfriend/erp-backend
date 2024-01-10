@@ -124,14 +124,10 @@ const editarSucursal = async (req, res) => {
 		});
 		return res.status(200).json({
 			message: 'Sucursal actualizada',
-			data: {
-				sucursal: actualizacionSucursal,
-				domicilio: actualizacionDomicilio,
-			},
 		});
 	} catch (error) {
 		console.error('Error al crear la sucursal:', error);
-		res.status(500).json({ error: 'Error al crear la sucursal' });
+		res.status(500).json({ error: 'Error al actualizar la sucursal' });
 	}
 };
 
