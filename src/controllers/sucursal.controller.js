@@ -47,10 +47,11 @@ const crearSucursal = async (req, res) => {
 		});
 
 		await SucursalDomicilio.create({
-			SucursalId: sucursalDatos.DomicilioId,
-			DomicilioId: crearSucursal.SucursalId,
+			SucursalId: crearSucursal._previousDataValues.SucursalId,
+			DomicilioId: sucursalDatos._previousDataValues.DomicilioId,
 		});
 
+		console.log(crearSucursal.SucursalId);
 		res.status(200).json({
 			status: 200,
 			message: 'Se ha creado la sucursal ',
