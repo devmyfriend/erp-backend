@@ -24,9 +24,7 @@ const obtenerContactos = async (req, res) => {
 const buscarContacto = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const result = await Contacto.findAll({
 			where: {
 				Nombres: {
@@ -71,12 +69,6 @@ const obtenerDatosContacto = async (req, res) => {
 const crearContacto = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res
-				.status(400)
-				.json({ error: 'Invalid request, missing body data' });
-		}
-
 		const contactoCreado = await Contacto.create(data);
 		res.json({ success: true, data: contactoCreado.toJSON() });
 	} catch (error) {
@@ -88,16 +80,6 @@ const crearContacto = async (req, res) => {
 const agregarDetalleContacto = async (req, res) => {
 	try {
 		const data = req.body;
-
-		if (
-			!data ||
-			!data.ContactoId ||
-			!data.CreadoPor ||
-			!data.Correos ||
-			!data.Telefonos
-		) {
-			return res.status(400).json({ error: 'Cuerpo de la petición inválido' });
-		}
 
 		const contacto = await Contacto.findByPk(data.ContactoId);
 		if (!contacto) {
@@ -142,9 +124,6 @@ const agregarDetalleContacto = async (req, res) => {
 const editarContacto = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
 
 		const { ContactoId, ...actualizacion } = data;
 
@@ -167,9 +146,7 @@ const editarContacto = async (req, res) => {
 const desactivarContacto = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const contacto = await Contacto.findByPk(data.ContactoId);
 
 		if (!contacto) {
@@ -193,9 +170,6 @@ const desactivarContacto = async (req, res) => {
 const crearCorreo = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
 
 		const contacto = await Contacto.findByPk(req.body.ContactoId);
 
@@ -216,9 +190,7 @@ const crearCorreo = async (req, res) => {
 const editarCorreo = async (req, res) => {
 	try {
 		const dta = req.body;
-		if (!dta) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const { EmailId, ...actualizacion } = dta;
 
 		const correo = await Email.findByPk(EmailId);
@@ -243,9 +215,7 @@ const editarCorreo = async (req, res) => {
 const desactivarCorreo = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const correo = await Email.findByPk(data.EmailId);
 
 		if (!correo) {
@@ -273,9 +243,7 @@ const desactivarCorreo = async (req, res) => {
 const crearTelefono = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const contacto = await Contacto.findByPk(req.body.ContactoId);
 
 		if (!contacto) {
@@ -294,9 +262,6 @@ const crearTelefono = async (req, res) => {
 const editarTelefono = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
 
 		const { TelefonoId, ...actualizacion } = data;
 
@@ -321,9 +286,7 @@ const editarTelefono = async (req, res) => {
 const desactivarTelefono = async (req, res) => {
 	try {
 		const data = req.body;
-		if (!data) {
-			return res.status(400).json({ error: 'Cuerpo de la petición invalido ' });
-		}
+
 		const telefono = await Telefono.findByPk(data.TelefonoId);
 
 		if (!telefono) {
