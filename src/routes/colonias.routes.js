@@ -24,13 +24,9 @@ const router = Router();
  *           schema:
  *             type: object
  *             required:
- *               - ClaveColonia
  *               - CodigoPostal
  *               - Nombre
  *             properties:
- *               ClaveColonia:
- *                 type: string
- *                 description: Clave de la colonia
  *               CodigoPostal:
  *                 type: string
  *                 description: Código postal de la colonia
@@ -38,7 +34,6 @@ const router = Router();
  *                 type: string
  *                 description: Nombre de la colonia
  *             example:
- *               ClaveColonia: P001
  *               CodigoPostal: '12345'
  *               Nombre: Colonia de prueba
  *     responses:

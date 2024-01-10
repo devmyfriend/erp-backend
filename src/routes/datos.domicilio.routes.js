@@ -192,7 +192,7 @@ router.get('/sat/estado', datosDomicilioController.obtenerSATEstado);
 
 /**
  * @swagger
- * /api/vi/domicilio/sat/estado/{pais}:
+ * /api/v1/domicilio/sat/estado/{pais}:
  *  get:
  *    summary: Obtener los estados dependiendo del país
  *    tags: [SAT]
@@ -202,7 +202,7 @@ router.get('/sat/estado', datosDomicilioController.obtenerSATEstado);
  *        schema:
  *          type: string
  *        required: true
- *        description: El nombre del país
+ *        description: La clave del país
  *    responses:
  *      200:
  *        description: Lista de estados por país
@@ -224,7 +224,7 @@ router.get('/sat/estado/:pais', datosDomicilioController.obtenerEstadosPorPais);
 
 /**
  * @swagger
- * /api/vi/domicilio/sat/pais:
+ * /api/v1/domicilio/sat/pais:
  *  get:
  *    summary: Obtener los países
  *    tags: [SAT]
