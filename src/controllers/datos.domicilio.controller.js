@@ -1,5 +1,4 @@
 import { Colonia } from "../models/sat.colonias.model.js";
-import { CodigoPostal } from "../models/sat.codigos.postal.model.js";
 
 const obtenerColoniasPorCodigoPostal = async ( req, res = Response ) =>{
     try{
