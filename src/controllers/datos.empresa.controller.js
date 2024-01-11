@@ -1,7 +1,9 @@
+import { Connection as sequelize } from '../database/mariadb.database.js';
 import {
 	EntidadNegocio,
 	Domicilio,
 } from '../models/datos.entidad.negocio.domicilio.model.js';
+import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 
 
 const obtenerIdEmpresa = async (req, res) => {
@@ -54,72 +56,150 @@ const obtenerIdEmpresa = async (req, res) => {
 	}
 };
 
+// const buscarIdEmpresa = async (req, res) => {
+// 	try {
+// 		const id = req.params.id;
+// 		const empresa = await EntidadNegocio.findByPk(id, {
+// 			attributes: [
+// 				'EntidadNegocioId',
+// 				'EsPropietaria',
+// 				'RFC',
+// 				'NombreComercial',
+// 				'ClavePais',
+// 				'TaxId',
+// 				'ClaveRegimenFiscal',
+// 				'PersonaFisica',
+// 				'PersonaMoral',
+// 				'NombreOficial',
+// 				'Estatus',
+// 			],
+// 		});
+
+// 		if (!empresa) {
+// 			return res
+// 				.status(404)
+// 				.json({ error: 'No se encontró la empresa con el ID proporcionado' });
+// 		}
+
+// 		res.json(empresa);
+// 	} catch (error) {
+// 		console.log('Error al obtener el id de la empresa', error.message);
+// 		res.status(500).json({ error: 'Internal Server Error' });
+// 	}
+// };
+
 const buscarIdEmpresa = async (req, res) => {
-	try {
-		const id = req.params.id;
-		const empresa = await EntidadNegocio.findByPk(id, {
-			attributes: [
-				'EntidadNegocioId',
-				'EsPropietaria',
-				'RFC',
-				'NombreComercial',
-				'ClavePais',
-				'TaxId',
-				'ClaveRegimenFiscal',
-				'PersonaFisica',
-				'PersonaMoral',
-				'NombreOficial',
-				'Estatus',
-			],
-		});
+    const entidadId = req.params.id;
+    try {
+        console.log(entidadId);
+        const entidad = await sequelize.query(
+            'CALL BuscarEntidadNegocio(?)',
+            {
+                replacements: [entidadId],
+                type: sequelize.QueryTypes.RAW,
+            },
+        );
 
-		if (!empresa) {
-			return res
-				.status(404)
-				.json({ error: 'No se encontró la empresa con el ID proporcionado' });
-		}
-
-		res.json(empresa);
-	} catch (error) {
-		console.log('Error al obtener el id de la empresa', error.message);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
+        res.json(entidad);
+    } catch (error) {
+        console.error('Error al obtener la entidad:', error.message);
+        res.status(500).json({ error: 'Error al obtener la entidad' });
+    }
 };
 
 
-const crearIdEmpresa = async (req, res) => {
-	try {
-		const { entidad, domicilio } = req.body;
+// const crearIdEmpresa = async (req, res) => {
+// 	try {
+// 		const { entidad, domicilio } = req.body;
 
-		const validacionRFC = await EntidadNegocio.findOne({
-			where: { RFC: entidad.RFC },
-		});
-		if (validacionRFC) {
-			return res.status(409).json({ error: 'El RFC ya existe' });
-		}
+// 		const validacionRFC = await EntidadNegocio.findOne({
+// 			where: { RFC: entidad.RFC },
+// 		});
+// 		if (validacionRFC) {
+// 			return res.status(409).json({ error: 'El RFC ya existe' });
+// 		}
 
-		const validacionNombreOficial = await EntidadNegocio.findOne({
-			where: { NombreOficial: entidad.NombreOficial},
-		});
-		if (validacionNombreOficial) {
-			return res.status(409).json({ error: 'El nombre oficial ya existe' });
-		}
+// 		const validacionNombreOficial = await EntidadNegocio.findOne({
+// 			where: { NombreOficial: entidad.NombreOficial},
+// 		});
+// 		if (validacionNombreOficial) {
+// 			return res.status(409).json({ error: 'El nombre oficial ya existe' });
+// 		}
 
 	
-		const resultEntidad = await EntidadNegocio.create(entidad);
-		const resultDomicilio = await Domicilio.create(domicilio);
-		const { dataValues } = resultEntidad;
-		console.log('hola soy entidad', dataValues.EntidadNegocioId);
+// 		const resultEntidad = await EntidadNegocio.create(entidad);
+// 		const resultDomicilio = await Domicilio.create(domicilio);
+// 		const { dataValues } = resultEntidad;
+// 		console.log('hola soy entidad', dataValues.EntidadNegocioId);
 
-		return res.status(200).json({
-			status: 'Ok',
-			message: 'Entidad de negocio creada con éxito',
-			empresa: resultEntidad,
-			domicilio: resultDomicilio,
+// 		return res.status(200).json({
+// 			status: 'Ok',
+// 			message: 'Entidad de negocio creada con éxito',
+// 			empresa: resultEntidad,
+// 			domicilio: resultDomicilio,
+// 		});
+// 	} catch (error) {
+// 		console.error('Error al crear entidad de negocio:', error.stack);
+// 		res.status(500).json({ success: false, error: error.stack });
+// 	}
+// };
+
+const crearIdEmpresa = async (req, res) => {
+	const { entidad, domicilio, CreadoPor:creadoPor } = req.body;
+
+	try {
+		const validarRFC = await EntidadNegocio.findOne({
+			where: {
+				RFC: entidad[0].RFC,
+			},
+		});
+
+		const validarNombreOficial = await EntidadNegocio.findOne({
+			where: {
+				NombreOficial: entidad[0].NombreOficial,
+			},
+		});
+
+		if (validarRFC) {
+			return res.status(409).json({
+				status: 409,
+				error: 'El RFC ingresado ya existe',
+			});
+		}
+
+		if (validarNombreOficial) {
+			return res.status(409).json({
+				status: 409,
+				error: 'El nombre oficial ingresado ya existe',
+			
+			})
+		}
+
+		const crearEntidad = await EntidadNegocio.create({
+			CreadoPor: creadoPor,
+			EsPropietaria: 1,
+			...entidad[0]
+		});
+
+		const crearDomicilio = await Domicilio.create({
+			...domicilio[0],
+			EntidadNegocioId: entidad[0].EntidadNegocioId,
+			CreadoPor: creadoPor,
+		});
+
+		await EmpresaDomicilio.create({
+			EntidadNegocioId: crearEntidad._previousDataValues.EntidadNegocioId,
+			DomicilioId: crearDomicilio._previousDataValues.DomicilioId
+		});
+
+		console.log(crearEntidad.EntidadNegocioId);
+		res.status(200).json({
+			status: 200,
+			message: 'Se ha creado la entidad de negocio',
 		});
 	} catch (error) {
-		console.error('Error al crear entidad de negocio:', error.stack);
-		res.status(500).json({ success: false, error: error.stack });
+		console.error('Error al crear la entidad de negocio:', error);
+		res.status(500).json({ error: 'Error al crear la entidad de negocio' });
 	}
 };
 

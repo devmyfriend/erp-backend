@@ -10,8 +10,8 @@ const obtenerColoniasPorCodigoPostal = async ( req, res = Response ) =>{
             order:[ [ 'claveColonia',  'ASC' ] ]
         })
 
-        if(listadoColonias.length === 0){
-            return res.status(400).send({
+        if(!listadoColonias){
+            return res.status(404).send({
                  status: 'Error',
                  message: 'No se encontraron colonias para el código postal proporcionado'
             })

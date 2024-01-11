@@ -2,12 +2,13 @@ import { Router } from 'express';
 import { methods as datosDomicilioController } from '../controllers/datos.domicilio.controller.js';
 const router = Router();
 
+
 /**
  * @swagger
- * tags: 
+ * tags:
  *   - name: SAT
- *    description: Operaciones relacionadas con los catalogos del SAT
- * */
+ *     description: Operaciones relacionadas con el catalogo del SAT
+ */
 
 /**
  * @swagger

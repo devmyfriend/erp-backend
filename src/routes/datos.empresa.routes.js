@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { methods as datoseEmpresaController } from '../controllers/datos.empresa.controller.js';
+import { methods } from '../controllers/datos.empresa.controller.js';
 import { param } from 'express-validator';
-import * as schemas from '../schemas/datosEmpresa.js';
+import * as schemas from '../schemas/empresa.js';
 import * as middleware from '../middlewares/express-validator.js';
 const router = Router();
 
@@ -87,10 +87,10 @@ const router = Router();
 router.get(
     '/:id',
     param('id', 'El parametro debe ser un entero').isNumeric(),
-    datoseEmpresaController.buscarIdEmpresa,
+    methods.buscarIdEmpresa,
 );
 
-// POST - /api/datosFiscales
+// POST - /api/empresa
 
 /**
  * @swagger
@@ -105,7 +105,6 @@ router.get(
  *         entidad:
  *           type: object
  *           required:
- *             - EsPropietaria
  *             - RFC
  *             - NombreComercial
  *             - ClavePais
@@ -114,12 +113,10 @@ router.get(
  *             - PersonaFisica
  *             - PersonalMoral
  *             - NombreOficial
- *             - Estatus
+ *             - Borrado
  *             - CreadoPor
  *             - ActualizadoPor
  *             - logo
- *             - BorradoPor
- *             - BorradoEn
  *           properties:
  *             RFC:
  *               type: string
@@ -137,23 +134,15 @@ router.get(
  *               type: boolean
  *             NombreOficial:
  *               type: string
- *             Estatus:
+ *             Borrado:
  *               type: integer
  *             logo:
  *               type: string
  *             CreadoPor:
  *               type: string
- *             ActualizadoPor:
- *               type: string
- *             BorradoPor:
- *               type: string
- *             BorradoEn:
- *               type: string
  *         domicilio:
  *           type: object
  *           properties:
- *             AlmacenId:
- *               type: integer
  *             Calle:
  *               type: string
  *             NumeroExt:
@@ -172,10 +161,10 @@ router.get(
  *               type: string
  *             ClavePais:
  *               type: string
- * /api/v1/fiscales/empresa/crear:
+ * /api/v1/empresa/datosempresa/crear:
  *   post:
  *     summary: Crear una nueva entidad de negocio
- *     tags: [Datos Fiscales]
+ *     tags: [Datos Empresa]
  *     requestBody:
  *       required: true
  *       content:
@@ -200,21 +189,18 @@ router.get(
  *         description: Internal Server Error
  */
 router.post(
-    '/empresa/crear',
-    schemas.crearIdEmpresaSchema,
+    '/datosempresa/crear',
+    schemas.crearEmpresaSchema,
     middleware.validateSchema,
-    datoseEmpresaController.crearIdEmpresa,
+    methods.crearIdEmpresa,
 );
 
 
-
-
-
-// UPDATE - /api/datosFiscales
+// UPDATE - /api/datosEmpresa
 
 /**
  * @swagger
- * /api/v1/fiscales/empresa/editar/{id}:
+ * /api/v1/empresa/datosempresa/editar/{id}:
  *   patch:
  *     summary: Editar datos fiscales de la empresa
  *     tags: [Datos Fiscales]
@@ -295,7 +281,7 @@ router.post(
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/empresa/editar/:id', datoseEmpresaController.editarIdEmpresa);
+router.patch('/datosempresa/editar/:id', methods.editarIdEmpresa);
 
 // /**
 //  * @swagger
@@ -375,9 +361,9 @@ router.patch('/empresa/editar/:id', datoseEmpresaController.editarIdEmpresa);
 //  *       500:
 //  *         description: Internal Server Error
 //  */
-// router.patch('/empresa/editar', datoseEmpresaController.editarIdEmpresa);
+// router.patch('/empresa/editar', methods.editarIdEmpresa);
 
-// DELETE - /api/datosFiscales
+// DELETE - /api/datosEmpresa
 
 /**
  * @swagger
@@ -422,7 +408,7 @@ router.patch('/empresa/editar/:id', datoseEmpresaController.editarIdEmpresa);
 
 router.delete(
     '/empresa/desactivar/:id',
-    datoseEmpresaController.desactivarIdEmpresa,
+    methods.desactivarIdEmpresa,
 );
 
 export default router;

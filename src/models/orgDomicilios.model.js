@@ -50,6 +50,7 @@ export const Domicilio = Connection.define(
         sequelize: Connection,
         modelName: 'orgDomicilios',
         tableName: 'orgDomicilios',
-        freezeTableName: false
+        freezeTableName: false,
+        timestamps: false
     }
 );

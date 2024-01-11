@@ -13,7 +13,8 @@ export const EntidadNegocio = Connection.define(
             type: DataTypes.TINYINT,
             validate: {
                 max: 1
-            }
+            },
+            allowNull: true
         },
         NombreOficial: {
             type: DataTypes.STRING
@@ -54,7 +55,8 @@ export const EntidadNegocio = Connection.define(
             allowNull: true
         },
         ActualizadoPor: {
-			type: DataTypes.INTEGER
+			type: DataTypes.INTEGER,
+            allowNull: true
 		},
         logo: {
             type: DataTypes.STRING,
