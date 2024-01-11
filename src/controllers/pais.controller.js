@@ -1,32 +1,59 @@
-import { Pais } from '../models/sat_pais.model.js';
+import { Connection as sequelize } from '../database/mariadb.database.js';
 
-const obtenerPaises = async (req, res = Response) => {
+const obtenerPaises = async (req, res) => {
 	try {
-		const listadopais = await Pais.findAll({
-			attributes: ['ClavePais', 'Descripcion'],
-			order: [['Descripcion', 'ASC']],
-		});
+		const paises = await sequelize.query(
+			`CALL sp_pais_colonias(1, NUll, NULL, NULL)`,
+			{
+				type: sequelize.QueryTypes.RAW,
+			},
+		);
 
-		if (!listadopais) {
-			return res.status(400).send({
-				status: 'Error',
-				message: 'No se encontraron paises en listados',
-			});
-		}
-
-		return res.status(200).send({
-			status: 'Ok',
-			listadopais,
-		});
+		res.json(paises);
 	} catch (error) {
-		console.log(error);
-		return res.status(500).send({
-			status: 'Error',
-			message: 'No se pudo obtener la información solicitada',
-		});
+		console.error('Error al obtener los estados:', error.message);
+		res.status(500).json({ error: 'Error al obtener los estados' });
+	}
+};
+
+const obtenerEstadoPorPais = async (req, res) => {
+	const paisId = req.params.id;
+
+	try {
+		const estados = await sequelize.query(
+			`CALL sp_pais_colonias(2, '${paisId}', NULL, NULL);`,
+			{
+				type: sequelize.QueryTypes.RAW,
+			},
+		);
+
+		res.json(estados);
+	} catch (error) {
+		console.error('Error al obtener los estados:', error.message);
+		res.status(500).json({ error: 'Error al obtener los estados' });
+	}
+};
+
+const obtenerColonias = async (req, res) => {
+	const { cp, clave_pais: clavePais } = req.body;
+
+	try {
+		const colonias = await sequelize.query(
+			`CALL sp_pais_colonias(3, NULL, '${cp}', '${clavePais}')`,
+			{
+				type: sequelize.QueryTypes.RAW,
+			},
+		);
+
+		res.json(colonias);
+	} catch (error) {
+		console.error('Error al obtener las colonias', error.message);
+		res.status(500).json({ error: 'Error al obtener las colonias' });
 	}
 };
 
 export const methods = {
 	obtenerPaises,
+	obtenerEstadoPorPais,
+	obtenerColonias,
 };
