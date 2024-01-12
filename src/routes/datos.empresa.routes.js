@@ -103,64 +103,54 @@ router.get(
  *         - domicilio
  *       properties:
  *         entidad:
- *           type: object
- *           required:
- *             - RFC
- *             - NombreComercial
- *             - ClavePais
- *             - TaxId
- *             - ClaveRegimenFisca
- *             - PersonaFisica
- *             - PersonalMoral
- *             - NombreOficial
- *             - Borrado
- *             - CreadoPor
- *             - ActualizadoPor
- *             - logo
- *           properties:
- *             RFC:
- *               type: string
- *             NombreComercial:
- *               type: string
- *             ClavePais:
- *               type: string
- *             TaxId:
- *               type: string
- *             ClaveRegimenFiscal:
- *               type: string
- *             PersonaFisica:
- *               type: boolean
- *             PersonaMoral:
- *               type: boolean
- *             NombreOficial:
- *               type: string
- *             Borrado:
- *               type: integer
- *             logo:
- *               type: string
- *             CreadoPor:
- *               type: string
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               RFC:
+ *                 type: string
+ *               NombreComercial:
+ *                 type: string
+ *               ClavePais:
+ *                 type: string
+ *               ClaveRegimenFiscal:
+ *                 type: string
+ *               PersonaFisica:
+ *                 type: boolean
+ *               PersonaMoral:
+ *                 type: boolean
+ *               NombreOficial:
+ *                 type: string
+ *               Estatus:
+ *                 type: integer
+ *               logo:
+ *                 type: string
+ *         CreadoPor:
+ *           type: integer
+ *           default: 1
  *         domicilio:
- *           type: object
- *           properties:
- *             Calle:
- *               type: string
- *             NumeroExt:
- *               type: string
- *             NumeroInt:
- *               type: string
- *             CodigoPostal:
- *               type: string
- *             ClaveEstado:
- *               type: string
- *             ClaveMunicipio:
- *               type: string
- *             ClaveLocalidad:
- *               type: string
- *             ClaveColonia:
- *               type: string
- *             ClavePais:
- *               type: string
+ *           type: array
+ *           items:
+ *             type: object
+ *             properties:
+ *               Calle:
+ *                 type: string
+ *               NumeroExt:
+ *                 type: string
+ *               NumeroInt:
+ *                 type: string
+ *               CodigoPostal:
+ *                 type: string
+ *               ClaveEstado:
+ *                 type: string
+ *               ClaveMunicipio:
+ *                 type: string
+ *               ClaveLocalidad:
+ *                 type: string
+ *               ClaveColonia:
+ *                 type: string
+ *               ClavePais:
+ *                 type: string
  * /api/v1/empresa/datosempresa/crear:
  *   post:
  *     summary: Crear una nueva entidad de negocio
@@ -204,13 +194,6 @@ router.post(
  *   patch:
  *     summary: Editar datos fiscales de la empresa
  *     tags: [Datos Empresa]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la empresa a editar
- *         schema:
- *           type: integer
  *     requestBody:
  *       required: true
  *       content:

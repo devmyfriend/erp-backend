@@ -1,8 +1,6 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-import {
-	EntidadNegocio,
-	Domicilio,
-} from '../models/datos.entidad.negocio.domicilio.model.js';
+import { EntidadNegocio } from '../models/orgEntidadesNegocio.model.js';
+import { Domicilio } from '../models/orgDomicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 
@@ -137,6 +135,7 @@ const crearIdEmpresa = async (req, res) => {
 
 const editarIdEmpresa = async (req, res) => {
     const { entidad, domicilio, ActualizadoPor: actualizadoPor } = req.body;
+	const entidadNegocioId = req.params.id;
 
     try {
         const entidadExistente = await EntidadNegocio.findOne({
