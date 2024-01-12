@@ -203,7 +203,7 @@ router.post(
  * /api/v1/empresa/datosempresa/editar/{id}:
  *   patch:
  *     summary: Editar datos fiscales de la empresa
- *     tags: [Datos Fiscales]
+ *     tags: [Datos Empresa]
  *     parameters:
  *       - in: path
  *         name: id
@@ -409,6 +409,38 @@ router.patch('/datosempresa/editar/:id', methods.editarIdEmpresa);
 router.delete(
     '/empresa/desactivar/:id',
     methods.desactivarIdEmpresa,
+);
+
+/**
+ * @swagger
+ * /api/v1/empresa/regimen/listado:
+ *   get:
+ *     summary: Obtener la lista de regímenes fiscales
+ *     tags: [Datos Empresa]
+ *     responses:
+ *       200:
+ *         description: La lista de regímenes fiscales
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveRegimenFiscal:
+ *                     type: string
+ *                   Descripcion:
+ *                     type: string
+ *                   Fisica:
+ *                     type: boolean
+ *                   Moral:
+ *                     type: boolean
+ *       500:
+ *         description: Internal Server Error
+ */
+router.get(
+    '/regimen/listado',
+    methods.obtenerRegimenesFiscales,
 );
 
 export default router;

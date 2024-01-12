@@ -4,7 +4,7 @@ import {
 	Domicilio,
 } from '../models/datos.entidad.negocio.domicilio.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
-
+import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 
 const obtenerIdEmpresa = async (req, res) => {
 	try {
@@ -56,37 +56,6 @@ const obtenerIdEmpresa = async (req, res) => {
 	}
 };
 
-// const buscarIdEmpresa = async (req, res) => {
-// 	try {
-// 		const id = req.params.id;
-// 		const empresa = await EntidadNegocio.findByPk(id, {
-// 			attributes: [
-// 				'EntidadNegocioId',
-// 				'EsPropietaria',
-// 				'RFC',
-// 				'NombreComercial',
-// 				'ClavePais',
-// 				'TaxId',
-// 				'ClaveRegimenFiscal',
-// 				'PersonaFisica',
-// 				'PersonaMoral',
-// 				'NombreOficial',
-// 				'Estatus',
-// 			],
-// 		});
-
-// 		if (!empresa) {
-// 			return res
-// 				.status(404)
-// 				.json({ error: 'No se encontró la empresa con el ID proporcionado' });
-// 		}
-
-// 		res.json(empresa);
-// 	} catch (error) {
-// 		console.log('Error al obtener el id de la empresa', error.message);
-// 		res.status(500).json({ error: 'Internal Server Error' });
-// 	}
-// };
 
 const buscarIdEmpresa = async (req, res) => {
     const entidadId = req.params.id;
@@ -106,43 +75,6 @@ const buscarIdEmpresa = async (req, res) => {
         res.status(500).json({ error: 'Error al obtener la entidad' });
     }
 };
-
-
-// const crearIdEmpresa = async (req, res) => {
-// 	try {
-// 		const { entidad, domicilio } = req.body;
-
-// 		const validacionRFC = await EntidadNegocio.findOne({
-// 			where: { RFC: entidad.RFC },
-// 		});
-// 		if (validacionRFC) {
-// 			return res.status(409).json({ error: 'El RFC ya existe' });
-// 		}
-
-// 		const validacionNombreOficial = await EntidadNegocio.findOne({
-// 			where: { NombreOficial: entidad.NombreOficial},
-// 		});
-// 		if (validacionNombreOficial) {
-// 			return res.status(409).json({ error: 'El nombre oficial ya existe' });
-// 		}
-
-	
-// 		const resultEntidad = await EntidadNegocio.create(entidad);
-// 		const resultDomicilio = await Domicilio.create(domicilio);
-// 		const { dataValues } = resultEntidad;
-// 		console.log('hola soy entidad', dataValues.EntidadNegocioId);
-
-// 		return res.status(200).json({
-// 			status: 'Ok',
-// 			message: 'Entidad de negocio creada con éxito',
-// 			empresa: resultEntidad,
-// 			domicilio: resultDomicilio,
-// 		});
-// 	} catch (error) {
-// 		console.error('Error al crear entidad de negocio:', error.stack);
-// 		res.status(500).json({ success: false, error: error.stack });
-// 	}
-// };
 
 const crearIdEmpresa = async (req, res) => {
 	const { entidad, domicilio, CreadoPor:creadoPor } = req.body;
@@ -204,43 +136,70 @@ const crearIdEmpresa = async (req, res) => {
 };
 
 const editarIdEmpresa = async (req, res) => {
-	try {
-		const EntidadNegocioId = req.params.id;
-		const { EntidadNegocioId: _, ...datosEmpresa } = req.body.entidad;
-		const { SucursalId, ...datosDomicilio } = req.body.domicilio;
+    const { entidad, domicilio, ActualizadoPor: actualizadoPor } = req.body;
 
-		const empresa = await EntidadNegocio.findByPk(EntidadNegocioId);
-		if (!empresa) {
-			return res
-				.status(404)
-				.json({ error: 'No se encontró la empresa con el ID proporcionado' });
-		}
+    try {
+        const entidadExistente = await EntidadNegocio.findOne({
+            where: {
+                EntidadNegocioId: entidad[0].EntidadNegocioId,
+            },
+        });
 
-		const domicilio = await Domicilio.findOne({
-			where: { EntidadNegocioId: EntidadNegocioId },
-		});
-		if (!domicilio) {
-			return res
-				.status(404)
-				.json({ error: 'No se encontró un domicilio asociado con la empresa' });
-		}
-		console.log(datosEmpresa);
-		console.log(datosDomicilio);
-		await EntidadNegocio.update(datosEmpresa, {
-			where: { EntidadNegocioId: EntidadNegocioId },
-		});
-		await Domicilio.update(datosDomicilio, {
-			where: { EntidadNegocioId: EntidadNegocioId },
-		});
+        if (!entidadExistente) {
+            return res.status(404).json({
+                status: 404,
+                error: 'No se ha encontrado la entidad de negocio solicitada',
+            });
+        }
 
-		res.json({
-			success: true,
-			message: 'Empresa y domicilio actualizados con éxito',
-		});
-	} catch (error) {
-		console.log('Error al actualizar la empresa', error.message);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
+        const entidadActual = await EntidadNegocio.findByPk(entidad[0].EntidadNegocioId);
+
+        const actualizacionEntidad = {
+            ...entidadActual.dataValues,
+            ...entidad[0],
+            ActualizadoPor: actualizadoPor,
+        };
+
+        const buscarDomicilio = await Domicilio.findOne({
+            where: {
+                EntidadNegocioId: entidad[0].EntidadNegocioId,
+            },
+        });
+
+        if (!buscarDomicilio) {
+            return res.status(400).json({
+                status: 400,
+                error: 'El domicilio no fue asignado correctamente, contacta al administrador',
+            });
+        }
+
+        await EntidadNegocio.update(actualizacionEntidad, {
+            where: {
+                EntidadNegocioId: actualizacionEntidad.EntidadNegocioId,
+            },
+        });
+
+        const domicilioActual = await Domicilio.findByPk(buscarDomicilio.dataValues.DomicilioId);
+
+        const actualizacionDomicilio = {
+            ...domicilioActual.dataValues,
+            ...domicilio[0],
+            ActualizadoPor: actualizadoPor,
+        };
+
+        await Domicilio.update(actualizacionDomicilio, {
+            where: {
+                DomicilioId: actualizacionDomicilio.DomicilioId,
+            },
+        });
+
+        return res.status(200).json({
+            message: 'Entidad de negocio actualizada',
+        });
+    } catch (error) {
+        console.error('Error al actualizar la entidad de negocio:', error);
+        res.status(500).json({ error: 'Error al actualizar la entidad de negocio' });
+    }
 };
 
 const desactivarIdEmpresa = async (req, res) => {
@@ -283,10 +242,21 @@ const desactivarIdEmpresa = async (req, res) => {
 	}
 };
 
+const obtenerRegimenesFiscales = async (req, res) => {
+	try {
+		const regimenes = await regimenFiscal.findAll();
+		res.json(regimenes);
+	} catch (error) {
+		console.log('Error al obtener los regímenes fiscales', error.message);
+		res.status(500).json({ error: 'Internal Server Error' });
+	}
+};
+
 export const  methods = {
     obtenerIdEmpresa,
     buscarIdEmpresa,
     crearIdEmpresa,
     editarIdEmpresa,
+	obtenerRegimenesFiscales,
     desactivarIdEmpresa,
 };
