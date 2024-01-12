@@ -135,7 +135,6 @@ const crearIdEmpresa = async (req, res) => {
 
 const editarIdEmpresa = async (req, res) => {
     const { entidad, domicilio, ActualizadoPor: actualizadoPor } = req.body;
-	const entidadNegocioId = req.params.id;
 
     try {
         const entidadExistente = await EntidadNegocio.findOne({
@@ -151,6 +150,37 @@ const editarIdEmpresa = async (req, res) => {
             });
         }
 
+
+		if (entidad[0].NombreOficial) {
+			const entidadExistente = await EntidadNegocio.findOne({
+				where: {
+					NombreOficial: entidad[0].NombreOficial,
+				},
+			});
+		
+			if (entidadExistente) {
+				return res.status(409).json({
+					status: 409,
+					error: 'El nombre oficial ingresado ya existe',
+				});
+			}
+		}
+
+		if (entidadExistente.RFC !== entidad[0].RFC) {
+			const validarRFC = await EntidadNegocio.findOne({
+				where: {
+					RFC: entidad[0].RFC,
+				},
+			});
+
+			if (validarRFC) {
+				return res.status(409).json({
+					status: 409,
+					error: 'El RFC ingresado ya existe',
+				});
+			}
+		}
+
         const entidadActual = await EntidadNegocio.findByPk(entidad[0].EntidadNegocioId);
 
         const actualizacionEntidad = {
@@ -159,7 +189,7 @@ const editarIdEmpresa = async (req, res) => {
             ActualizadoPor: actualizadoPor,
         };
 
-        const buscarDomicilio = await Domicilio.findOne({
+        const buscarDomicilio = await EmpresaDomicilio.findOne({
             where: {
                 EntidadNegocioId: entidad[0].EntidadNegocioId,
             },
@@ -184,7 +214,9 @@ const editarIdEmpresa = async (req, res) => {
             ...domicilioActual.dataValues,
             ...domicilio[0],
             ActualizadoPor: actualizadoPor,
+			ClavePais: actualizacionEntidad.ClavePais,
         };
+
 
         await Domicilio.update(actualizacionDomicilio, {
             where: {
@@ -201,44 +233,41 @@ const editarIdEmpresa = async (req, res) => {
     }
 };
 
-const desactivarIdEmpresa = async (req, res) => {
-	console.log('aqui estoy desactivar empresa');
-	try {
-		const { id } = req.params;
-		if (!id) {
-			return res
-				.status(400)
-				.json({ error: 'ID de la entidad de negocio no proporcionado' });
-		}
-		const entidad = await EntidadNegocio.findByPk(id);
-		console.log(id);
-		if (!entidad) {
-			return res
-				.status(404)
-				.json({ error: 'Entidad de negocio no encontrada' });
-		}
 
-		if (entidad.Estatus === 0) {
-			return res
-				.status(400)
-				.json({ error: 'La entidad de negocio ya está desactivada' });
-		}
+export const desactivarIdEmpresa = async (req, res) => {
+    try {
+        if (!req.params.id) {
+            return res
+                .status(400)
+                .json({ status: 400, message: 'id es requerido' });
+        }
 
-		entidad.Estatus = 0;
-		entidad.BorradoPor = req.body.BorradoPor;
-		entidad.BorradoEn = new Date();
+        const entidad = await EntidadNegocio.findOne({
+            where: {
+                EntidadNegocioId: req.params.id
+            },
+        });
 
-		await entidad.save();
+        if (!entidad) {
+            return res
+                .status(404)
+                .json({ status: 404, message: 'La entidad de negocio no existe' });
+        }
 
-		console.log('Entidad de negocio desactivada con éxito');
-		res.status(200).json({
-			success: true,
-			message: 'Entidad de negocio desactivada con éxito',
-		});
-	} catch (error) {
-		console.error('Error al desactivar entidad de negocio:', error.message);
-		res.status(500).json({ success: false, error: 'Internal Server Error' });
-	}
+        if (entidad.Borrado === 1){
+            return res
+                .status(404)
+                .json({ status: 404, message: 'La entidad de negocio ya está desactivada' });
+        }
+
+        entidad.Borrado = true;
+        entidad.BorradoPor = req.body.BorradoPor;
+
+        await entidad.save();
+        res.status(200).json({ message: 'Entidad de negocio desactivada: ' + entidad.EntidadNegocioId });
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
 };
 
 const obtenerRegimenesFiscales = async (req, res) => {

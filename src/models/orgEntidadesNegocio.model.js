@@ -47,7 +47,7 @@ export const EntidadNegocio = Connection.define(
                 max: 1
             }
         },
-        Estatus: {
+        Borrado: {
             type: DataTypes.INTEGER
         },
         CreadoPor: {

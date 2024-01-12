@@ -202,49 +202,55 @@ router.post(
  *             type: object
  *             properties:
  *               entidad:
- *                 type: object
- *                 properties:
- *                   EsPropietaria:
- *                     type: boolean
- *                   RFC:
- *                     type: string
- *                   NombreComercial:
- *                     type: string
- *                   ClavePais:
- *                     type: string
- *                   TaxId:
- *                     type: string
- *                   ClaveRegimenFisca:
- *                     type: string
- *                   PersonaFisica:
- *                     type: boolean
- *                   PersonaMoral:
- *                     type: boolean
- *                   NombreOficial:
- *                     type: string
- *                   Estatus:
- *                     type: integer
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                      type: integer
+ *                     EsPropietaria:
+ *                       type: boolean
+ *                     RFC:
+ *                       type: string
+ *                     NombreComercial:
+ *                       type: string
+ *                     ClavePais:
+ *                       type: string
+ *                     TaxId:
+ *                       type: string
+ *                     ClaveRegimenFiscal:
+ *                       type: string
+ *                     PersonaFisica:
+ *                       type: boolean
+ *                     PersonaMoral:
+ *                       type: boolean
+ *                     NombreOficial:
+ *                       type: string
+ *                     Estatus:
+ *                       type: integer
  *               domicilio:
- *                 type: object
- *                 properties:
- *                   Calle:
- *                     type: string
- *                   NumeroExt:
- *                     type: string
- *                   NumeroInt:
- *                     type: string
- *                   CodigoPostal:
- *                     type: string
- *                   ClaveEstado:
- *                     type: string
- *                   ClaveMunicipio:
- *                     type: string
- *                   ClaveLocalidad:
- *                     type: string
- *                   ClaveColonia:
- *                     type: string
- *                   ClavePais:
- *                     type: string
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     Calle:
+ *                       type: string
+ *                     NumeroExt:
+ *                       type: string
+ *                     NumeroInt:
+ *                       type: string
+ *                     CodigoPostal:
+ *                       type: string
+ *                     ClaveEstado:
+ *                       type: string
+ *                     ClaveMunicipio:
+ *                       type: string
+ *                     ClaveLocalidad:
+ *                       type: string
+ *                     ClaveColonia:
+ *                       type: string
+ *                     ClavePais:
+ *                       type: string
  *     responses:
  *       200:
  *         description: Datos fiscales de la empresa editados con éxito
@@ -264,96 +270,20 @@ router.post(
  *       500:
  *         description: Internal Server Error
  */
-router.patch('/datosempresa/editar/:id', methods.editarIdEmpresa);
+    router.patch('/datosempresa/editar/:id',
+    schemas.editarIdEmpresa,
+    middleware.validateSchema,
+    methods.editarIdEmpresa);
 
-// /**
-//  * @swagger
-//  * /api/v1/fiscales/empresa/editar:
-//  *   patch:
-//  *     summary: Editar datos fiscales de la empresa
-//  *     tags: [Datos Fiscales]
-//  *     requestBody:
-//  *       required: true
-//  *       content:
-//  *         application/json:
-//  *           schema:
-//  *             type: object
-//  *             properties:
-//  *               entidad:
-//  *                 type: object
-//  *                 properties:
-//  *                   EsPropietaria:
-//  *                     type: boolean
-//  *                   RFC:
-//  *                     type: string
-//  *                   NombreComercial:
-//  *                     type: string
-//  *                   ClavePais:
-//  *                     type: string
-//  *                   TaxId:
-//  *                     type: string
-//  *                   ClaveRegimenFisca:
-//  *                     type: string
-//  *                   PersonaFisica:
-//  *                     type: boolean
-//  *                   PersonaMoral:
-//  *                     type: boolean
-//  *                   NombreOficial:
-//  *                     type: string
-//  *                   Estatus:
-//  *                     type: integer
-//  *               domicilio:
-//  *                 type: object
-//  *                 properties:
-//  *                   AlmacenId:
-//  *                     type: integer
-//  *                   Calle:
-//  *                     type: string
-//  *                   NumeroExt:
-//  *                     type: string
-//  *                   NumeroInt:
-//  *                     type: string
-//  *                   CodigoPostal:
-//  *                     type: string
-//  *                   ClaveEstado:
-//  *                     type: string
-//  *                   ClaveMunicipio:
-//  *                     type: string
-//  *                   ClaveLocalidad:
-//  *                     type: string
-//  *                   ClaveColonia:
-//  *                     type: string
-//  *                   ClavePais:
-//  *                     type: string
-//  *     responses:
-//  *       200:
-//  *         description: Datos fiscales de la empresa editados con éxito
-//  *         content:
-//  *           application/json:
-//  *             schema:
-//  *               type: object
-//  *               properties:
-//  *                 success:
-//  *                   type: boolean
-//  *                 data:
-//  *                   $ref: '#/components/schemas/EntidadNegocio'
-//  *       400:
-//  *         description: Cuerpo de la petición inválido
-//  *       404:
-//  *         description: Entidad de negocio no encontrada
-//  *       500:
-//  *         description: Internal Server Error
-//  */
-// router.patch('/empresa/editar', methods.editarIdEmpresa);
 
 // DELETE - /api/datosEmpresa
 
 /**
  * @swagger
- * /api/v1/fiscales/empresa/desactivar/{id}:
+ * /api/v1/empresa/desactivarempresa/{id}:
  *   delete:
  *     summary: Desactivar una entidad de negocio
- *     tags: [Datos Fiscales]
+ *     tags: [Datos Empresa]
  *     parameters:
  *       - in: path
  *         name: id
@@ -390,7 +320,7 @@ router.patch('/datosempresa/editar/:id', methods.editarIdEmpresa);
  */
 
 router.delete(
-    '/empresa/desactivar/:id',
+    '/desactivarempresa/:id',
     methods.desactivarIdEmpresa,
 );
 
