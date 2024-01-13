@@ -190,3 +190,8 @@ export const crearEmpresaSchema = [
 		.isString()
 		.withMessage('El campo ClavePais debe ser una cadena de texto'),
 ];
+
+export const crearEmpresaContactoSchema = [
+	body('contacto.*.ActualizadoPor')
+		.optional()
+];

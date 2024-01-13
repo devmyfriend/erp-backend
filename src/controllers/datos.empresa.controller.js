@@ -3,6 +3,10 @@ import { EntidadNegocio } from '../models/orgEntidadesNegocio.model.js';
 import { Domicilio } from '../models/orgDomicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
+import { Telefono } from '../models/telefono.model.js';
+import { Contacto } from '../models/contacto.model.js';
+import { EmpresaContacto } from '../models/empresa.contacto.model.js';
+import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
 
 const obtenerIdEmpresa = async (req, res) => {
 	try {
@@ -280,6 +284,243 @@ const obtenerRegimenesFiscales = async (req, res) => {
 	}
 };
 
+
+// EMPRESA X CONTACTO
+
+const buscarContactosPorEntidadNegocioId = async (req, res) => {
+    const entidadId = req.params.id;
+    try {
+        const contactos = await sequelize.query(
+            'CALL BuscarContactosPorEntidadNegocioId(?)',
+            {
+                replacements: [entidadId],
+                type: sequelize.QueryTypes.RAW,
+            },
+        );
+
+        if (contactos.length === 0) {
+            res.status(404).json({ message: 'No existen contactos relacionados con esta empresa' });
+        } else {
+            res.json(contactos);
+        }
+    } catch (error) {
+        console.error('Error al obtener los contactos:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+};
+
+//// ADICION DE DATOS A LA TABLA UNICAMENTE
+
+// const crearEmpresaContacto = async (req, res) => {
+//     const { EntidadNegocioId, ContactoId, CreadoPor } = req.body;
+
+//     try {
+//         const nuevoEmpresaContacto = await EmpresaContacto.create({
+//             EntidadNegocioId,
+//             ContactoId,
+//             CreadoPor
+//         });
+
+//         res.status(201).json({
+//             message: 'Relación creada exitosamente',
+//             empresaContacto: nuevoEmpresaContacto
+//         });
+//     } catch (error) {
+//         console.error('Error al crear la relación:', error.message);
+//         res.status(500).json({ error: 'Error al crear la relación' });
+//     }
+// };
+
+//// ADICION DE DATOS A LA TABLA UNICAMENTE
+
+const crearEmpresaContacto = async (req, res) => {
+    const { empresa, contacto } = req.body;
+
+    try {
+        const validarEmpresa = await EntidadNegocio.findOne({
+            where: {
+                EntidadNegocioId: empresa[0].EntidadNegocioId,
+            },
+        });
+
+        const { ContactoId, ...contactoData } = contacto[0];
+
+        const datosContacto = await Contacto.create({
+            CreadoPor: contactoData.CreadoPor,
+            ...contactoData
+        })
+
+        await EmpresaContacto.create({
+            EntidadNegocioId: empresa[0].EntidadNegocioId,
+            ContactoId: datosContacto.ContactoId,
+        });
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se ha creado la relación EmpresaContacto',
+        });
+    } catch (error) {
+        console.error('Error al crear la relación EmpresaContacto:', error);
+        res.status(500).json({ error: 'Error al crear la relación EmpresaContacto' });
+    }
+};
+
+
+const editarEmpresaContacto = async (req, res) => {
+    const { empresa, contacto } = req.body;
+
+    try {
+        const validarEmpresa = await EntidadNegocio.findOne({
+            where: {
+                EntidadNegocioId: empresa[0].EntidadNegocioId,
+            },
+        });
+
+        if (!validarEmpresa) {
+            return res.status(404).json({
+                status: 404,
+                error: 'Empresa no encontrada',
+            });
+        }
+
+        const { ContactoId, ...contactoData } = contacto[0];
+
+        const contactoExistente = await Contacto.findOne({
+            where: {
+                ContactoId: ContactoId
+            }
+        });
+
+        if (!contactoExistente) {
+            return res.status(404).json({
+                status: 404,
+                error: 'Contacto no encontrado',
+            });
+        }
+
+        const actualizacionContacto = {
+            ...contactoExistente.dataValues,
+            ...contactoData,
+            ...{ ActualizadoPor: contacto[0].ActualizadoPor },
+        };
+
+        await Contacto.update(actualizacionContacto, {
+            where: {
+                ContactoId: actualizacionContacto.ContactoId
+            }
+        });
+
+        const actualizacionEmpresaContacto = {
+            ...validarEmpresa.dataValues,
+            ...empresa[0],
+            ...{ ActualizadoPor: contacto[0].ActualizadoPor },
+        };
+
+        await EmpresaContacto.update(actualizacionEmpresaContacto, {
+            where: {
+                EntidadNegocioId: actualizacionEmpresaContacto.EntidadNegocioId,
+                ContactoId: ContactoId,
+            }
+        });
+
+        return res.status(200).json({
+            message: 'Se ha actualizado la relación EmpresaContacto',
+        });
+    } catch (error) {
+        console.error('Error al actualizar la relación EmpresaContacto:', error);
+        res.status(500).json({ error: 'Error al actualizar la relación EmpresaContacto' });
+    }
+};
+
+export const desactivarEmpresaContacto = async (req, res) => {
+    try {
+        const empresaContacto = await EmpresaContacto.findOne({
+            where: {
+                EntidadNegocioId: req.body.EntidadNegocioId,
+                ContactoId: req.body.ContactoId,
+            },
+        });
+
+        if (!empresaContacto) {
+            return res
+                .status(404)
+                .json({ status: 404, message: 'La relación EmpresaContacto no existe' });
+        }
+
+        await empresaContacto.update({
+            Borrado: true,
+            BorradoPor: req.body.BorradoPor
+        });
+        
+        await Contacto.update({
+            Borrado: true,
+            BorradoPor: req.body.BorradoPor
+        }, {
+            where: {
+                ContactoId: req.body.ContactoId
+            }
+        });
+        
+        res
+            .status(200)
+            .json({ message: 'Relación EmpresaContacto desactivada: ' + empresaContacto.EntidadNegocioId });
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+};
+
+// EMPRESA X TELEFONO
+const buscarTelefonoPorEntidadNegocioId = async (req, res) => {
+    const entidadId = req.params.id;
+    try {
+        console.log(entidadId);
+        const telefono = await sequelize.query(
+            'CALL buscarTelefonoPorEntidadNegocioId(?)',
+            {
+                replacements: [entidadId],
+                type: sequelize.QueryTypes.RAW,
+            },
+        );
+
+        if (telefono.length === 0) {
+            res.status(404).json({ message: 'No existe un teléfono relacionado con esta empresa' });
+        } else {
+            res.json(telefono);
+        }
+    } catch (error) {
+        console.error('Error al obtener el teléfono:', error.message);
+        res.status(500).json({ error: 'Error al obtener el teléfono' });
+    }
+};
+
+const crearTelefonoEmpresa = async (req, res) => {
+    const { NumeroTelefonico, ContactoId, CreadoPor: creadoPor, EntidadNegocioId } = req.body;
+
+    try {
+        const nuevoTelefono = await Telefono.create({
+            NumeroTelefonico,
+            ContactoId,
+            CreadoPor: creadoPor
+        });
+
+        const nuevoTelefonoEmpresa = await EmpresaTelefono.create({
+            EntidadNegocioId,
+            CreadoPor: creadoPor
+        });
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se ha creado el teléfono de la empresa',
+            telefono: nuevoTelefono,
+            telefonoEmpresa: nuevoTelefonoEmpresa
+        });
+    } catch (error) {
+        console.log('Error al crear el teléfono de la empresa', error.message);
+        res.status(500).json({ error: 'Error al crear el teléfono de la empresa' });
+    }
+};
+
+
 export const  methods = {
     obtenerIdEmpresa,
     buscarIdEmpresa,
@@ -287,4 +528,10 @@ export const  methods = {
     editarIdEmpresa,
 	obtenerRegimenesFiscales,
     desactivarIdEmpresa,
+	buscarTelefonoPorEntidadNegocioId,
+	crearTelefonoEmpresa,
+	buscarContactosPorEntidadNegocioId,
+	crearEmpresaContacto,
+	editarEmpresaContacto,
+    desactivarEmpresaContacto
 };

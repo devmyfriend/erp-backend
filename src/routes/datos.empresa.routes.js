@@ -356,4 +356,240 @@ router.get(
     methods.obtenerRegimenesFiscales,
 );
 
-export default router;
+/**
+ * @swagger
+ * /api/v1/empresa/{id}/telefono:
+ *   get:
+ *     summary: Obtener teléfono de la entidad de negocio por ID
+ *     tags: [Datos Empresa]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la entidad de negocio
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Teléfono de la entidad de negocio
+ *         content:
+ *           application/json:
+ *             Telefono:
+ *               type: object
+ *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
+ *                 NumeroTelefono:
+ *                   type: string
+ */
+
+router.get('/:id/telefono', 
+param('id', 'El parametro debe ser un entero').isNumeric(),
+methods.buscarTelefonoPorEntidadNegocioId);
+
+/**
+ * @swagger
+ * /api/v1/empresa/telefono/crear:
+ *   post:
+ *     summary: Crea un nuevo teléfono para la entidad de negocio
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NumeroTelefonico:
+ *                 type: string
+ *               CreadoPor:
+ *                 type: integer
+ *     responses:
+ *       200:
+ *         description: Teléfono de la empresa creado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Telefono'
+ */
+router.post('/telefono/crear', methods.crearTelefonoEmpresa);
+
+/**
+ * @swagger
+ * /api/v1/empresa/contactos/{id}:
+ *   get:
+ *     summary: Obtiene los contactos de una entidad de negocio por su ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: El ID de la entidad de negocio
+ *     responses:
+ *       200:
+ *         description: Lista de contactos de la entidad de negocio
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Contacto'
+ *       404:
+ *         description: No se encontraron contactos para la entidad de negocio
+ *         content:
+ *           application/json:
+ *             example:
+ *               message: "No existen contactos relacionados con esta empresa"
+ *       500:
+ *         description: Error del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
+ */
+router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresacontacto/crear:
+ *   post:
+ *     summary: Crea una nueva relación EmpresaContacto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               contacto:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ContactoId:
+ *                       type: integer
+ *                     SucursalId:
+ *                       type: integer
+ *                     ApellidoPaterno:
+ *                       type: string
+ *                     ApellidoMaterno:
+ *                       type: string
+ *                     Nombres:
+ *                       type: string
+ *                     Departamento:
+ *                       type: string
+ *                     Puesto:
+ *                       type: string
+ *                     CreadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Relación creada con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 data:
+ *                   $ref: '#/components/schemas/EmpresaContacto'
+ *       400:
+ *         description: Cuerpo de la petición inválido
+ *       500:
+ *         description: Internal Server Error
+ */
+router.post('/empresacontacto/crear', methods.crearEmpresaContacto);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresacontacto/editar:
+ *   patch:
+ *     summary: Actualiza una relación EmpresaContacto
+ *     tags: [EmpresaContacto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               contacto:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ContactoId:
+ *                       type: integer
+ *                     SucursalId:
+ *                       type: integer
+ *                     ApellidoPaterno:
+ *                       type: string
+ *                     ApellidoMaterno:
+ *                       type: string
+ *                     Nombres:
+ *                       type: string
+ *                     Departamento:
+ *                       type: string
+ *                     Puesto:
+ *                       type: string
+ *                     ActualizadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: La relación EmpresaContacto se ha actualizado correctamente
+ *       400:
+ *         description: Error, ya existe una relación con esta EntidadNegocioId
+ *       404:
+ *         description: Empresa o Contacto no encontrado
+ *       500:
+ *         description: Error al actualizar la relación EmpresaContacto
+ */
+router.patch('/empresacontacto/editar', methods.editarEmpresaContacto);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresacontacto/desactivar:
+ *   delete:
+ *     summary: Desactiva una relación EmpresaContacto
+ *     description: Cambia el valor de 'Borrado' a true para la relación EmpresaContacto con el EntidadNegocioId y ContactoId proporcionados
+ *     tags: [EmpresaContacto]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               ContactoId:
+ *                 type: integer
+ *               BorradoPor:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: La relación EmpresaContacto se ha desactivado correctamente
+ *       404:
+ *         description: La relación EmpresaContacto no existe
+ *       500:
+ *         description: Error al desactivar la relación EmpresaContacto
+ */
+router.delete('/empresacontacto/desactivar', methods.desactivarEmpresaContacto);
+
+
+export default router;                                              
