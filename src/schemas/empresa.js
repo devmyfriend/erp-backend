@@ -195,3 +195,9 @@ export const crearEmpresaContactoSchema = [
 	body('contacto.*.ActualizadoPor')
 		.optional()
 ];
+
+
+export const editarContactoEmailsSchema = [
+	body('email.*.Email')
+		.optional()
+];

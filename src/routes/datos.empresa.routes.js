@@ -356,67 +356,14 @@ router.get(
     methods.obtenerRegimenesFiscales,
 );
 
-/**
- * @swagger
- * /api/v1/empresa/{id}/telefono:
- *   get:
- *     summary: Obtener teléfono de la entidad de negocio por ID
- *     tags: [Datos Empresa]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la entidad de negocio
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Teléfono de la entidad de negocio
- *         content:
- *           application/json:
- *             Telefono:
- *               type: object
- *               properties:
- *                 EntidadNegocioId:
- *                   type: integer
- *                 NumeroTelefono:
- *                   type: string
- */
 
-router.get('/:id/telefono', 
-param('id', 'El parametro debe ser un entero').isNumeric(),
-methods.buscarTelefonoPorEntidadNegocioId);
-
-/**
- * @swagger
- * /api/v1/empresa/telefono/crear:
- *   post:
- *     summary: Crea un nuevo teléfono para la entidad de negocio
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               NumeroTelefonico:
- *                 type: string
- *               CreadoPor:
- *                 type: integer
- *     responses:
- *       200:
- *         description: Teléfono de la empresa creado exitosamente
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/Telefono'
- */
-router.post('/telefono/crear', methods.crearTelefonoEmpresa);
 
 /**
  * @swagger
  * /api/v1/empresa/contactos/{id}:
  *   get:
+ *     tags:
+ *       - EmpresaContacto
  *     summary: Obtiene los contactos de una entidad de negocio por su ID
  *     parameters:
  *       - in: path
@@ -453,6 +400,8 @@ router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
  * @swagger
  * /api/v1/empresa/empresacontacto/crear:
  *   post:
+ *     tags:
+ *       - EmpresaContacto
  *     summary: Crea una nueva relación EmpresaContacto
  *     requestBody:
  *       required: true
@@ -591,5 +540,309 @@ router.patch('/empresacontacto/editar', methods.editarEmpresaContacto);
  */
 router.delete('/empresacontacto/desactivar', methods.desactivarEmpresaContacto);
 
+// EMPRESA-TELEFONOS CRUD
 
-export default router;                                              
+/**
+ * @swagger
+ * /api/v1/empresa/{id}/telefono:
+ *   get:
+ *     tags:
+ *       - EmpresaTelefono
+ *     summary: Obtener teléfono de la entidad de negocio por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la entidad de negocio
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Teléfono de la entidad de negocio
+ *         content:
+ *           application/json:
+ *             Telefono:
+ *               type: object
+ *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
+ *                 NumeroTelefono:
+ *                   type: string
+ */
+router.get('/:id/telefono', 
+param('id', 'El parametro debe ser un entero').isNumeric(),
+methods.buscarTelefonoPorEntidadNegocioId);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresatelefono/crear:
+ *   post:
+ *     tags:
+ *       - EmpresaTelefono
+ *     summary: Crea una nueva relación EmpresaTelefono
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               telefono:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     NumeroTelefonico:
+ *                       type: string
+ *                     ContactoId:
+ *                       type: integer
+ *                     CreadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: La relación EmpresaTelefono se ha creado correctamente
+ *       500:
+ *         description: Error al crear la relación EmpresaTelefono
+ */
+router.post('/empresatelefono/crear', methods.crearEmpresaTelefono);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresatelefono/editar:
+ *   patch:
+ *     tags:
+ *       - EmpresaTelefono
+ *     summary: Actualiza una relación EmpresaTelefono existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               telefono:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     NumeroTelefonico:
+ *                       type: string
+ *                     ContactoId:
+ *                       type: integer
+ *                     ActualizadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: La relación EmpresaTelefono se ha actualizado correctamente
+ *       400:
+ *         description: Cuerpo de la petición inválido
+ *       500:
+ *         description: Error al actualizar la relación EmpresaTelefono
+ */
+router.patch('/empresatelefono/editar', methods.editarEmpresaTelefono);
+
+/**
+ * @swagger
+ * /api/v1/empresa/empresatelefono/desactivar:
+ *   delete:
+ *     tags:
+ *       - EmpresaTelefono
+ *     summary: Desactiva una relación EmpresaTelefono existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               TelefonoId:
+ *                 type: integer
+ *               BorradoPor:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Relación EmpresaTelefono desactivada
+ *       404:
+ *         description: La relación EmpresaTelefono no existe
+ *       500:
+ *         description: Error del servidor
+ */
+router.delete('/empresatelefono/desactivar', methods.desactivarEmpresaTelefono);
+
+
+// EMPRESA-EMAIL CRUD
+
+/**
+ * @swagger
+ * /api/v1/empresa/{id}/emails:
+ *   get:
+ *     tags:
+ *       - EmpresaEmail
+ *     summary: Obtener emails de la entidad de negocio por ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID de la entidad de negocio
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Emails de la entidad de negocio
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   EntidadNegocioId:
+ *                     type: integer
+ *                   Email:
+ *                     type: string
+ *       404:
+ *         description: No existen emails relacionados con esta empresa
+ *       500:
+ *         description: Error al obtener los emails
+ */
+router.get('/:id/emails', methods.buscarEmailsPorEntidadNegocioId);
+
+/**
+ * @swagger
+ * /api/v1/empresa/contacto/emails:
+ *   post:
+ *     tags:
+ *       - EmpresaEmail
+ *     summary: Crear una relación EmpresaEmail
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               email:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ContactoId:
+ *                       type: integer
+ *                     Email:
+ *                       type: string
+ *                     CreadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Se ha creado la relación EmpresaEmail
+ *       404:
+ *         description: La empresa no existe
+ *       500:
+ *         description: Error al crear la relación EmpresaEmail
+ */
+router.post('/contacto/emails', methods.crearContactoEmails);
+
+/**
+ * @swagger
+ * /api/v1/empresa/contacto/emails:
+ *   patch:
+ *     tags:
+ *       - EmpresaEmail
+ *     summary: Editar una relación EmpresaEmail
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               email:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ContactoId:
+ *                       type: integer
+ *                     Email:
+ *                       type: string
+ *                     ActualizadoPor:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Se ha actualizado el email
+ *       404:
+ *         description: La empresa o el email no existe
+ *       500:
+ *         description: Error al actualizar el email
+ */
+router.patch('/contacto/emails', methods.editarContactoEmails);
+
+/**
+ * @swagger
+ * /api/v1/empresa/contacto/emails:
+ *   delete:
+ *     tags:
+ *       - EmpresaEmail
+ *     summary: Eliminar una relación EmpresaEmail
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               empresa:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EntidadNegocioId:
+ *                       type: integer
+ *               email:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     EmailId:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Se ha eliminado el email
+ *       404:
+ *         description: La empresa o el email no existe
+ *       500:
+ *         description: Error al eliminar el email
+ */
+router.delete('/contacto/emails', methods.desactivarContactoEmails);
+
+export default router;
