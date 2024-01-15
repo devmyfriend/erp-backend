@@ -3,7 +3,7 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 const obtenerPaises = async (req, res) => {
 	try {
 		const paises = await sequelize.query(
-			`CALL sp_pais_colonias(1, NUll, NULL, NULL)`,
+			`CALL sp_pais_colonias(1, NUll, NULL, NULL, NULL)`,
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
@@ -21,7 +21,7 @@ const obtenerEstadoPorPais = async (req, res) => {
 
 	try {
 		const estados = await sequelize.query(
-			`CALL sp_pais_colonias(2, '${paisId}', NULL, NULL);`,
+			`CALL sp_pais_colonias(2, '${paisId}', NULL, NULL, NULL);`,
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
@@ -39,7 +39,7 @@ const obtenerColonias = async (req, res) => {
 
 	try {
 		const colonias = await sequelize.query(
-			`CALL sp_pais_colonias(3, NULL, '${cp}', '${clavePais}')`,
+			`CALL sp_pais_colonias(3, NULL, '${cp}', '${clavePais}', NULL)`,
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
