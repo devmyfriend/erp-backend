@@ -1,17 +1,16 @@
 import { Contacto } from '../models/contacto.model.js';
 import { Email } from '../models/email.model.js';
 import { Telefono } from '../models/telefono.model.js';
+import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Op } from 'sequelize';
 
 const obtenerContactos = async (req, res) => {
 	try {
 		const idSucursal = req.params.id;
 
-		const contactos = await Contacto.findAll({
-			where: {
-				SucursalId: idSucursal,
-				Borrado: 0,
-			},
+		const contactos = await sequelize.query(' CALL sp_contacto_sucursal(?)', {
+			replacements: [idSucursal],
+			type: sequelize.QueryTypes.RAW,
 		});
 
 		res.json(contactos);

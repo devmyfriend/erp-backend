@@ -10,10 +10,6 @@ export const Contacto = Connection.define(
 			allowNull: false,
 			autoIncrement: true,
 		},
-		SucursalId: {
-			type: DataTypes.INTEGER,
-			allowNull: false,
-		},
 		ApellidoPaterno: {
 			type: DataTypes.STRING,
 			allowNull: false,
