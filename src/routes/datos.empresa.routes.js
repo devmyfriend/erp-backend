@@ -410,34 +410,22 @@ router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               contacto:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ContactoId:
- *                       type: integer
- *                     SucursalId:
- *                       type: integer
- *                     ApellidoPaterno:
- *                       type: string
- *                     ApellidoMaterno:
- *                       type: string
- *                     Nombres:
- *                       type: string
- *                     Departamento:
- *                       type: string
- *                     Puesto:
- *                       type: string
- *                     CreadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               SucursalId:
+ *                 type: integer
+ *               Nombres:
+ *                 type: string
+ *               ApellidoPaterno:
+ *                 type: string
+ *               ApellidoMaterno:
+ *                 type: string
+ *               Departamento:
+ *                 type: string
+ *               Puesto:
+ *                 type: string
+ *               CreadoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Relación creada con éxito
@@ -455,7 +443,7 @@ router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
  *       500:
  *         description: Internal Server Error
  */
-router.post('/empresacontacto/crear', methods.crearEmpresaContacto);
+router.post('/empresacontacto/crear', methods.crearEmpresaContacto);    
 
 /**
  * @swagger
@@ -470,34 +458,22 @@ router.post('/empresacontacto/crear', methods.crearEmpresaContacto);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               contacto:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ContactoId:
- *                       type: integer
- *                     SucursalId:
- *                       type: integer
- *                     ApellidoPaterno:
- *                       type: string
- *                     ApellidoMaterno:
- *                       type: string
- *                     Nombres:
- *                       type: string
- *                     Departamento:
- *                       type: string
- *                     Puesto:
- *                       type: string
- *                     ActualizadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               ContactoId:
+ *                 type: integer
+ *               Nombres:
+ *                 type: string
+ *               ApellidoPaterno:
+ *                 type: string
+ *               ApellidoMaterno:
+ *                 type: string
+ *               Departamento:
+ *                 type: string
+ *               Puesto:
+ *                 type: string
+ *               ActualizadoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: La relación EmpresaContacto se ha actualizado correctamente
@@ -587,24 +563,14 @@ methods.buscarTelefonoPorEntidadNegocioId);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               telefono:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     NumeroTelefonico:
- *                       type: string
- *                     ContactoId:
- *                       type: integer
- *                     CreadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               NumeroTelefonico:
+ *                 type: string
+ *               ContactoId:
+ *                 type: integer
+ *               CreadoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha creado correctamente
@@ -729,7 +695,7 @@ router.get('/:id/emails', methods.buscarEmailsPorEntidadNegocioId);
  *   post:
  *     tags:
  *       - EmpresaEmail
- *     summary: Crear una relación EmpresaEmail
+ *     summary: Crea una nueva relación EmpresaEmail
  *     requestBody:
  *       required: true
  *       content:
@@ -737,27 +703,15 @@ router.get('/:id/emails', methods.buscarEmailsPorEntidadNegocioId);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               email:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ContactoId:
- *                       type: integer
- *                     Email:
- *                       type: string
- *                     CreadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               Email:
+ *                 type: string
+ *               CreadorPor:
+ *                 type: integer
  *     responses:
  *       200:
- *         description: Se ha creado la relación EmpresaEmail
+ *         description: La relación EmpresaEmail se ha creado correctamente
  *       404:
  *         description: La empresa no existe
  *       500:
@@ -821,20 +775,12 @@ router.patch('/contacto/emails', methods.editarContactoEmails);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               email:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EmailId:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               EmailId:
+ *                 type: integer
+ *               BorradoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Se ha eliminado el email
