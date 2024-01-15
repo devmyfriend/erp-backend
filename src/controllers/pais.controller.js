@@ -38,18 +38,35 @@ const obtenerColonias = async (req, res) => {
 	const { cp, clave_pais: clavePais } = req.body;
 
 	try {
-		const colonias = await sequelize.query(
+		const colonia = await sequelize.query(
 			`CALL sp_pais_colonias(3, NULL, '${cp}', '${clavePais}', NULL)`,
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
 		);
 
-		res.json(colonias);
+		const lol = await filtroLocalidades(
+			cp,
+			clavePais,
+			colonia[0].ClaveColonia,
+		);
+
+		res.json({ colonias: colonia, localidades: lol });
 	} catch (error) {
 		console.error('Error al obtener las colonias', error.message);
 		res.status(500).json({ error: 'Error al obtener las colonias' });
 	}
+};
+
+const filtroLocalidades = async (cp, clavePais, claveColonia) => {
+	const localidades = await sequelize.query(
+		`CALL sp_pais_colonias(4, NULL,${cp},'${clavePais}','${claveColonia}')`,
+		{
+			type: sequelize.QueryTypes.RAW,
+		},
+	);
+
+	return localidades;
 };
 
 export const methods = {
