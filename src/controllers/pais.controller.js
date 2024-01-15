@@ -35,11 +35,11 @@ const obtenerEstadoPorPais = async (req, res) => {
 };
 
 const obtenerColonias = async (req, res) => {
-	const { cp, clave_pais: clavePais } = req.body;
+	const { cp,  ClaveEstado } = req.body;
 
 	try {
 		const colonia = await sequelize.query(
-			`CALL sp_pais_colonias(3, NULL, '${cp}', '${clavePais}', NULL)`,
+			`CALL sp_pais_colonias(3, NULL, '${cp}', '${ClaveEstado}', NULL)`,
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
@@ -47,7 +47,7 @@ const obtenerColonias = async (req, res) => {
 
 		const lol = await filtroLocalidades(
 			cp,
-			clavePais,
+			ClaveEstado,
 			colonia[0].ClaveColonia,
 		);
 

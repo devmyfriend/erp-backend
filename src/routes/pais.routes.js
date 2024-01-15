@@ -89,7 +89,7 @@ router.get(
  *   post:
  *     tags:
  *       - País
- *     summary: Obtener colonias por código postal y clave de país
+ *     summary: Obtener colonias por código postal y clave de estado
  *     requestBody:
  *       required: true
  *       content:
@@ -100,7 +100,7 @@ router.get(
  *                   cp:
  *                     type: number
  *                     example: 77518
- *                   clave_pais:
+ *                   ClaveEstado:
  *                     type: string
  *                     example: "ROO"
  *     responses:
@@ -129,10 +129,10 @@ router.post(
 		.isInt()
 		.notEmpty()
 		.withMessage('El campo cp no puede estar vacío'),
-	body('clave_pais', 'El parametro clave_pais debe ser un string')
+	body('ClaveEstado', 'El parametro ClaveEstado debe ser un string')
 		.isString()
 		.notEmpty()
-		.withMessage('El campo clave_pais no puede estar vacío'),
+		.withMessage('El campo ClaveEstado no puede estar vacío'),
 	middleware.validateSchema,
 	methods.obtenerColonias,
 );
