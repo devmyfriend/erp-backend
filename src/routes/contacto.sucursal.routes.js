@@ -188,10 +188,17 @@ router.get(
 );
 /**
  * @swagger
- * /api/v1/contacto/crear:
+ * /api/v1/contacto/crear/{id}:
  *   post:
  *     summary: Crear un nuevo contacto
  *     tags: [Contactos Por sucursal]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la sucursal
  *     requestBody:
  *       required: true
  *       content:
@@ -270,7 +277,7 @@ router.get(
  */
 
 router.post(
-	'/crear',
+	'/crear/:id',
 	schemas.crearContactoSchema,
 	middleware.validateSchema,
 	contactoController.crearContacto,

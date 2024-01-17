@@ -4,6 +4,7 @@ import { Telefono } from '../models/telefono.model.js';
 import { Connection as sequelize } from '../database/mariadb.database.js';
 import { ContactoCorreo } from '../models/contacto.correos.model.js';
 import { ContactoTelefono } from '../models/contacto.telefonos.model.js';
+import { ContactoSucursal } from '../models/contacto.sucursal.model.js';
 
 const obtenerContactos = async (req, res) => {
 	try {
@@ -67,9 +68,16 @@ const obtenerDatosContacto = async (req, res) => {
 };
 
 const crearContacto = async (req, res) => {
+	const sucursalId = req.params.id;
+
 	try {
 		const data = req.body;
 		const contactoCreado = await Contacto.create(data);
+
+		await ContactoSucursal.create({
+			ContactoId: contactoCreado.dataValues.ContactoId,
+			SucursalId: sucursalId,
+		});
 		res.json({ success: true, data: contactoCreado.toJSON() });
 	} catch (error) {
 		console.error('Error al crear contacto:', error.message);
