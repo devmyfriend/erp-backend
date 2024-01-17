@@ -44,10 +44,6 @@ export const actualizarContactoSchema = [
 		.withMessage('El campo ContactoId no puede estar vacío')
 		.isInt()
 		.withMessage('El campo ContactoId debe ser un número entero'),
-	body('SucursalId')
-		.optional()
-		.isInt()
-		.withMessage('El campo SucursalId debe ser un número entero'),
 	body('ApellidoPaterno')
 		.optional()
 		.isString()
