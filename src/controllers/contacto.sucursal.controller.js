@@ -47,18 +47,14 @@ const obtenerDatosContacto = async (req, res) => {
 	try {
 		const idContacto = req.params.id;
 
-		const email = await Email.findAll({
-			where: {
-				ContactoId: idContacto,
-				Borrado: 0,
-			},
+		const email = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [2, idContacto],
+			type: sequelize.QueryTypes.RAW,
 		});
 
-		const tel = await Telefono.findAll({
-			where: {
-				ContactoId: idContacto,
-				Borrado: 0,
-			},
+		const tel = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [1, idContacto],
+			type: sequelize.QueryTypes.RAW,
 		});
 
 		res.json({ email, telefono: tel });
