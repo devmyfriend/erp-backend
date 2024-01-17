@@ -184,6 +184,8 @@ const desactivarContacto = async (req, res) => {
 	}
 };
 
+
+// CORREO
 const crearCorreo = async (req, res) => {
 	try {
 		const data = req.body;
@@ -193,8 +195,17 @@ const crearCorreo = async (req, res) => {
 		if (!contacto) {
 			return res.status(404).json({ error: 'Contacto no encontrado' });
 		}
-		const correoCreado = await Email.create(data);
+		const correoCreado = await Email.create({
+			Email: data.Email,
+			CreadoPor: data.CreadoPor,
+		});
+		
 
+		
+		 await ContactoCorreo.create({
+			ContactoId: data.ContactoId,
+			EmailId: correoCreado.dataValues.EmailId,
+		 });
 		res.status(201).json({ success: true, data: correoCreado.toJSON() });
 	} catch (error) {
 		console.error('Error al crear correo:', error.message);
@@ -267,6 +278,11 @@ const crearTelefono = async (req, res) => {
 			return res.status(404).json({ error: 'Contacto no encontrado' });
 		}
 		const telefonoCreado = await Telefono.create(data);
+
+		await ContactoTelefono.create({
+			ContactoId: data.ContactoId,
+			TelefonoId: telefonoCreado.dataValues.TelefonoId,
+		 });
 		return res.status(200).json(telefonoCreado.toJSON());
 	} catch (error) {
 		console.error('Error al agregar el telefono:', error.message);
