@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
 export const Contacto = Connection.define(
-	'SucursalContacto',
+	'Contacto',
 	{
 		ContactoId: {
 			type: DataTypes.INTEGER,
@@ -52,7 +52,7 @@ export const Contacto = Connection.define(
 	},
 	{
 		sequelize: Connection,
-		modelName: 'SucursalContacto',
+		modelName: 'Contacto',
 		tableName: 'orgContactos',
 		timestamps: false,
 		freezeTableName: false,

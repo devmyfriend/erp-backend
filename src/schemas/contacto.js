@@ -1,11 +1,6 @@
 import { body } from 'express-validator';
 
 export const crearContactoSchema = [
-	body('SucursalId')
-		.notEmpty()
-		.withMessage('El campo SucursalId no puede estar vacío')
-		.isInt()
-		.withMessage('El campo SucursalId debe ser un número entero'),
 	body('ApellidoPaterno')
 		.notEmpty()
 		.withMessage('El campo ApellidoPaterno no puede estar vacío')

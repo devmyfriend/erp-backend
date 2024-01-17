@@ -233,7 +233,6 @@ router.get(
  *                 type: integer
  *                 description: ID del usuario que actualiza el contacto
  *           example:
- *             SucursalId: 1010
  *             ApellidoPaterno: "García"
  *             ApellidoMaterno: "López"
  *             Nombres: "Juan Carlos"
@@ -250,7 +249,6 @@ router.get(
  *               success: true
  *               data:
  *                 ContactoId: 1
- *                 SucursalId: 1010
  *                 ApellidoPaterno: "García"
  *                 ApellidoMaterno: "López"
  *                 Nombres: "Juan Carlos"
