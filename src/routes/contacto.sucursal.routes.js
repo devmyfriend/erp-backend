@@ -10,10 +10,10 @@ const router = Router();
  *   - name: Contactos Por sucursal
  *     description: Operaciones relacionadas con los contactos segun la sucursal
  *
- *   - name: Correos
+ *   - name: Correos Contacto
  *     description: Operaciones relacionadas con los correos segun el contacto
  *
- *   - name: Telefonos
+ *   - name: Telefonos Contacto
  *     description: Operaciones relacionadas con los telefono segun el contacto
  */
 
@@ -530,7 +530,7 @@ router.delete(
  * /api/v1/contacto/crear/correo:
  *   post:
  *     summary: Crear un nuevo correo electrónico para un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -600,7 +600,7 @@ router.post(
  * /api/v1/contacto/editar/correo:
  *   patch:
  *     summary: Editar un correo electrónico existente de un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -669,7 +669,7 @@ router.patch(
  * /api/v1/contacto/correo/borrar:
  *   delete:
  *     summary: Desactivar un correo electrónico de un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -728,7 +728,7 @@ router.delete(
  * /api/v1/contacto/crear/telefono:
  *   post:
  *     summary: Crear un nuevo número telefónico para un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -795,7 +795,7 @@ router.post(
  * /api/v1/contacto/editar/telefono:
  *   patch:
  *     summary: Editar un número telefónico existente de un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -861,7 +861,7 @@ router.patch(
  * /api/v1/contacto/telefono/borrar:
  *   delete:
  *     summary: Desactivar un número telefónico de un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
