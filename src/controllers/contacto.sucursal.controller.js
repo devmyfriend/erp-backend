@@ -2,6 +2,8 @@ import { Contacto } from '../models/contacto.model.js';
 import { Email } from '../models/email.model.js';
 import { Telefono } from '../models/telefono.model.js';
 import { Connection as sequelize } from '../database/mariadb.database.js';
+import { ContactoCorreo } from '../models/contacto.correos.model.js';
+import { ContactoTelefono } from '../models/contacto.telefonos.model.js';
 
 const obtenerContactos = async (req, res) => {
 	try {
@@ -47,13 +49,13 @@ const obtenerDatosContacto = async (req, res) => {
 	try {
 		const idContacto = req.params.id;
 
-		const email = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
-			replacements: [2, idContacto],
+		const tel = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [1, idContacto],
 			type: sequelize.QueryTypes.RAW,
 		});
 
-		const tel = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
-			replacements: [1, idContacto],
+		const email = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [2, idContacto],
 			type: sequelize.QueryTypes.RAW,
 		});
 
@@ -88,8 +90,16 @@ const agregarDetalleContacto = async (req, res) => {
 			data.Correos.map(async correo => {
 				return await Email.create({
 					Email: correo.correo,
-					ContactoId: data.ContactoId,
 					CreadoPor: data.CreadoPor,
+				});
+			}),
+		);
+		// Asignar correos
+		await Promise.all(
+			correosCreados.map(async correo => {
+				await ContactoCorreo.create({
+					ContactoId: data.ContactoId,
+					EmailId: correo.EmailId,
 				});
 			}),
 		);
@@ -98,8 +108,17 @@ const agregarDetalleContacto = async (req, res) => {
 			data.Telefonos.map(async telefono => {
 				return await Telefono.create({
 					NumeroTelefonico: telefono.telefono,
-					ContactoId: data.ContactoId,
 					CreadoPor: data.CreadoPor,
+				});
+			}),
+		);
+
+		// Asignar telefonos
+		await Promise.all(
+			telefonosCreados.map(async tel => {
+				await ContactoTelefono.create({
+					ContactoId: data.ContactoId,
+					TelefonoId: tel.TelefonoId,
 				});
 			}),
 		);
