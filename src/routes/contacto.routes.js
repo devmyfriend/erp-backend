@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { methods as contactoController } from '../controllers/contacto.controller.js';
+import { methods } from '../controllers/contacto.empresa.controller.js';
 import { param } from 'express-validator';
 import * as schemas from '../schemas/contacto.js';
 import * as middleware from '../middlewares/express-validator.js';
@@ -904,5 +905,67 @@ router.delete(
 	middleware.validateSchema,
 	contactoController.desactivarTelefono,
 );
+
+/**
+ * @swagger
+ * /api/v1/contacto/buscartelefono/{id}:
+ *   get:
+ *     tags:
+ *       - Contacto
+ *     summary: Obtiene los teléfonos de un contacto por su ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: ID del contacto
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de teléfonos del contacto
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   // Define las propiedades de los teléfonos aquí
+ *       404:
+ *         description: No existen teléfonos relacionados con este contacto
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/buscartelefono/:id', methods.buscarTelefonosPorContactoId);
+
+/**
+ * @swagger
+ * /api/v1/contacto/creartelefono:
+ *   post:
+ *     tags:
+ *       - Contacto
+ *     summary: Crea un teléfono para un contacto
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ContactoId:
+ *                 type: integer
+ *                 description: ID del contacto
+ *               NumeroTelefonico:
+ *                 type: string
+ *                 description: Número de teléfono del contacto
+ *     responses:
+ *       200:
+ *         description: Se ha creado la relación ContactoTelefono
+ *       404:
+ *         description: El contacto no existe
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post('/creartelefono', methods.crearContactoTelefono);
 
 export default router;

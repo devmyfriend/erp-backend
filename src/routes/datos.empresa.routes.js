@@ -593,24 +593,14 @@ router.post('/empresatelefono/crear', methods.crearEmpresaTelefono);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               telefono:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     NumeroTelefonico:
- *                       type: string
- *                     ContactoId:
- *                       type: integer
- *                     ActualizadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               NumeroTelefonico:
+ *                 type: string
+ *               ContactoId:
+ *                 type: integer
+ *               ActualizadoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha actualizado correctamente
@@ -733,24 +723,14 @@ router.post('/contacto/emails', methods.crearContactoEmails);
  *           schema:
  *             type: object
  *             properties:
- *               empresa:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     EntidadNegocioId:
- *                       type: integer
- *               email:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ContactoId:
- *                       type: integer
- *                     Email:
- *                       type: string
- *                     ActualizadoPor:
- *                       type: integer
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               ContactoId:
+ *                 type: integer
+ *               Email:
+ *                 type: string
+ *               ActualizadoPor:
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Se ha actualizado el email
@@ -790,5 +770,81 @@ router.patch('/contacto/emails', methods.editarContactoEmails);
  *         description: Error al eliminar el email
  */
 router.delete('/contacto/emails', methods.desactivarContactoEmails);
+
+
+/**
+ * @swagger
+ * /api/v1/empresa:
+ *   get:
+ *     tags:
+ *       - Datos Empresa
+ *     summary: Obtiene una lista de todas las empresas
+ *     responses:
+ *       200:
+ *         description: Lista de empresas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   EntidadNegocioId:
+ *                     type: integer
+ *                   NombreOficial:
+ *                     type: string
+ *                   NombreComercial:
+ *                     type: string
+ *                   RFC:
+ *                     type: string
+ *                   ClaveRegimenFiscal:
+ *                     type: integer
+ *                   PersonaMoral:
+ *                     type: integer
+ *                   PersonaFisica:
+ *                     type: integer
+ *                   DomicilioId:
+ *                     type: integer
+ *                   Calle:
+ *                     type: string
+ *                   CodigoPostal:
+ *                     type: string
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/', methods.obtenerEmpresas);
+
+/**
+ * @swagger
+ * tags:
+ *   name: Datos Empresa
+ *   description: Operaciones relacionadas con la empresa
+ * 
+ * /api/v1/empresa/BuscarEmpresasPorNombreOficial/{nombre}:
+ *   get:
+ *     tags: [Datos Empresa]
+ *     summary: Buscar empresas por nombre oficial
+ *     description: Devuelve una lista de empresas que coinciden con el nombre oficial proporcionado
+ *     parameters:
+ *       - in: path
+ *         name: nombre
+ *         required: true
+ *         description: Nombre oficial de la empresa
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Lista de empresas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/BuscarEmpresasPorNombreOficial/:nombre', methods.buscarEmpresasPorNombreOficial);
+
 
 export default router;

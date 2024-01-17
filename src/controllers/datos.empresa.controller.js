@@ -10,54 +10,38 @@ import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
 import { Email } from '../models/email.model.js';
 import { EmpresaEmails } from '../models/empresa.emails.model.js';
 
-const obtenerIdEmpresa = async (req, res) => {
-	try {
-		const id = req.params.id; 
-		const empresa = await EntidadNegocio.findByPk(id, {
-			attributes: [
-				'EntidadNegocioId',
-				'EsPropietaria',
-				'RFC',
-				'NombreComercial',
-				'ClavePais',
-				'TaxId',
-				'ClaveRegimenFisca;',
-				'PersonaFisica',
-				'PersonaMoral',
-				'NombreOficial',
-				'Estatus',
-			],
-			include: [
-				{
-					model: Domicilio,
-					as: 'domicilio',
-					attributes: [
-						'DomicilioId',
-						'Calle',
-						'NumeroExt',
-						'NumeroInt',
-						'CodigoPostal',
-						'ClaveEstado',
-						'ClaveMunicipio',
-						'ClaveLocalidad',
-						'ClaveColonia',
-						'ClavePais',
-					],
-				},
-			],
-		});
-		console.log(empresa);
-		if (!empresa) {
-			return res
-				.status(404)
-				.json({ error: 'No se encontró la empresa con el ID proporcionado' });
-		}
 
-		res.json(empresa);
-	} catch (error) {
-		console.log('Error al obtener el id de la empresa', error.message);
-		res.status(500).json({ error: 'Internal Server Error' });
-	}
+const obtenerEmpresas = async (req, res) => {
+    try {
+        const empresas = await sequelize.query(
+            'CALL ObtenerEmpresasDomicilioListado()',
+            { type: sequelize.QueryTypes.RAW }
+        );
+
+        res.json(empresas);
+    } catch (error) {
+        console.error('Error al obtener las empresas:', error.message);
+        res.status(500).json({ error: 'Error al obtener las empresas' });
+    }
+};
+
+
+const buscarEmpresasPorNombreOficial = async (req, res) => {
+    const nombreOficial = req.params.nombre;
+    try {
+        const empresas = await sequelize.query(
+            'CALL BuscarEmpresasPorNombreOficial(?)',
+            { 
+                replacements: [nombreOficial], 
+                type: sequelize.QueryTypes.RAW 
+            }
+        );
+
+        res.json(empresas);
+    } catch (error) {
+        console.error('Error al buscar las empresas:', error.message);
+        res.status(500).json({ error: 'Error al buscar las empresas' });
+    }
 };
 
 
@@ -72,6 +56,22 @@ const buscarIdEmpresa = async (req, res) => {
                 type: sequelize.QueryTypes.RAW,
             },
         );
+
+            const validarEmpresa = await EmpresaDomicilio.findOne({
+                where: {  
+                    EntidadNegocioId: entidadId,
+                },
+            });
+
+            if (!validarEmpresa) {
+                return res.status(404).json({ message: 'La empresa no existe o esta borrada' });
+            }
+
+
+        if (!entidad || entidad.Borrado === 1) {
+            return res.status(404).json({ message: 'La empresa está eliminada o no existe' });
+        }
+
 
         res.json(entidad);
     } catch (error) {
@@ -716,7 +716,6 @@ const desactivarContactoEmails = async (req, res) => {
 
 export const  methods = {
     obtenerRegimenesFiscales,
-    obtenerIdEmpresa,
     buscarIdEmpresa,
     crearIdEmpresa,
     editarIdEmpresa,
@@ -732,5 +731,7 @@ export const  methods = {
     buscarEmailsPorEntidadNegocioId,
     crearContactoEmails,
     editarContactoEmails,
-    desactivarContactoEmails
+    desactivarContactoEmails,
+    obtenerEmpresas,
+    buscarEmpresasPorNombreOficial
 };
