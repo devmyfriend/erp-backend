@@ -57,7 +57,7 @@ const router = Router();
  *                 ApellidoPaterno: García
  *                 Departamento: Marketing
  *                 Puesto: Gerente de Marketing
- * 				   
+ *
  *
  *
  *       400:
@@ -112,8 +112,10 @@ router.get(
  *               success: true
  *               data:
  *                 - ContactoId: 2
- *                   SucursalId: 1010
- *                   Nombres: "Juan"
+ *                   NombreContacto: "Laura"
+ *                   ApellidoPaterno: "García"
+ *                   ApellidoMaterno: "Fernández"
+ *                   Departamento: "Marketing"
  *                   Puesto: "Gerente"
  *       400:
  *         description: Error de validación. Los datos proporcionados no son válidos.

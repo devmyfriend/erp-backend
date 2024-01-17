@@ -2,7 +2,6 @@ import { Contacto } from '../models/contacto.model.js';
 import { Email } from '../models/email.model.js';
 import { Telefono } from '../models/telefono.model.js';
 import { Connection as sequelize } from '../database/mariadb.database.js';
-import { Op } from 'sequelize';
 
 const obtenerContactos = async (req, res) => {
 	try {
@@ -12,6 +11,10 @@ const obtenerContactos = async (req, res) => {
 			replacements: [idSucursal],
 			type: sequelize.QueryTypes.RAW,
 		});
+
+		if (contactos.length < 1) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
 
 		res.json(contactos);
 	} catch (error) {
@@ -24,15 +27,15 @@ const buscarContacto = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const result = await Contacto.findAll({
-			where: {
-				Nombres: {
-					[Op.like]: `%${data.Nombre}%`,
-				},
-				SucursalId: data.SucursalId,
-				Borrado: 0,
-			},
+		const result = await sequelize.query('CALL BuscarContacto(?, ?);', {
+			replacements: [data.SucursalId, data.Nombre],
+			type: sequelize.QueryTypes.RAW,
 		});
+
+		if (result.length < 1) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
 		res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		console.error('Error al obtener datos de contacto:', error.message);
