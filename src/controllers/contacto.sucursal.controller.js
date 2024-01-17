@@ -1,18 +1,23 @@
 import { Contacto } from '../models/contacto.model.js';
 import { Email } from '../models/email.model.js';
 import { Telefono } from '../models/telefono.model.js';
-import { Op } from 'sequelize';
+import { Connection as sequelize } from '../database/mariadb.database.js';
+import { ContactoCorreo } from '../models/contacto.correos.model.js';
+import { ContactoTelefono } from '../models/contacto.telefonos.model.js';
+import { ContactoSucursal } from '../models/contacto.sucursal.model.js';
 
 const obtenerContactos = async (req, res) => {
 	try {
 		const idSucursal = req.params.id;
 
-		const contactos = await Contacto.findAll({
-			where: {
-				SucursalId: idSucursal,
-				Borrado: 0,
-			},
+		const contactos = await sequelize.query(' CALL sp_contacto_sucursal(?)', {
+			replacements: [idSucursal],
+			type: sequelize.QueryTypes.RAW,
 		});
+
+		if (contactos.length < 1) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
 
 		res.json(contactos);
 	} catch (error) {
@@ -25,15 +30,15 @@ const buscarContacto = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const result = await Contacto.findAll({
-			where: {
-				Nombres: {
-					[Op.like]: `%${data.Nombre}%`,
-				},
-				SucursalId: data.SucursalId,
-				Borrado: 0,
-			},
+		const result = await sequelize.query('CALL BuscarContacto(?, ?);', {
+			replacements: [data.SucursalId, data.Nombre],
+			type: sequelize.QueryTypes.RAW,
 		});
+
+		if (result.length < 1) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
 		res.status(201).json({ success: true, data: result });
 	} catch (error) {
 		console.error('Error al obtener datos de contacto:', error.message);
@@ -45,18 +50,14 @@ const obtenerDatosContacto = async (req, res) => {
 	try {
 		const idContacto = req.params.id;
 
-		const email = await Email.findAll({
-			where: {
-				ContactoId: idContacto,
-				Borrado: 0,
-			},
+		const tel = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [1, idContacto],
+			type: sequelize.QueryTypes.RAW,
 		});
 
-		const tel = await Telefono.findAll({
-			where: {
-				ContactoId: idContacto,
-				Borrado: 0,
-			},
+		const email = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+			replacements: [2, idContacto],
+			type: sequelize.QueryTypes.RAW,
 		});
 
 		res.json({ email, telefono: tel });
@@ -67,9 +68,16 @@ const obtenerDatosContacto = async (req, res) => {
 };
 
 const crearContacto = async (req, res) => {
+	const sucursalId = req.params.id;
+
 	try {
 		const data = req.body;
 		const contactoCreado = await Contacto.create(data);
+
+		await ContactoSucursal.create({
+			ContactoId: contactoCreado.dataValues.ContactoId,
+			SucursalId: sucursalId,
+		});
 		res.json({ success: true, data: contactoCreado.toJSON() });
 	} catch (error) {
 		console.error('Error al crear contacto:', error.message);
@@ -90,8 +98,16 @@ const agregarDetalleContacto = async (req, res) => {
 			data.Correos.map(async correo => {
 				return await Email.create({
 					Email: correo.correo,
-					ContactoId: data.ContactoId,
 					CreadoPor: data.CreadoPor,
+				});
+			}),
+		);
+		// Asignar correos
+		await Promise.all(
+			correosCreados.map(async correo => {
+				await ContactoCorreo.create({
+					ContactoId: data.ContactoId,
+					EmailId: correo.EmailId,
 				});
 			}),
 		);
@@ -100,8 +116,17 @@ const agregarDetalleContacto = async (req, res) => {
 			data.Telefonos.map(async telefono => {
 				return await Telefono.create({
 					NumeroTelefonico: telefono.telefono,
-					ContactoId: data.ContactoId,
 					CreadoPor: data.CreadoPor,
+				});
+			}),
+		);
+
+		// Asignar telefonos
+		await Promise.all(
+			telefonosCreados.map(async tel => {
+				await ContactoTelefono.create({
+					ContactoId: data.ContactoId,
+					TelefonoId: tel.TelefonoId,
 				});
 			}),
 		);
@@ -176,8 +201,15 @@ const crearCorreo = async (req, res) => {
 		if (!contacto) {
 			return res.status(404).json({ error: 'Contacto no encontrado' });
 		}
-		const correoCreado = await Email.create(data);
+		const correoCreado = await Email.create({
+			Email: data.Email,
+			CreadoPor: data.CreadoPor,
+		});
 
+		await ContactoCorreo.create({
+			ContactoId: data.ContactoId,
+			EmailId: correoCreado.dataValues.EmailId,
+		});
 		res.status(201).json({ success: true, data: correoCreado.toJSON() });
 	} catch (error) {
 		console.error('Error al crear correo:', error.message);
@@ -250,6 +282,11 @@ const crearTelefono = async (req, res) => {
 			return res.status(404).json({ error: 'Contacto no encontrado' });
 		}
 		const telefonoCreado = await Telefono.create(data);
+
+		await ContactoTelefono.create({
+			ContactoId: data.ContactoId,
+			TelefonoId: telefonoCreado.dataValues.TelefonoId,
+		});
 		return res.status(200).json(telefonoCreado.toJSON());
 	} catch (error) {
 		console.error('Error al agregar el telefono:', error.message);

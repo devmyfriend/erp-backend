@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods as contactoController } from '../controllers/contacto.controller.js';
+import { methods as contactoController } from '../controllers/contacto.sucursal.controller.js';
 import { param } from 'express-validator';
 import * as schemas from '../schemas/contacto.js';
 import * as middleware from '../middlewares/express-validator.js';
@@ -7,13 +7,13 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   - name: Contactos
+ *   - name: Contactos Por sucursal
  *     description: Operaciones relacionadas con los contactos segun la sucursal
  *
- *   - name: Correos
+ *   - name: Correos Contacto
  *     description: Operaciones relacionadas con los correos segun el contacto
  *
- *   - name: Telefonos
+ *   - name: Telefonos Contacto
  *     description: Operaciones relacionadas con los telefono segun el contacto
  */
 
@@ -38,7 +38,7 @@ const router = Router();
  * /api/v1/contacto/{id}:
  *   get:
  *     summary: Obtener contactos por ID de sucursal
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     parameters:
  *       - in: path
  *         name: id
@@ -53,9 +53,13 @@ const router = Router();
  *           application/json:
  *             example:
  *               - ContactoId: 1
- *                 SucursalId: 1010
- *                 Nombres: Sebastian
- *                 Puesto: Gerente
+ *                 NombreContacto: Laura
+ *                 ApellidoPaterno: García
+ *                 Departamento: Marketing
+ *                 Puesto: Gerente de Marketing
+ *
+ *
+ *
  *       400:
  *         description: Error en la solicitud
  *         content:
@@ -82,7 +86,7 @@ router.get(
  * /api/v1/contacto/buscar:
  *   post:
  *     summary: Buscar contacto por nombre y sucursal
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     requestBody:
  *       required: true
  *       content:
@@ -108,8 +112,10 @@ router.get(
  *               success: true
  *               data:
  *                 - ContactoId: 2
- *                   SucursalId: 1010
- *                   Nombres: "Juan"
+ *                   NombreContacto: "Laura"
+ *                   ApellidoPaterno: "García"
+ *                   ApellidoMaterno: "Fernández"
+ *                   Departamento: "Marketing"
  *                   Puesto: "Gerente"
  *       400:
  *         description: Error de validación. Los datos proporcionados no son válidos.
@@ -137,7 +143,7 @@ router.post(
  * /api/v1/contacto/detalle/{id}:
  *   get:
  *     summary: Obtener detalles del contacto por ID
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     parameters:
  *       - in: path
  *         name: id
@@ -182,10 +188,17 @@ router.get(
 );
 /**
  * @swagger
- * /api/v1/contacto/crear:
+ * /api/v1/contacto/crear/{id}:
  *   post:
  *     summary: Crear un nuevo contacto
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID de la sucursal
  *     requestBody:
  *       required: true
  *       content:
@@ -227,7 +240,6 @@ router.get(
  *                 type: integer
  *                 description: ID del usuario que actualiza el contacto
  *           example:
- *             SucursalId: 1010
  *             ApellidoPaterno: "García"
  *             ApellidoMaterno: "López"
  *             Nombres: "Juan Carlos"
@@ -244,7 +256,6 @@ router.get(
  *               success: true
  *               data:
  *                 ContactoId: 1
- *                 SucursalId: 1010
  *                 ApellidoPaterno: "García"
  *                 ApellidoMaterno: "López"
  *                 Nombres: "Juan Carlos"
@@ -266,7 +277,7 @@ router.get(
  */
 
 router.post(
-	'/crear',
+	'/crear/:id',
 	schemas.crearContactoSchema,
 	middleware.validateSchema,
 	contactoController.crearContacto,
@@ -277,7 +288,7 @@ router.post(
  * /api/v1/contacto/crear/datos:
  *   post:
  *     summary: Agregar detalles (correos y teléfonos) a un contacto existente
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     requestBody:
  *       required: true
  *       content:
@@ -368,7 +379,7 @@ router.post(
  * /api/v1/contacto/editar:
  *   patch:
  *     summary: Editar un contacto existente
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     requestBody:
  *       required: true
  *       content:
@@ -459,7 +470,7 @@ router.patch(
  * /api/v1/contacto/borrar:
  *   delete:
  *     summary: Desactivar un contacto existente
- *     tags: [Contactos]
+ *     tags: [Contactos Por sucursal]
  *     requestBody:
  *       required: true
  *       content:
@@ -519,7 +530,7 @@ router.delete(
  * /api/v1/contacto/crear/correo:
  *   post:
  *     summary: Crear un nuevo correo electrónico para un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -589,7 +600,7 @@ router.post(
  * /api/v1/contacto/editar/correo:
  *   patch:
  *     summary: Editar un correo electrónico existente de un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -658,7 +669,7 @@ router.patch(
  * /api/v1/contacto/correo/borrar:
  *   delete:
  *     summary: Desactivar un correo electrónico de un contacto
- *     tags: [Correos]
+ *     tags: [Correos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -717,7 +728,7 @@ router.delete(
  * /api/v1/contacto/crear/telefono:
  *   post:
  *     summary: Crear un nuevo número telefónico para un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -784,7 +795,7 @@ router.post(
  * /api/v1/contacto/editar/telefono:
  *   patch:
  *     summary: Editar un número telefónico existente de un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
@@ -850,7 +861,7 @@ router.patch(
  * /api/v1/contacto/telefono/borrar:
  *   delete:
  *     summary: Desactivar un número telefónico de un contacto
- *     tags: [Telefonos]
+ *     tags: [Telefonos Contacto]
  *     requestBody:
  *       required: true
  *       content:
