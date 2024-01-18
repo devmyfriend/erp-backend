@@ -10,6 +10,9 @@ const router = Router();
  *   - name: Contactos Por sucursal
  *     description: Operaciones relacionadas con los contactos segun la sucursal
  *
+ *   - name: Detalle del Contacto
+ *     description: Operaciones relacionadas con los contactos segun su ID
+ * 
  *   - name: Correos Contacto
  *     description: Operaciones relacionadas con los correos segun el contacto
  *
@@ -142,8 +145,8 @@ router.post(
  * @swagger
  * /api/v1/contacto/detalle/{id}:
  *   get:
- *     summary: Obtener detalles del contacto por ID de la sucursal
- *     tags: [Contactos Por sucursal]
+ *     summary: Obtener detalles del contacto por ID del contacto
+ *     tags: [Detalle del Contacto]
  *     parameters:
  *       - in: path
  *         name: id
@@ -288,7 +291,7 @@ router.post(
  * /api/v1/contacto/datos:
  *   post:
  *     summary: Agregar detalles (correos y teléfonos) a un contacto existente
- *     tags: [Contactos Por sucursal]
+ *     tags: [Detalle del Contacto]
  *     requestBody:
  *       required: true
  *       content:
