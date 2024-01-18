@@ -142,7 +142,7 @@ router.post(
  * @swagger
  * /api/v1/contacto/detalle/{id}:
  *   get:
- *     summary: Obtener detalles del contacto por ID
+ *     summary: Obtener detalles del contacto por ID de la sucursal
  *     tags: [Contactos Por sucursal]
  *     parameters:
  *       - in: path
