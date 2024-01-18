@@ -12,9 +12,6 @@ export const Email = Connection.define(
 		Email: {
 			type: DataTypes.STRING,
 		},
-		ContactoId: {
-			type: DataTypes.INTEGER,
-		},
 		CreadoPor: {
 			type: DataTypes.INTEGER,
 		},
