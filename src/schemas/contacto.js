@@ -115,7 +115,7 @@ export const desactivarContactoSchema = [
 		.withMessage('El campo BorradoPor debe ser un número entero'),
 ];
 
-export const crearCorreoSchema = [
+export const crearCorreoContactoSchema = [
 	body('Email')
 		.notEmpty()
 		.withMessage('El campo Email no puede estar vacío')

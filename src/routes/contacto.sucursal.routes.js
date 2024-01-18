@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods as contactoController } from '../controllers/contacto.sucursal.controller.js';
+import { methods } from '../controllers/contacto.sucursal.controller.js';
 import { param } from 'express-validator';
 import * as schemas from '../schemas/contacto.js';
 import * as middleware from '../middlewares/express-validator.js';
@@ -78,7 +78,7 @@ router.get(
 	'/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	middleware.validateSchema,
-	contactoController.obtenerContactos,
+	methods.obtenerContactos,
 );
 
 /**
@@ -136,13 +136,13 @@ router.post(
 	'/buscar',
 	schemas.BuscarContactoSchema,
 	middleware.validateSchema,
-	contactoController.buscarContacto,
+	methods.buscarContacto,
 );
 /**
  * @swagger
  * /api/v1/contacto/detalle/{id}:
  *   get:
- *     summary: Obtener detalles del contacto por ID
+ *     summary: Obtener detalles del contacto por ID de la sucursal
  *     tags: [Contactos Por sucursal]
  *     parameters:
  *       - in: path
@@ -184,7 +184,7 @@ router.get(
 	'/detalle/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	middleware.validateSchema,
-	contactoController.obtenerDatosContacto,
+	methods.obtenerDatosContacto,
 );
 /**
  * @swagger
@@ -280,12 +280,12 @@ router.post(
 	'/crear/:id',
 	schemas.crearContactoSchema,
 	middleware.validateSchema,
-	contactoController.crearContacto,
+	methods.crearContacto,
 );
 
 /**
  * @swagger
- * /api/v1/contacto/crear/datos:
+ * /api/v1/contacto/datos:
  *   post:
  *     summary: Agregar detalles (correos y teléfonos) a un contacto existente
  *     tags: [Contactos Por sucursal]
@@ -369,10 +369,10 @@ router.post(
  */
 
 router.post(
-	'/crear/datos',
+	'/datos',
 	schemas.agregarDetalleContacto,
 	middleware.validateSchema,
-	contactoController.agregarDetalleContacto,
+	methods.agregarDetalleContacto,
 );
 /**
  * @swagger
@@ -463,7 +463,7 @@ router.patch(
 	'/editar',
 	schemas.actualizarContactoSchema,
 	middleware.validateSchema,
-	contactoController.editarContacto,
+	methods.editarContacto,
 );
 /**
  * @swagger
@@ -522,12 +522,12 @@ router.delete(
 	'/borrar',
 	schemas.desactivarContactoSchema,
 	middleware.validateSchema,
-	contactoController.desactivarContacto,
+	methods.desactivarContacto,
 );
 
 /**
  * @swagger
- * /api/v1/contacto/crear/correo:
+ * /api/v1/contacto/correo:
  *   post:
  *     summary: Crear un nuevo correo electrónico para un contacto
  *     tags: [Correos Contacto]
@@ -590,10 +590,10 @@ router.delete(
  */
 
 router.post(
-	'/crear/correo',
-	schemas.crearCorreoSchema,
+	'/correo',
+	schemas.crearCorreoContactoSchema,
 	middleware.validateSchema,
-	contactoController.crearCorreo,
+	methods.crearCorreo,
 );
 /**
  * @swagger
@@ -662,7 +662,7 @@ router.patch(
 	'/editar/correo',
 	schemas.editarCorreoSchema,
 	middleware.validateSchema,
-	contactoController.editarCorreo,
+	methods.editarCorreo,
 );
 /**
  * @swagger
@@ -721,11 +721,11 @@ router.delete(
 	'/correo/borrar',
 	schemas.desactivarCorreoSchema,
 	middleware.validateSchema,
-	contactoController.desactivarCorreo,
+	methods.desactivarCorreo,
 );
 /**
  * @swagger
- * /api/v1/contacto/crear/telefono:
+ * /api/v1/contacto/telefono:
  *   post:
  *     summary: Crear un nuevo número telefónico para un contacto
  *     tags: [Telefonos Contacto]
@@ -785,10 +785,10 @@ router.delete(
  */
 
 router.post(
-	'/crear/telefono',
+	'/telefono',
 	schemas.crearTelefonoSchema,
 	middleware.validateSchema,
-	contactoController.crearTelefono,
+	methods.crearTelefono,
 );
 /**
  * @swagger
@@ -854,7 +854,7 @@ router.patch(
 	'/editar/telefono',
 	schemas.editarTelefonoSchema,
 	middleware.validateSchema,
-	contactoController.editarTelefono,
+	methods.editarTelefono,
 );
 /**
  * @swagger
@@ -913,7 +913,7 @@ router.delete(
 	'/telefono/borrar',
 	schemas.desactivarTelefonoSchema,
 	middleware.validateSchema,
-	contactoController.desactivarTelefono,
+	methods.desactivarTelefono,
 );
 
 export default router;
