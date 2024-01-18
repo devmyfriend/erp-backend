@@ -38,6 +38,16 @@ const crearContactoTelefono = async (req, res) => {
             return res.status(404).json({ message: 'El contacto no existe' });
         }
         
+        const validarTelofonoExistente = await Telefono.findOne({
+            where: {
+                NumeroTelefonico: telefonoBody.NumeroTelefonico,
+            },
+        });
+
+        if (validarTelofonoExistente){
+            return res.status(404).json({ message: 'El teléfono ya se encuentra vinculado con otro contacto' });
+        }
+
         const datosTelefono = await Telefono.create(telefonoBody)
 
         await ContactoTelefono.create({
@@ -55,7 +65,93 @@ const crearContactoTelefono = async (req, res) => {
     }
 };
 
+const actualizarContactoTelefono = async (req, res) => {
+    const { ContactoId, TelefonoId, NumeroTelefonico } = req.body;
+
+    try {
+        const contactoTelefono = await ContactoTelefono.findOne({
+            where: {
+                ContactoId: ContactoId,
+                TelefonoId: TelefonoId
+            },
+        });
+
+        if (!contactoTelefono){
+            return res.status(404).json({ message: 'La relación ContactoTelefono no existe' });
+        }
+
+        await Telefono.update({ NumeroTelefonico: NumeroTelefonico }, {
+            where: {
+                TelefonoId: TelefonoId,
+            },
+        });
+
+        res.status(200).json({
+            status: 200,
+            message: 'Se ha actualizado el teléfono del contacto',
+        });
+    } catch (error) {
+        console.error('Error al actualizar el teléfono del contacto:', error);
+        if (error.name === 'SequelizeValidationError') {
+            return res.status(400).json({ error: 'Error de validación' });
+        }
+        res.status(500).json({ error: 'Error al actualizar el teléfono del contacto' });
+    }
+};
+
+const desactivarContactoTelefono = async (req, res) => {
+    try {
+        const contactoTelefono = await ContactoTelefono.findOne({
+            where: {
+                ContactoId: req.body.ContactoId,
+                TelefonoId: req.body.TelefonoId,
+            },
+        });
+
+        if (!contactoTelefono) {
+            return res
+                .status(404)
+                .json({ status: 404, message: 'La relación ContactoTelefono no existe' });
+        }
+
+        const verificarTelefonoDesactivado = await Telefono.findOne({
+            where: {
+                TelefonoId: req.body.TelefonoId,
+                Borrado: 1
+            }
+        });
+
+        if (verificarTelefonoDesactivado) {
+            return res
+                .status(404)
+                .json({ status: 404, message: 'El teléfono ya se encuentra desactivado' });
+        }
+
+        await contactoTelefono.update({
+            Borrado: 1,
+            BorradoPor: req.body.BorradoPor
+        });
+        
+        await Telefono.update({
+            Borrado: 1,
+            BorradoPor: req.body.BorradoPor
+        }, {
+            where: {
+                TelefonoId: req.body.TelefonoId
+            }
+        });
+
+        res
+            .status(200)
+            .json({ message: 'El TelefonoId ' + contactoTelefono.TelefonoId + ' fue desactivado'});
+    } catch (error) {
+        return res.status(500).json(error.message);
+    }
+};
+
 export const methods = {
     buscarTelefonosPorContactoId,
-    crearContactoTelefono
+    crearContactoTelefono,
+    actualizarContactoTelefono,
+    desactivarContactoTelefono
 }

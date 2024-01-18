@@ -57,15 +57,6 @@ const buscarIdEmpresa = async (req, res) => {
             },
         );
 
-            const validarEmpresa = await EmpresaDomicilio.findOne({
-                where: {  
-                    EntidadNegocioId: entidadId,
-                },
-            });
-
-            if (!validarEmpresa) {
-                return res.status(404).json({ message: 'La empresa no existe o esta borrada' });
-            }
 
 
         if (!entidad || entidad.Borrado === 1) {

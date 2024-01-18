@@ -908,10 +908,10 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/contacto/buscartelefono/{id}:
+ * /api/v1/contacto/telefono/buscar/{id}:
  *   get:
  *     tags:
- *       - Contacto
+ *       - Contacto Telefono
  *     summary: Obtiene los teléfonos de un contacto por su ID
  *     parameters:
  *       - in: path
@@ -936,14 +936,14 @@ router.delete(
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/buscartelefono/:id', methods.buscarTelefonosPorContactoId);
+router.get('/telefono/buscar/:id', methods.buscarTelefonosPorContactoId);
 
 /**
  * @swagger
- * /api/v1/contacto/creartelefono:
+ * /api/v1/contacto/telefono/crear:
  *   post:
  *     tags:
- *       - Contacto
+ *       - Contacto Telefono
  *     summary: Crea un teléfono para un contacto
  *     requestBody:
  *       required: true
@@ -958,6 +958,9 @@ router.get('/buscartelefono/:id', methods.buscarTelefonosPorContactoId);
  *               NumeroTelefonico:
  *                 type: string
  *                 description: Número de teléfono del contacto
+ *               CreadoPor:
+ *                 type: integer
+ *                 description: ID del usuario que crea el contacto
  *     responses:
  *       200:
  *         description: Se ha creado la relación ContactoTelefono
@@ -966,6 +969,75 @@ router.get('/buscartelefono/:id', methods.buscarTelefonosPorContactoId);
  *       500:
  *         description: Error interno del servidor
  */
-router.post('/creartelefono', methods.crearContactoTelefono);
+router.post('/telefono/crear', methods.crearContactoTelefono);
+
+/**
+ * @swagger
+ * /api/v1/contacto/telefono/editar:
+ *   patch:
+ *     tags:
+ *       - Contacto Telefono
+ *     summary: Actualiza un teléfono de contacto
+ *     requestBody:
+ *       description: Datos del teléfono a actualizar
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ContactoId:
+ *                 type: integer
+ *               TelefonoId:
+ *                 type: integer
+ *               NumeroTelefonico:
+ *                 type: string
+ *               ActualizadoPor:
+ *                 type: integer
+ *                 description: ID del usuario que actualiza el contacto
+ *                 default: 1
+ *     responses:
+ *       200:
+ *         description: Teléfono de contacto actualizado
+ *       400:
+ *         description: Error de validación
+ *       404:
+ *         description: El contacto o el teléfono no existen
+ *       500:
+ *         description: Error al actualizar el teléfono del contacto
+ */
+router.patch('/telefono/editar', methods.actualizarContactoTelefono);
+
+/**
+ * @swagger
+ * /api/v1/contacto/telefono/desactivar:
+ *   delete:
+ *     tags:
+ *       - Contacto Telefono
+ *     summary: Desactiva un teléfono de contacto
+ *     requestBody:
+ *       description: Datos del teléfono a desactivar
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ContactoId:
+ *                 type: integer
+ *               TelefonoId:
+ *                 type: integer
+ *               BorradoPor:
+ *                 type: integer
+ *                 default: 1
+ *     responses:
+ *       200:
+ *         description: Teléfono de contacto desactivado
+ *       404:
+ *         description: La relación ContactoTelefono no existe
+ *       500:
+ *         description: Error al desactivar el teléfono del contacto
+ */
+router.delete('/telefono/desactivar', methods.desactivarContactoTelefono);
 
 export default router;
