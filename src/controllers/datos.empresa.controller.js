@@ -304,7 +304,9 @@ const buscarContactosPorEntidadNegocioId = async (req, res) => {
 
 
 const crearEmpresaContacto = async (req, res) => {
-    const contactoBody = req.body;
+    const { EmpresaId: EntidadNegocioId, ...restoDelCuerpo } = req.body;
+    const contactoBody = { EntidadNegocioId, ...restoDelCuerpo };
+
     try {
         const validarEmpresa = await EntidadNegocio.findOne({
             where: {
@@ -316,7 +318,6 @@ const crearEmpresaContacto = async (req, res) => {
             return res.status(404).json({ message: 'La empresa ya esta en uso' });
         }
         
-
         const datosContacto = await Contacto.create(contactoBody)
 
         await EmpresaContacto.create({
@@ -333,7 +334,6 @@ const crearEmpresaContacto = async (req, res) => {
         res.status(500).json({ error: 'Error al crear la relación EmpresaContacto' });
     }
 };
-
 
 const editarEmpresaContacto = async (req, res) => {
     const contactoBody = req.body;

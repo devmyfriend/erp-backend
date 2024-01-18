@@ -410,9 +410,7 @@ router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
- *                 type: integer
- *               SucursalId:
+ *               EmpresaId:
  *                 type: integer
  *               Nombres:
  *                 type: string

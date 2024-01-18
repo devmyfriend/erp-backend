@@ -47,5 +47,4 @@ const router = Router();
  */
 router.get('/sat/:codigoPostal', datosDomicilioController.obtenerColoniasPorCodigoPostal);
 
-
 export default router;

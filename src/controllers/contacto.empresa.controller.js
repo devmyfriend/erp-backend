@@ -2,8 +2,6 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Contacto } from '../models/contacto.model.js';
 import { ContactoTelefono } from '../models/contacto.telefono.model.js';
 import { Telefono } from '../models/telefono.model.js';
-// import { ContactoEmail } from '../models/contacto.emails.model.js';
-// import { Email } from '../models/email.model.js';
 
 const buscarTelefonosPorContactoId = async (req, res) => {
     const contactoId = req.params.id;

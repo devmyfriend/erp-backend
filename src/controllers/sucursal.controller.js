@@ -15,6 +15,14 @@ const obtenerSucursales = async (req, res) => {
 			},
 		);
 
+		if(sucursales.length < 1){
+
+			return res.status(404).json({
+				status: 404,
+				message: 'La empresa no tiene sucursales',
+			});
+		}
+
 		res.json(sucursales);
 	} catch (error) {
 		console.error('Error al obtener las sucursales:', error.message);

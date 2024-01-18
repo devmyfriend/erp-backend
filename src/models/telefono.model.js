@@ -13,9 +13,6 @@ export const Telefono = Connection.define(
 		NumeroTelefonico: {
 			type: DataTypes.INTEGER,
 		},
-		ContactoId: {
-			type: DataTypes.INTEGER,
-		},
 		CreadoPor: {
 			type: DataTypes.INTEGER,
 		},
