@@ -285,7 +285,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/contacto/crear/datos:
+ * /api/v1/contacto/datos:
  *   post:
  *     summary: Agregar detalles (correos y teléfonos) a un contacto existente
  *     tags: [Contactos Por sucursal]
@@ -369,7 +369,7 @@ router.post(
  */
 
 router.post(
-	'/crear/datos',
+	'/datos',
 	schemas.agregarDetalleContacto,
 	middleware.validateSchema,
 	methods.agregarDetalleContacto,
