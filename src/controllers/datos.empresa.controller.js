@@ -1,6 +1,6 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-import { EntidadNegocio } from '../models/orgEntidadesNegocio.model.js';
-import { Domicilio } from '../models/orgDomicilios.model.js';
+import { EntidadNegocio } from '../models/empresa.model.js';
+import { Domicilio } from '../models/domicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 import { Telefono } from '../models/telefono.model.js';
@@ -122,7 +122,7 @@ const crearIdEmpresa = async (req, res) => {
 		console.log(crearEntidad.EntidadNegocioId);
 		res.status(200).json({
 			status: 200,
-			message: 'Se ha creado la entidad de negocio',
+			message: 'Se ha creado la empresa',
 		});
 	} catch (error) {
 		console.error('Error al crear la entidad de negocio:', error);
@@ -143,7 +143,7 @@ const editarIdEmpresa = async (req, res) => {
         if (!entidadExistente) {
             return res.status(404).json({
                 status: 404,
-                error: 'No se ha encontrado la entidad de negocio solicitada',
+                error: 'No se ha encontrado la empresa solicitada',
             });
         }
 
@@ -222,11 +222,11 @@ const editarIdEmpresa = async (req, res) => {
         });
 
         return res.status(200).json({
-            message: 'Entidad de negocio actualizada',
+            message: 'Empresa actualizada',
         });
     } catch (error) {
-        console.error('Error al actualizar la entidad de negocio:', error);
-        res.status(500).json({ error: 'Error al actualizar la entidad de negocio' });
+        console.error('Error al actualizar los datos de la empresa:', error);
+        res.status(500).json({ error: 'Error al actualizar los datos de la empresa' });
     }
 };
 
@@ -248,20 +248,20 @@ export const desactivarIdEmpresa = async (req, res) => {
         if (!entidad) {
             return res
                 .status(404)
-                .json({ status: 404, message: 'La entidad de negocio no existe' });
+                .json({ status: 404, message: 'La empresa no existe' });
         }
 
         if (entidad.Borrado === 1){
             return res
                 .status(404)
-                .json({ status: 404, message: 'La entidad de negocio ya está desactivada' });
+                .json({ status: 404, message: 'La empresa ya está desactivada' });
         }
 
         entidad.Borrado = true;
         entidad.BorradoPor = req.body.BorradoPor;
 
         await entidad.save();
-        res.status(200).json({ message: 'Entidad de negocio desactivada: ' + entidad.EntidadNegocioId });
+        res.status(200).json({ message: 'La empresa ' + entidad.EntidadNegocioId + ' ha sido desactivada' });
     } catch (error) {
         return res.status(500).json(error.message);
     }
