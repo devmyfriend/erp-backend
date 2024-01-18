@@ -1040,4 +1040,34 @@ router.patch('/telefono/editar', methods.actualizarContactoTelefono);
  */
 router.delete('/telefono/desactivar', methods.desactivarContactoTelefono);
 
+/**
+ * @swagger
+ * /api/v1/contacto/emails/buscar/{id}:
+ *   get:
+ *     tags:
+ *       - Contacto Emails
+ *     summary: Obtiene los emails de un contacto por su ID
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID del contacto
+ *     responses:
+ *       200:
+ *         description: Lista de emails del contacto
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Email'
+ *       404:
+ *         description: No existen emails relacionados con este contacto
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get('/emails/buscar/:id', methods.buscarEmailsPorContactoId);
+
 export default router;

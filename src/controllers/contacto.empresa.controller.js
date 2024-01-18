@@ -2,6 +2,8 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Contacto } from '../models/contacto.model.js';
 import { ContactoTelefono } from '../models/contacto.telefono.model.js';
 import { Telefono } from '../models/telefono.model.js';
+// import { ContactoEmail } from '../models/contacto.emails.model.js';
+// import { Email } from '../models/email.model.js';
 
 const buscarTelefonosPorContactoId = async (req, res) => {
     const contactoId = req.params.id;
@@ -36,16 +38,6 @@ const crearContactoTelefono = async (req, res) => {
 
         if (!validarContacto){
             return res.status(404).json({ message: 'El contacto no existe' });
-        }
-        
-        const validarTelofonoExistente = await Telefono.findOne({
-            where: {
-                NumeroTelefonico: telefonoBody.NumeroTelefonico,
-            },
-        });
-
-        if (validarTelofonoExistente){
-            return res.status(404).json({ message: 'El teléfono ya se encuentra vinculado con otro contacto' });
         }
 
         const datosTelefono = await Telefono.create(telefonoBody)
@@ -88,10 +80,9 @@ const actualizarContactoTelefono = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Se ha actualizado el teléfono del contacto',
+            message: 'Se ha actualizado el teléfono con exito',
         });
     } catch (error) {
-        console.error('Error al actualizar el teléfono del contacto:', error);
         if (error.name === 'SequelizeValidationError') {
             return res.status(400).json({ error: 'Error de validación' });
         }
@@ -149,9 +140,34 @@ const desactivarContactoTelefono = async (req, res) => {
     }
 };
 
+const buscarEmailsPorContactoId = async (req, res) => {
+    const contactoId = req.params.id;
+    try {
+        const emails = await sequelize.query(
+            'CALL ObtenerContactoEmails(?)',
+            {
+                replacements: [contactoId],
+                type: sequelize.QueryTypes.RAW,
+            },
+        );
+
+        if (emails.length === 0) {
+            res.status(404).json({ message: 'No existen emails relacionados con este contacto' });
+        } else {
+            res.json(emails);
+        }
+    } catch (error) {
+        console.error('Error al obtener los emails:', error.message);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
+
+
 export const methods = {
     buscarTelefonosPorContactoId,
     crearContactoTelefono,
     actualizarContactoTelefono,
-    desactivarContactoTelefono
+    desactivarContactoTelefono,
+    buscarEmailsPorContactoId
 }
