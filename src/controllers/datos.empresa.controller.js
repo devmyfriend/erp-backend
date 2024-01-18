@@ -26,7 +26,7 @@ const obtenerEmpresas = async (req, res) => {
 };
 
 
-const buscarEmpresasPorNombreOficial = async (req, res) => {
+const buscarPorNombreOficial = async (req, res) => {
     const nombreOficial = req.params.nombre;
     try {
         const empresas = await sequelize.query(
@@ -327,7 +327,7 @@ const crearEmpresaContacto = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Se ha creado la relación EmpresaContacto',
+            message: 'Contacto creado correctamente: ' + datosContacto.ContactoId,
         });
     } catch (error) {
         console.error('Error al crear la relación EmpresaContacto:', error);
@@ -379,7 +379,7 @@ const editarEmpresaContacto = async (req, res) => {
         });
 
         return res.status(200).json({
-            message: 'Se ha actualizado la relación EmpresaContacto',
+            message: 'Se ha actualizado el contacto',
         });
     } catch (error) {
         console.error('Error al actualizar la relación EmpresaContacto:', error);
@@ -399,7 +399,7 @@ export const desactivarEmpresaContacto = async (req, res) => {
         if (!empresaContacto) {
             return res
                 .status(404)
-                .json({ status: 404, message: 'La relación EmpresaContacto no existe' });
+                .json({ status: 404, message: 'El contacto no existe' });
         }
 
         await empresaContacto.update({
@@ -418,7 +418,7 @@ export const desactivarEmpresaContacto = async (req, res) => {
 
         res
             .status(200)
-            .json({ message: 'Relación EmpresaContacto desactivada: ' + empresaContacto.EntidadNegocioId });
+            .json({ message: 'Se ha desactivado el contacto: ' + empresaContacto.EntidadNegocioId });
     } catch (error) {
         return res.status(500).json(error.message);
     }
@@ -474,10 +474,10 @@ const crearEmpresaTelefono = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Se ha creado la relación EmpresaTelefono',
+            message: 'Se ha creado el telefono' + datosTelefono.TelefonoId,
         });
     } catch (error) {
-        console.error('Error al crear la relación EmpresaTelefono:', error);
+        console.error('Error al crear el telefono:', error);
         res.status(500).json({ error: 'Error al crear la relación EmpresaTelefono' });
     }
 };
@@ -524,7 +524,7 @@ const editarEmpresaTelefono = async (req, res) => {
         });
 
         return res.status(200).json({
-            message: 'Se ha actualizado la relación EmpresaTelefono',
+            message: 'Se ha actualizado el telefono' + actualizacionEmpresaTelefono.EntidadNegocioId,
         });
     } catch (error) {
         console.error('Error al actualizar la relación EmpresaTelefono:', error);
@@ -563,13 +563,13 @@ export const desactivarEmpresaTelefono = async (req, res) => {
 
         res
             .status(200)
-            .json({ message: 'Relación EmpresaTelefono desactivada: ' + empresaTelefono.EntidadNegocioId });
+            .json({ message: 'Se ha desactivado el telefono: ' + empresaTelefono.EntidadNegocioId });
     } catch (error) {
         return res.status(500).json(error.message);
     }
 };
 
-const buscarEmailsPorEntidadNegocioId = async (req, res) => {
+const buscarEmailsPorEmpresa = async (req, res) => {
     const entidadId = req.params.id;
     try {
         const emails = await sequelize.query(
@@ -591,7 +591,7 @@ const buscarEmailsPorEntidadNegocioId = async (req, res) => {
     }
 };
 
-const crearContactoEmails = async (req, res) => {
+const crearEmailEmpresa = async (req, res) => {
     const emailsBody = req.body;
 
     try {
@@ -617,13 +617,14 @@ const crearContactoEmails = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Se ha creado la relación EmpresaEmail',
+            message: 'Se ha creado el correo ' + datosEmail.EmailId + ' para la empresa ' + emailsBody.EntidadNegocioId,
         });
     } catch (error) {
-        console.error('Error al crear la relación EmpresaEmail:', error);
-        res.status(500).json({ error: 'Error al crear la relación EmpresaEmail' });
+        console.error('Error al crear el correo para la empresa:', error);
+        res.status(500).json({ error: 'Error al crear el correo' });
     }
 };
+
 
 const editarContactoEmails = async (req, res) => {
     const emailsBody = req.body;
@@ -680,7 +681,7 @@ const desactivarContactoEmails = async (req, res) => {
         if (!contactoEmail) {
             return res
                 .status(404)
-                .json({ status: 404, message: 'La relación ContactoEmail no existe' });
+                .json({ status: 404, message: 'El email no existe' });
         }
 
         await contactoEmail.update({
@@ -699,13 +700,13 @@ const desactivarContactoEmails = async (req, res) => {
 
         res
             .status(200)
-            .json({ message: 'Relación ContactoEmail desactivada: ' + contactoEmail.EntidadNegocioId });
+            .json({ message: 'Se ha descativado el correo: ' + contactoEmail.EntidadNegocioId });
     } catch (error) {
         return res.status(500).json(error.message);
     }
 };
 
-export const  methods = {
+export const methods = {
     obtenerRegimenesFiscales,
     buscarIdEmpresa,
     crearIdEmpresa,
@@ -719,10 +720,10 @@ export const  methods = {
     crearEmpresaContacto,
     editarEmpresaContacto,
     desactivarEmpresaContacto,
-    buscarEmailsPorEntidadNegocioId,
-    crearContactoEmails,
+    buscarEmailsPorEmpresa,
+    crearEmailEmpresa,
     editarContactoEmails,
     desactivarContactoEmails,
     obtenerEmpresas,
-    buscarEmpresasPorNombreOficial
+    buscarPorNombreOficial
 };

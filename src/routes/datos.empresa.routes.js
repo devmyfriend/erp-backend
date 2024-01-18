@@ -675,7 +675,7 @@ router.delete('/empresatelefono/desactivar', methods.desactivarEmpresaTelefono);
  *       500:
  *         description: Error al obtener los emails
  */
-router.get('/:id/emails', methods.buscarEmailsPorEntidadNegocioId);
+router.get('/:id/emails', methods.buscarEmailsPorEmpresa);
 
 /**
  * @swagger
@@ -705,7 +705,7 @@ router.get('/:id/emails', methods.buscarEmailsPorEntidadNegocioId);
  *       500:
  *         description: Error al crear la relación EmpresaEmail
  */
-router.post('/contacto/emails', methods.crearContactoEmails);
+router.post('/contacto/emails', methods.crearEmailEmpresa);
 
 /**
  * @swagger
@@ -842,7 +842,7 @@ router.get('/', methods.obtenerEmpresas);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/BuscarEmpresasPorNombreOficial/:nombre', methods.buscarEmpresasPorNombreOficial);
+router.get('/BuscarEmpresasPorNombreOficial/:nombre', methods.buscarPorNombreOficial);
 
 
 export default router;

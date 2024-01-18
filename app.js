@@ -4,13 +4,10 @@ import cors from 'cors';
 import morgan from 'morgan';
 
 // Rutas
-import testRoutes from './src/routes/test.routes.js';
 import paisRoutes from './src/routes/pais.routes.js';
 import contactoSucursalRoutes from './src/routes/contacto.sucursal.routes.js';
-import datosDomicilio from './src/routes/datos.domicilio.routes.js';
 import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
-import empresaContacto from './src/routes/empresa.contacto.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -38,13 +35,11 @@ const App = {
 		app.use('/docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 		// Rutas
-		app.use('/api/v1/test', testRoutes);
+
 		app.use('/api/v1/pais', paisRoutes);
 		app.use('/api/v1/contacto', contactoSucursalRoutes);
-		app.use('/api/v1/domicilio', datosDomicilio);
 		app.use('/api/v1/empresa', datosEmpresa);
 		app.use('/api/v1/sucursal', sucursalesRoutes);
-		app.use('/api/v1/contactoporempresa', empresaContacto);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
