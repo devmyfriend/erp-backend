@@ -1,6 +1,6 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
 import { EntidadNegocio } from '../models/orgEntidadesNegocio.model.js';
-import { Domicilio } from '../models/orgDomicilios.model.js';
+import { Domicilio } from '../models/domicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 
