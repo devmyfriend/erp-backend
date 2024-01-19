@@ -5,6 +5,7 @@ import morgan from 'morgan';
 
 // Rutas
 import paisRoutes from './src/routes/pais.routes.js';
+import catRoutes from './src/routes/catalogos.busquedas.routes.js';
 import contactoSucursalRoutes from './src/routes/contacto.sucursal.routes.js';
 import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
@@ -40,6 +41,7 @@ const App = {
 		app.use('/api/v1/contacto', contactoSucursalRoutes);
 		app.use('/api/v1/empresa', datosEmpresa);
 		app.use('/api/v1/sucursal', sucursalesRoutes);
+		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
