@@ -8,8 +8,11 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *   - name: Catálogos Y búsquedas
- *     description: Operaciones relacionadas con los Catálogos y sus busquedas
+ *   - name: Catálogo de códigos postales
+ *     description: Operaciones relacionadas con códigos postales
+ *
+ *   - name: Catálogo de colonias
+ *     description: Operaciones relacionadas con las colonias
  *
  *
  */
@@ -19,7 +22,7 @@ const router = Router();
  * /api/v1/catalogo/cp:
  *   get:
  *     summary: Obtener una lista de códigos postales
- *     tags: [Catálogos Y búsquedas]
+ *     tags: [Catálogo de códigos postales]
  *     responses:
  *       200:
  *         description: Lista de códigos postales
@@ -53,7 +56,7 @@ router.get('/cp', methods.getPostalCodes);
  * /api/v1/catalogo/cp/buscar:
  *   post:
  *     summary: Buscar códigos postales
- *     tags: [Catálogos Y búsquedas]
+ *     tags: [Catálogo de códigos postales]
  *     requestBody:
  *       required: true
  *       content:
@@ -99,5 +102,33 @@ router.post(
 	middleware.validateSchema,
 	methods.findPostalCodes,
 );
+
+/**
+ * @swagger
+ * /api/v1/catalogo/colonias:
+ *   get:
+ *     summary: Obtener la lista de colonias
+ *     tags: [Catálogo de colonias]
+ *     responses:
+ *       200:
+ *         description: Lista de colonias
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveColonia:
+ *                     type: string
+ *                     example: "0001"
+ *                   CodigoPostal:
+ *                     type: string
+ *                     example: "01000"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "San Ángel"
+ */
+router.get('/colonias', methods.findCol);
 
 export default router;
