@@ -85,9 +85,9 @@ const router = Router();
  *         description: Internal Server Error
  */
 router.get(
-    '/:id',
-    param('id', 'El parametro debe ser un entero').isNumeric(),
-    methods.buscarIdEmpresa,
+	'/:id',
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+	methods.buscarIdEmpresa,
 );
 
 // POST - /api/empresa
@@ -151,7 +151,7 @@ router.get(
  *                 type: string
  *               ClavePais:
  *                 type: string
- * /api/v1/empresa/datosempresa/crear:
+ * /api/v1/empresa/crear:
  *   post:
  *     summary: Crear una nueva entidad de negocio
  *     tags: [Datos Empresa]
@@ -179,18 +179,17 @@ router.get(
  *         description: Internal Server Error
  */
 router.post(
-    '/datosempresa/crear',
-    schemas.crearEmpresaSchema,
-    middleware.validateSchema,
-    methods.crearIdEmpresa,
+	'/crear',
+	schemas.crearEmpresaSchema,
+	middleware.validateSchema,
+	methods.crearIdEmpresa,
 );
-
 
 // UPDATE - /api/datosEmpresa
 
 /**
  * @swagger
- * /api/v1/empresa/datosempresa/editar/{id}:
+ * /api/v1/empresa/editar/{id}:
  *   patch:
  *     summary: Editar datos fiscales de la empresa
  *     tags: [Datos Empresa]
@@ -270,17 +269,18 @@ router.post(
  *       500:
  *         description: Internal Server Error
  */
-    router.patch('/datosempresa/editar/:id',
-    schemas.editarIdEmpresa,
-    middleware.validateSchema,
-    methods.editarIdEmpresa);
-
+router.patch(
+	'/editar/:id',
+	schemas.editarIdEmpresa,
+	middleware.validateSchema,
+	methods.editarIdEmpresa,
+);
 
 // DELETE - /api/datosEmpresa
 
 /**
  * @swagger
- * /api/v1/empresa/desactivarempresa/{id}:
+ * /api/v1/empresa/desactivar/{id}:
  *   delete:
  *     summary: Desactivar una entidad de negocio
  *     tags: [Datos Empresa]
@@ -319,10 +319,7 @@ router.post(
  *               error: "Error interno del servidor"
  */
 
-router.delete(
-    '/desactivarempresa/:id',
-    methods.desactivarIdEmpresa,
-);
+router.delete('/desactivar/:id', methods.desactivarIdEmpresa);
 
 /**
  * @swagger
@@ -351,12 +348,7 @@ router.delete(
  *       500:
  *         description: Internal Server Error
  */
-router.get(
-    '/regimen/listado',
-    methods.obtenerRegimenesFiscales,
-);
-
-
+router.get('/regimen/listado', methods.obtenerRegimenesFiscales);
 
 /**
  * @swagger
@@ -374,13 +366,36 @@ router.get(
  *         description: El ID de la entidad de negocio
  *     responses:
  *       200:
- *         description: Lista de contactos de la entidad de negocio
+ *         description: Contacto de la entidad de negocio
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 $ref: '#/components/schemas/Contacto'
+ *               type: object
+ *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
+ *                 ContactoId:
+ *                   type: integer
+ *                 Nombres:
+ *                   type: string
+ *                 ApellidoPaterno:
+ *                   type: string
+ *                 ApellidoMaterno:
+ *                   type: string
+ *                 Departamento:
+ *                   type: string
+ *                 Puesto:
+ *                   type: string
+ *             example: 
+ *               {
+ *                 "EntidadNegocioId": 33,
+ *                 "ContactoId": 5,
+ *                 "Nombres": "Sergio",
+ *                 "ApellidoPaterno": "Perez",
+ *                 "ApellidoMaterno": "Mendoza",
+ *                 "Departamento": "IT",
+ *                 "Puesto": "QA"
+ *               }
  *       404:
  *         description: No se encontraron contactos para la entidad de negocio
  *         content:
@@ -394,11 +409,15 @@ router.get(
  *             example:
  *               error: "Error interno del servidor"
  */
-router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
+router.get(
+	'/contactos/:id',
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+	methods.buscarContactosPorEntidadNegocioId,
+  );
 
 /**
  * @swagger
- * /api/v1/empresa/empresacontacto/crear:
+ * /api/v1/empresa/contacto/crear:
  *   post:
  *     tags:
  *       - EmpresaContacto
@@ -441,11 +460,16 @@ router.get('/contactos/:id', methods.buscarContactosPorEntidadNegocioId);
  *       500:
  *         description: Internal Server Error
  */
-router.post('/empresacontacto/crear', methods.crearEmpresaContacto);    
+router.post(
+	'/contacto/crear',
+	schemas.crearEmpresaContactoSchema,
+	middleware.validateSchema,
+	methods.crearEmpresaContacto,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/empresacontacto/editar:
+ * /api/v1/empresa/contacto/editar:
  *   patch:
  *     summary: Actualiza una relación EmpresaContacto
  *     tags: [EmpresaContacto]
@@ -482,37 +506,13 @@ router.post('/empresacontacto/crear', methods.crearEmpresaContacto);
  *       500:
  *         description: Error al actualizar la relación EmpresaContacto
  */
-router.patch('/empresacontacto/editar', methods.editarEmpresaContacto);
+router.patch(
+	'/contacto/editar',
+	schemas.editarEmpresaContactoSchema,
+	middleware.validateSchema,
+	methods.editarEmpresaContacto,
+);
 
-/**
- * @swagger
- * /api/v1/empresa/empresacontacto/desactivar:
- *   delete:
- *     summary: Desactiva una relación EmpresaContacto
- *     description: Cambia el valor de 'Borrado' a true para la relación EmpresaContacto con el EntidadNegocioId y ContactoId proporcionados
- *     tags: [EmpresaContacto]
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               EntidadNegocioId:
- *                 type: integer
- *               ContactoId:
- *                 type: integer
- *               BorradoPor:
- *                 type: string
- *     responses:
- *       200:
- *         description: La relación EmpresaContacto se ha desactivado correctamente
- *       404:
- *         description: La relación EmpresaContacto no existe
- *       500:
- *         description: Error al desactivar la relación EmpresaContacto
- */
-router.delete('/empresacontacto/desactivar', methods.desactivarEmpresaContacto);
 
 // EMPRESA-TELEFONOS CRUD
 
@@ -543,13 +543,15 @@ router.delete('/empresacontacto/desactivar', methods.desactivarEmpresaContacto);
  *                 NumeroTelefono:
  *                   type: string
  */
-router.get('/:id/telefono', 
-param('id', 'El parametro debe ser un entero').isNumeric(),
-methods.buscarTelefonoPorEntidadNegocioId);
+router.get(
+	'/:id/telefono',
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+	methods.buscarTelefonoPorEntidadNegocioId,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/empresatelefono/crear:
+ * /api/v1/empresa/telefono/crear:
  *   post:
  *     tags:
  *       - EmpresaTelefono
@@ -565,8 +567,6 @@ methods.buscarTelefonoPorEntidadNegocioId);
  *                 type: integer
  *               NumeroTelefonico:
  *                 type: string
- *               ContactoId:
- *                 type: integer
  *               CreadoPor:
  *                 type: integer
  *     responses:
@@ -575,11 +575,16 @@ methods.buscarTelefonoPorEntidadNegocioId);
  *       500:
  *         description: Error al crear la relación EmpresaTelefono
  */
-router.post('/empresatelefono/crear', methods.crearEmpresaTelefono);
+router.post(
+	'/telefono/crear',
+	schemas.crearEmpresaTelefonoSchema,
+	middleware.validateSchema,
+	methods.crearEmpresaTelefono,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/empresatelefono/editar:
+ * /api/v1/empresa/telefono/editar:
  *   patch:
  *     tags:
  *       - EmpresaTelefono
@@ -595,8 +600,6 @@ router.post('/empresatelefono/crear', methods.crearEmpresaTelefono);
  *                 type: integer
  *               NumeroTelefonico:
  *                 type: string
- *               ContactoId:
- *                 type: integer
  *               ActualizadoPor:
  *                 type: integer
  *     responses:
@@ -607,11 +610,16 @@ router.post('/empresatelefono/crear', methods.crearEmpresaTelefono);
  *       500:
  *         description: Error al actualizar la relación EmpresaTelefono
  */
-router.patch('/empresatelefono/editar', methods.editarEmpresaTelefono);
+router.patch(
+	'/telefono/editar',
+	schemas.editarEmpresaTelefonoSchema,
+	middleware.validateSchema,
+	methods.editarEmpresaTelefono,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/empresatelefono/desactivar:
+ * /api/v1/empresa/telefono/desactivar:
  *   delete:
  *     tags:
  *       - EmpresaTelefono
@@ -637,14 +645,13 @@ router.patch('/empresatelefono/editar', methods.editarEmpresaTelefono);
  *       500:
  *         description: Error del servidor
  */
-router.delete('/empresatelefono/desactivar', methods.desactivarEmpresaTelefono);
-
+router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
 
 // EMPRESA-EMAIL CRUD
 
 /**
  * @swagger
- * /api/v1/empresa/{id}/emails:
+ * /api/v1/empresa/emails/:id:
  *   get:
  *     tags:
  *       - EmpresaEmail
@@ -675,11 +682,15 @@ router.delete('/empresatelefono/desactivar', methods.desactivarEmpresaTelefono);
  *       500:
  *         description: Error al obtener los emails
  */
-router.get('/:id/emails', methods.buscarEmailsPorEmpresa);
+router.get(
+	'/emails/:id',
+	param('id','El parametro debe ser un entero').isNumeric(),
+	methods.buscarEmailsPorEmpresa,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/contacto/emails:
+ * /api/v1/empresa/emails/crear:
  *   post:
  *     tags:
  *       - EmpresaEmail
@@ -705,11 +716,16 @@ router.get('/:id/emails', methods.buscarEmailsPorEmpresa);
  *       500:
  *         description: Error al crear la relación EmpresaEmail
  */
-router.post('/contacto/emails', methods.crearEmailEmpresa);
+router.post(
+	'/emails/crear',
+	schemas.crearEmailEmpresaSchema,
+	middleware.validateSchema,
+	methods.crearEmailEmpresa,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/contacto/emails:
+ * /api/v1/empresa/emails/editar:
  *   patch:
  *     tags:
  *       - EmpresaEmail
@@ -737,11 +753,16 @@ router.post('/contacto/emails', methods.crearEmailEmpresa);
  *       500:
  *         description: Error al actualizar el email
  */
-router.patch('/contacto/emails', methods.editarContactoEmails);
+router.patch(
+	'/emails/editar',
+	schemas.editarContactoEmailsSchema,
+	middleware.validateSchema,
+	methods.editarContactoEmails,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/contacto/emails:
+ * /api/v1/empresa/emails/desactivar:
  *   delete:
  *     tags:
  *       - EmpresaEmail
@@ -767,8 +788,7 @@ router.patch('/contacto/emails', methods.editarContactoEmails);
  *       500:
  *         description: Error al eliminar el email
  */
-router.delete('/contacto/emails', methods.desactivarContactoEmails);
-
+router.delete('/emails/desactivar', methods.desactivarContactoEmails);
 
 /**
  * @swagger
@@ -817,8 +837,8 @@ router.get('/', methods.obtenerEmpresas);
  * tags:
  *   name: Datos Empresa
  *   description: Operaciones relacionadas con la empresa
- * 
- * /api/v1/empresa/BuscarEmpresasPorNombreOficial/{nombre}:
+ *
+ * /api/v1/empresa/nombre/{nombre}:
  *   get:
  *     tags: [Datos Empresa]
  *     summary: Buscar empresas por nombre oficial
@@ -842,7 +862,6 @@ router.get('/', methods.obtenerEmpresas);
  *       500:
  *         description: Error interno del servidor
  */
-router.get('/BuscarEmpresasPorNombreOficial/:nombre', methods.buscarPorNombreOficial);
-
+router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
 
 export default router;

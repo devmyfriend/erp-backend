@@ -125,7 +125,7 @@ const crearIdEmpresa = async (req, res) => {
 			message: 'Se ha creado la empresa',
 		});
 	} catch (error) {
-		console.error('Error al crear la entidad de negocio:', error);
+		console.error('Error al crear la empresa:', error);
 		res.status(500).json({ error: 'Error al crear la entidad de negocio' });
 	}
 };
@@ -146,7 +146,6 @@ const editarIdEmpresa = async (req, res) => {
                 error: 'No se ha encontrado la empresa solicitada',
             });
         }
-
 
 		if (entidad[0].NombreOficial) {
 			const entidadExistente = await EntidadNegocio.findOne({
@@ -277,7 +276,6 @@ const obtenerRegimenesFiscales = async (req, res) => {
 	}
 };
 
-
 // EMPRESA X CONTACTO
 
 const buscarContactosPorEntidadNegocioId = async (req, res) => {
@@ -292,7 +290,7 @@ const buscarContactosPorEntidadNegocioId = async (req, res) => {
         );
 
         if (contactos.length === 0) {
-            res.status(404).json({ message: 'No existen contactos relacionados con esta empresa' });
+            res.status(404).json({ message: 'No hay contactos disponibles' });
         } else {
             res.json(contactos);
         }
@@ -330,8 +328,8 @@ const crearEmpresaContacto = async (req, res) => {
             message: 'Contacto creado correctamente: ' + datosContacto.ContactoId,
         });
     } catch (error) {
-        console.error('Error al crear la relación EmpresaContacto:', error);
-        res.status(500).json({ error: 'Error al crear la relación EmpresaContacto' });
+        console.error('Error al crear el contacto:', error);
+        res.status(500).json({ error: 'Error al crear el contacto' });
     }
 };
 
@@ -382,45 +380,8 @@ const editarEmpresaContacto = async (req, res) => {
             message: 'Se ha actualizado el contacto',
         });
     } catch (error) {
-        console.error('Error al actualizar la relación EmpresaContacto:', error);
-        res.status(500).json({ error: 'Error al actualizar la relación EmpresaContacto' });
-    }
-};
-
-export const desactivarEmpresaContacto = async (req, res) => {
-    try {
-        const empresaContacto = await EmpresaContacto.findOne({
-            where: {
-                EntidadNegocioId: req.body.EntidadNegocioId,
-                ContactoId: req.body.ContactoId,
-            },
-        });
-
-        if (!empresaContacto) {
-            return res
-                .status(404)
-                .json({ status: 404, message: 'El contacto no existe' });
-        }
-
-        await empresaContacto.update({
-            Borrado: true,
-            BorradoPor: req.body.BorradoPor
-        });
-        
-        await Contacto.update({
-            Borrado: true,
-            BorradoPor: req.body.BorradoPor
-        }, {
-            where: {
-                ContactoId: req.body.ContactoId
-            }
-        });
-
-        res
-            .status(200)
-            .json({ message: 'Se ha desactivado el contacto: ' + empresaContacto.EntidadNegocioId });
-    } catch (error) {
-        return res.status(500).json(error.message);
+        console.error('Error al actualizar el contacto:', error);
+        res.status(500).json({ error: 'Error al actualizar el contacto' });
     }
 };
 
@@ -438,7 +399,7 @@ const buscarTelefonoPorEntidadNegocioId = async (req, res) => {
         );
 
         if (telefono.length === 0) {
-            res.status(404).json({ message: 'No existe un teléfono relacionado con esta empresa' });
+            res.status(404).json({ message: 'No existe el telefono' });
         } else {
             res.json(telefono);
         }
@@ -449,6 +410,7 @@ const buscarTelefonoPorEntidadNegocioId = async (req, res) => {
 };
 
 const crearEmpresaTelefono = async (req, res) => {
+    console.log(req.body);
     const telefonoBody = req.body;
 
     try {
@@ -464,8 +426,7 @@ const crearEmpresaTelefono = async (req, res) => {
 
         const datosTelefono = await Telefono.create({
             NumeroTelefonico: telefonoBody.NumeroTelefonico,
-            CreadoPor: telefonoBody.CreadoPor
-        });;
+        });
 
         await EmpresaTelefono.create({
             EntidadNegocioId: telefonoBody.EntidadNegocioId,
@@ -474,22 +435,22 @@ const crearEmpresaTelefono = async (req, res) => {
 
         res.status(200).json({
             status: 200,
-            message: 'Se ha creado el telefono' + datosTelefono.TelefonoId,
+            message: 'Se ha creado el telefono ' + datosTelefono.TelefonoId,
         });
     } catch (error) {
         console.error('Error al crear el telefono:', error);
-        res.status(500).json({ error: 'Error al crear la relación EmpresaTelefono' });
+        res.status(500).json({ error: 'Error al crear el telefono' });
     }
 };
 
 
 const editarEmpresaTelefono = async (req, res) => {
-    const { empresa, telefono } = req.body;
+    const { EntidadNegocioId, TelefonoId, NumeroTelefonico, ActualizadoPor } = req.body;
 
     try {
         const validarEmpresa = await EntidadNegocio.findOne({
             where: {
-                EntidadNegocioId: empresa[0].EntidadNegocioId,
+                EntidadNegocioId: EntidadNegocioId,
             },
         });
 
@@ -501,34 +462,35 @@ const editarEmpresaTelefono = async (req, res) => {
         }
 
         const actualizacionTelefono = {
-            ...telefono[0],
-            ActualizadoPor: telefono[0].ActualizadoPor,
+            TelefonoId: TelefonoId,
+            NumeroTelefonico: NumeroTelefonico,
+            ActualizadoPor: ActualizadoPor
         };
 
         await Telefono.update(actualizacionTelefono, {
             where: {
-                TelefonoId: telefono[0].TelefonoId
+                TelefonoId: TelefonoId
             }
         });
 
         const actualizacionEmpresaTelefono = {
             ...validarEmpresa.dataValues,
-            ...empresa[0],
-            ActualizadoPor: telefono[0].ActualizadoPor,
+            EntidadNegocioId: EntidadNegocioId,
+            ActualizadoPor: ActualizadoPor,
         };
 
         await EmpresaTelefono.update(actualizacionEmpresaTelefono, {
             where: {
-                EntidadNegocioId: actualizacionEmpresaTelefono.EntidadNegocioId,
+                EntidadNegocioId: EntidadNegocioId,
             }
         });
 
         return res.status(200).json({
-            message: 'Se ha actualizado el telefono' + actualizacionEmpresaTelefono.EntidadNegocioId,
+            message: 'Se ha actualizado el telefono ' + EntidadNegocioId,
         });
     } catch (error) {
-        console.error('Error al actualizar la relación EmpresaTelefono:', error);
-        res.status(500).json({ error: 'Error al actualizar la relación EmpresaTelefono' });
+        console.error('Error al actualizar el telefono:', error);
+        res.status(500).json({ error: 'Error al actualizar el telefono' });
     }
 };
 
@@ -544,7 +506,7 @@ export const desactivarEmpresaTelefono = async (req, res) => {
         if (!empresaTelefono) {
             return res
                 .status(404)
-                .json({ status: 404, message: 'La relación EmpresaTelefono no existe' });
+                .json({ status: 404, message: 'El telefono no existe' });
         }
 
         await empresaTelefono.update({
@@ -570,7 +532,8 @@ export const desactivarEmpresaTelefono = async (req, res) => {
 };
 
 const buscarEmailsPorEmpresa = async (req, res) => {
-    const entidadId = req.params.id;
+    console.log(req.params);
+    const entidadId = parseInt(req.params.id, 10);
     try {
         const emails = await sequelize.query(
             'CALL BuscarEmailsPorEntidadNegocioId(?)',
@@ -581,7 +544,7 @@ const buscarEmailsPorEmpresa = async (req, res) => {
         );
 
         if (emails.length === 0) {
-            res.status(404).json({ message: 'No existen emails relacionados con esta empresa' });
+            res.status(404).json({ message: 'No existe el email' });
         } else {
             res.json(emails);
         }
@@ -620,7 +583,7 @@ const crearEmailEmpresa = async (req, res) => {
             message: 'Se ha creado el correo ' + datosEmail.EmailId + ' para la empresa ' + emailsBody.EntidadNegocioId,
         });
     } catch (error) {
-        console.error('Error al crear el correo para la empresa:', error);
+        console.error('Error al crear el correo:', error);
         res.status(500).json({ error: 'Error al crear el correo' });
     }
 };
@@ -719,7 +682,6 @@ export const methods = {
     buscarContactosPorEntidadNegocioId,
     crearEmpresaContacto,
     editarEmpresaContacto,
-    desactivarEmpresaContacto,
     buscarEmailsPorEmpresa,
     crearEmailEmpresa,
     editarContactoEmails,
