@@ -1,5 +1,5 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-
+import { Op } from 'sequelize';
 import { Colonias } from '../models/colonia.model.js';
 
 const getPostalCodes = async (req, res) => {
@@ -49,8 +49,29 @@ const findCol = async (req, res) => {
 	}
 };
 
+const findColByName = async (req, res) => {
+	const { cp, colonia } = req.body;
+	try {
+		const data = await Colonias.findAll({
+			where: {
+				CodigoPostal: cp,
+				Nombre: { [Op.like]: `%${colonia}%` },
+			},
+		});
+
+		if (data.length < 1) {
+			return res.status(404).json({ message: 'No hay datos dispobles' });
+		}
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos de la colinia', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
 	findCol,
+	findColByName,
 };

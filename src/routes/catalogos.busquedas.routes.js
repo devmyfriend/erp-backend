@@ -131,4 +131,50 @@ router.post(
  */
 router.get('/colonias', methods.findCol);
 
+/**
+ * @swagger
+ * /api/v1/catalogo/colonias/buscar:
+ *   post:
+ *     summary: Buscar colonia
+ *     tags: [Catálogo de colonias]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cp:
+ *                 type: string
+ *                 example: "77518"
+ *               colonia:
+ *                 type: string
+ *                 example: "Sacbe"
+ *     responses:
+ *       200:
+ *         description: Lista de códigos postales encontrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveColonia:
+ *                     type: string
+ *                     example: "0033"
+ *                   CodigoPostal:
+ *                     type: string
+ *                     example: "01000"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "Privadas Sacbe"
+ */
+router.post(
+	'/colonias/buscar',
+	schemas.findColSchema,
+	middleware.validateSchema,
+	methods.findColByName,
+);
+
 export default router;
