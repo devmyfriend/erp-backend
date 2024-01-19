@@ -14,6 +14,9 @@ const router = Router();
  *   - name: Catálogo de colonias
  *     description: Operaciones relacionadas con las colonias
  *
+ *   - name: Régimen Fiscal y CFDI
+ *     description: Régimen fiscal con susu usos de CFDI
+ *
  *
  */
 
@@ -176,5 +179,35 @@ router.post(
 	middleware.validateSchema,
 	methods.findColByName,
 );
+
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/cfdi:
+ *   get:
+ *     summary: Obtener una lista de códigos postales
+ *     tags: [Régimen Fiscal y CFDI]
+ *     responses:
+ *       200:
+ *         description: Lista de códigos postales
+ *         content:
+ *           application/json:
+ *             example:
+ *               - regimen:
+ *                   ClaveRegimenFiscal: "601"
+ *                   Descripcion: "General de Ley Personas Morales"
+ *                   Fisica: false
+ *                   Moral: true
+ *                 cfdi:
+ *                   - ClaveUsoCFDI: "G01"
+ *                     Descripcion: "Adquisición de mercancías."
+ *                     Fisica: 1
+ *                     Moral: 1
+ *                   - ClaveUsoCFDI: "G02"
+ *                     Descripcion: "Devoluciones, descuentos o bonificaciones."
+ *                     Fisica: 1
+ *                     Moral: 1
+ */
+
+router.get('/sat/cfdi', methods.findSatRF);
 
 export default router;
