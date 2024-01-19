@@ -18,7 +18,7 @@ const router = Router();
  * @swagger
  * /api/v1/catalogo/cp:
  *   get:
- *     summary: Obtener una lista de países
+ *     summary: Obtener una lista de códigos postales
  *     tags: [Catálogos Y búsquedas]
  *     responses:
  *       200:
@@ -30,12 +30,21 @@ const router = Router();
  *               items:
  *                 type: object
  *                 properties:
- *                   ClavePais:
+ *                   pais:
  *                     type: string
- *                     example: "ABW"
- *                   Descripcion:
+ *                     example: "México"
+ *                   codigo_postal:
  *                     type: string
- *                     example: "Aruba"
+ *                     example: "01000"
+ *                   estado:
+ *                     type: string
+ *                     example: "Ciudad de México"
+ *                   municipio:
+ *                     type: string
+ *                     example: "El Llano"
+ *                   localidad:
+ *                     type: string
+ *                     example: "Aguascalientes"
  */
 
 router.get('/cp', methods.getPostalCodes);
