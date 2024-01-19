@@ -651,7 +651,7 @@ router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
 
 /**
  * @swagger
- * /api/v1/empresa/emails/:id:
+ * /api/v1/empresa/emails/:id:	
  *   get:
  *     tags:
  *       - EmpresaEmail

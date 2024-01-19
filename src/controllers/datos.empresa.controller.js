@@ -18,7 +18,11 @@ const obtenerEmpresas = async (req, res) => {
             { type: sequelize.QueryTypes.RAW }
         );
 
-        res.json(empresas);
+        if (empresas.length === 0) {
+            res.status(404).json({ message: 'No se encontraron empresas' });
+        } else {
+            res.status(200).json(empresas);
+        }
     } catch (error) {
         console.error('Error al obtener las empresas:', error.message);
         res.status(500).json({ error: 'Error al obtener las empresas' });
@@ -37,7 +41,11 @@ const buscarPorNombreOficial = async (req, res) => {
             }
         );
 
-        res.json(empresas);
+        if (empresas.length === 0) {
+            res.status(404).json({ message: 'No se encontraron empresas con ese nombre oficial' });
+        } else {
+            res.status(200).json({ message: 'Empresas obtenidas con éxito', empresas });
+        }
     } catch (error) {
         console.error('Error al buscar las empresas:', error.message);
         res.status(500).json({ error: 'Error al buscar las empresas' });
@@ -57,14 +65,12 @@ const buscarIdEmpresa = async (req, res) => {
             },
         );
 
-
-
-        if (!entidad || entidad.Borrado === 1) {
-            return res.status(404).json({ message: 'La empresa está eliminada o no existe' });
+        if (entidad.length === 0) {
+            res.status(404).json({ message: 'No se encontró la entidad' });
+        } else {
+            res.status(200).json({ message: 'Entidad obtenida con éxito', entidad });
         }
-
-
-        res.json(entidad);
+        
     } catch (error) {
         console.error('Error al obtener la entidad:', error.message);
         res.status(500).json({ error: 'Error al obtener la entidad' });
