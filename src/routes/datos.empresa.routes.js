@@ -546,7 +546,7 @@ router.patch(
 router.get(
 	'/:id/telefono',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
-	methods.buscarTelefonoPorEntidadNegocioId,
+	methods.empresaDetalle,
 );
 
 /**
