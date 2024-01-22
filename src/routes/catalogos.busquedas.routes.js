@@ -221,7 +221,7 @@ router.get('/sat/cfdi', methods.findSatRF);
  *     tags: [Metodos de pago]
  *     responses:
  *       200:
- *         description: Lista de códigos postales
+ *         description: Lista de formas y metodos de pago
  *         content:
  *           application/json:
  *             example:
@@ -229,5 +229,49 @@ router.get('/sat/cfdi', methods.findSatRF);
  *                   - formas: []
  */
 router.get('/metodos/pago', methods.paymentMethods)
+
+/**
+ * @swagger
+ * /api/v1/catalogo/metodos/moneda:
+ *   get:
+ *     summary: Obtener una lista de los tipos de moneda
+ *     tags: [Metodos de pago]
+ *     responses:
+ *       200:
+ *         description: Lista de los tipos de moneda
+ *         content:
+ *           application/json:
+ *             example:
+ *                   - ClaveMoneda: "MXN"
+ *                     Descripcion: "Peso Mexicano"
+ * 
+ */
+router.get('/metodos/moneda', methods.getTypeCoin)
+
+/**
+ * @swagger
+ * /api/v1/catalogo/metodos/moneda/buscar/{Descripcion}:
+ *   get:
+ *     summary: Obtener una lista de los tipos de moneda.
+ *     tags: [Metodos de pago]
+ *     parameters:
+ *       - in: path
+ *         name: Descripcion
+ *         required: true
+ *         description: Descripción del tipo de moneda a buscar.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Tipos de moneda encontrados.
+ *         content:
+ *           application/json:
+ *             example:
+ *               TiposDeMoneda:
+ *                 - ClaveMoneda: "MXN"
+ *                   Descripcion: "Peso Mexicano"
+ */
+router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin)
+
 
 export default router;

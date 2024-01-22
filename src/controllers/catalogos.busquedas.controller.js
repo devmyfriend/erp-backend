@@ -2,6 +2,7 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Op } from 'sequelize';
 import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
+import { Coin } from '../models/sat.type.coin.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -112,6 +113,30 @@ const paymentMethods = async (req, res) => {
 	}
 };
 
+const getTypeCoin = async (req, res) => {
+	try {
+		const data = await Coin.findAll({ limit: 15 });
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos de la colinia', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
+const findTypeCoin = async (req, res) => {
+	const name = req.params.id;
+	try {
+		const data = await Coin.findAll({
+			where: {
+				Descripcion: { [Op.like]: `%${name}%` },
+			},
+		});
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos de la colinia', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
@@ -119,4 +144,6 @@ export const methods = {
 	findColByName,
 	findSatRF,
 	paymentMethods,
+	getTypeCoin,
+	findTypeCoin,
 };
