@@ -36,7 +36,7 @@ export const Contacto = Connection.define(
 		},
 		ActualizadoPor: {
 			type: DataTypes.INTEGER,
-			allowNull: false,
+			allowNull: true,
 		},
 		BorradoPor: {
 			type: DataTypes.INTEGER,
