@@ -473,7 +473,7 @@ router.patch(
  * /api/v1/contacto/borrar:
  *   delete:
  *     summary: Desactivar un contacto existente
- *     tags: [Contactos Por sucursal]
+ *     tags: [Detalle del Contacto]
  *     requestBody:
  *       required: true
  *       content:

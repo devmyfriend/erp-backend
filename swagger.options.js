@@ -10,6 +10,9 @@ export const options = {
 			{
 				url: 'http://localhost:3000',
 			},
+			{
+				url: 'http://lachosoft.cloud:4000/',
+			},
 		],
 	},
 	apis: ['./src/routes/*.js'],
