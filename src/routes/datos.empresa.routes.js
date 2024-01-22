@@ -451,8 +451,7 @@ router.get(
  *               properties:
  *                 success:
  *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/EmpresaContacto'
+ *                 
  *       400:
  *         description: Cuerpo de la petición inválido
  *       500:

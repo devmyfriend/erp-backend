@@ -8,10 +8,10 @@ export const options = {
 		},
 		servers: [
 			{
-				url: 'http://localhost:3000',
+				url: 'http://lachosoft.cloud:4000/',
 			},
 			{
-				url: 'http://lachosoft.cloud:4000/',
+				url: 'http://localhost:3000',
 			},
 		],
 	},

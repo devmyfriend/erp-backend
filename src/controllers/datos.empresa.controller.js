@@ -44,6 +44,8 @@ const buscarPorNombreOficial = async (req, res) => {
 				.status(404)
 				.json({ message: 'No se encontraron empresas con ese nombre oficial' });
 		}
+
+		return res.status(200).json(empresas);
 	} catch (error) {
 		console.error('Error al buscar las empresas:', error.message);
 		return res.status(500).json({ error: 'Error al buscar las empresas' });
@@ -59,7 +61,7 @@ const buscarIdEmpresa = async (req, res) => {
 		});
 
 		if (entidad.length === 0) {
-			return res.status(404).json({ message: 'No se encontró la empresa' });
+			return res.status(404).json({ message: 'No se encontraron datos la empresa' });
 		}
 
 		return res.status(200).json(entidad);
