@@ -96,10 +96,27 @@ const findSatRF = async (req, res) => {
 	}
 };
 
+const paymentMethods = async (req, res) => {
+	try {
+		const data0 = await sequelize.query('CALL sp_formas_metodo_pago(1)', {
+			type: sequelize.QueryTypes.RAW,
+		});
+		const data1 = await sequelize.query('CALL sp_formas_metodo_pago(2)', {
+			type: sequelize.QueryTypes.RAW,
+		});
+
+		return res.status(200).send([{ metodos: data1, formas: data0 }]);
+	} catch (error) {
+		console.error('Error al obtener los datos de la colinia', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
 	findCol,
 	findColByName,
 	findSatRF,
+	paymentMethods,
 };

@@ -17,6 +17,9 @@ const router = Router();
  *   - name: Régimen Fiscal y CFDI
  *     description: Régimen fiscal con susu usos de CFDI
  *
+ *   - name: Metodos de pago
+ *     description: Metodos de pago
+ *
  *
  */
 
@@ -209,5 +212,22 @@ router.post(
  */
 
 router.get('/sat/cfdi', methods.findSatRF);
+
+/**
+ * @swagger
+ * /api/v1/catalogo/metodos/pago:
+ *   get:
+ *     summary: Obtener una lista de formas y metodos de pago
+ *     tags: [Metodos de pago]
+ *     responses:
+ *       200:
+ *         description: Lista de códigos postales
+ *         content:
+ *           application/json:
+ *             example:
+ *                   - metodos: []
+ *                   - formas: []
+ */
+router.get('/metodos/pago', methods.paymentMethods)
 
 export default router;
