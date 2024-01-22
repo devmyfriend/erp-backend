@@ -43,11 +43,8 @@ const buscarPorNombreOficial = async (req, res) => {
             return res
 				.status(404)
 				.json({ message: 'No se encontraron empresas con ese nombre oficial' });
-		} else {
-			return res
-				.status(200)
-				.json({ message: 'Empresas obtenidas con éxito', empresas });
 		}
+
 	} catch (error) {
 		console.error('Error al buscar las empresas:', error.message);
 		return res.status(500).json({ error: 'Error al buscar las empresas' });
@@ -57,7 +54,6 @@ const buscarPorNombreOficial = async (req, res) => {
 const buscarIdEmpresa = async (req, res) => {
 	const entidadId = req.params.id;
 	try {
-		console.log(entidadId);
 		const entidad = await sequelize.query('CALL BuscarEntidadNegocio(?)', {
 			replacements: [entidadId],
 			type: sequelize.QueryTypes.RAW,
@@ -65,9 +61,10 @@ const buscarIdEmpresa = async (req, res) => {
 
 		if (entidad.length === 0) {
 			return res.status(404).json({ message: 'No se encontró la empresa' });
-		} else {
-			return res.status(200).json({ message: 'Empresa obtenida con éxito', entidad });
-		}
+        }
+
+        return res.status(200).json(entidad);  
+
 	} catch (error) {
 		console.error('Error al obtener la entidad:', error.message);
 		return res.status(500).json({ error: 'Error al obtener la empresa' });
@@ -120,8 +117,6 @@ const crearIdEmpresa = async (req, res) => {
 			EntidadNegocioId: crearEntidad._previousDataValues.EntidadNegocioId,
 			DomicilioId: crearDomicilio._previousDataValues.DomicilioId,
 		});
-
-		console.log(crearEntidad.EntidadNegocioId);
 		return res.status(200).json({
 			status: 200,
 			message: 'Se ha creado la empresa',
@@ -258,7 +253,7 @@ export const desactivarIdEmpresa = async (req, res) => {
 		await entidad.save();
 		return res.status(200).json({
 			message:
-				'La empresa ' + entidad.EntidadNegocioId + ' ha sido desactivada',
+				'La empresa ' + entidad.EntidadNegocioId + ' ha sido borrada',
 		});
 	} catch (error) {
 		return res.status(500).json(error.message);
@@ -270,12 +265,10 @@ const obtenerRegimenesFiscales = async (req, res) => {
 		const regimenes = await regimenFiscal.findAll();
 		return res.json(regimenes);
 	} catch (error) {
-		console.log('Error al obtener los regímenes fiscales', error.message);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
 
-// EMPRESA X CONTACTO
 
 const buscarContactosPorEntidadNegocioId = async (req, res) => {
 	const entidadId = req.params.id;
@@ -290,8 +283,6 @@ const buscarContactosPorEntidadNegocioId = async (req, res) => {
 
 		if (contactos.length === 0) {
 			return res.status(404).json({ message: 'No hay contactos disponibles' });
-		} else {
-			return res.json(contactos);
 		}
 	} catch (error) {
 		console.error('Error al obtener los contactos:', error.message);
@@ -313,6 +304,7 @@ const crearEmpresaContacto = async (req, res) => {
 			return res.status(404).json({ message: 'La empresa ya esta en uso' });
 		}
 
+     
 		const datosContacto = await Contacto.create({
 			EntidadNegocioId,
 			...restoDelCuerpo,
@@ -325,7 +317,7 @@ const crearEmpresaContacto = async (req, res) => {
 
 		return res.status(200).json({
 			status: 200,
-			message: 'Contacto creado correctamente: ' + datosContacto.ContactoId,
+			message: 'Contacto creado: ' + datosContacto.ContactoId,
 		});
 	} catch (error) {
 		console.error('Error al crear el contacto:', error);
@@ -335,7 +327,6 @@ const crearEmpresaContacto = async (req, res) => {
 
 const editarEmpresaContacto = async (req, res) => {
 	const contactoBody = req.body;
-	console.log(contactoBody);
 	try {
 		const validarEmpresa = await EntidadNegocio.findOne({
 			where: {
@@ -387,11 +378,9 @@ const editarEmpresaContacto = async (req, res) => {
 	}
 };
 
-// EMPRESA X TELEFONO
 const empresaDetalle = async (req, res) => {
 	const entidadId = req.params.id;
 	try {
-		console.log(entidadId);
 		const telefono = await sequelize.query(
 			'CALL buscarTelefonoPorEntidadNegocioId(?)',
 			{
@@ -407,21 +396,16 @@ const empresaDetalle = async (req, res) => {
 				type: sequelize.QueryTypes.RAW,
 			},
 		);
+		
+        return res.json({ telefono, emails});
 
-		if (telefono.length === 0) {
-			return res.status(404).json({ message: 'No existe el telefono' });
-		} else {
-			return res.json({telefono, emails});
-		}
 	} catch (error) {
 		console.error('Error al obtener el teléfono:', error.message);
 		return res.status(500).json({ error: 'Error al obtener el teléfono' });
 	}
 };
 
-// TODO
 const crearEmpresaTelefono = async (req, res) => {
-	console.log(req.body);
 	const telefonoBody = req.body;
 
 	try {
@@ -455,22 +439,23 @@ const crearEmpresaTelefono = async (req, res) => {
 };
 
 const editarEmpresaTelefono = async (req, res) => {
-	const { EntidadNegocioId, TelefonoId, NumeroTelefonico, ActualizadoPor } =
+	const {TelefonoId, NumeroTelefonico, ActualizadoPor } =
 		req.body;
 
 	try {
-		const validarEmpresa = await EntidadNegocio.findOne({
-			where: {
-				EntidadNegocioId,
-			},
-		});
+		
+        const validatePhoneId = await Telefono.findOne({
+            where: {
+                TelefonoId,
+            },
+        });
 
-		if (!validarEmpresa) {
-			return res.status(404).json({
-				status: 404,
-				error: 'Empresa no encontrada',
-			});
-		}
+        if (!validatePhoneId) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El telefono no existe',
+            });
+        }
 
 		const actualizacionTelefono = {
 			TelefonoId,
@@ -484,20 +469,8 @@ const editarEmpresaTelefono = async (req, res) => {
 			},
 		});
 
-		const actualizacionEmpresaTelefono = {
-			...validarEmpresa.dataValues,
-			EntidadNegocioId,
-			ActualizadoPor,
-		};
-
-		await EmpresaTelefono.update(actualizacionEmpresaTelefono, {
-			where: {
-				EntidadNegocioId,
-			},
-		});
-
 		return res.status(200).json({
-			message: 'Se ha actualizado el telefono ' + EntidadNegocioId,
+			message: 'Se ha actualizado el telefono ' + TelefonoId,
 		});
 	} catch (error) {
 		console.error('Error al actualizar el telefono:', error);
@@ -539,7 +512,7 @@ export const desactivarEmpresaTelefono = async (req, res) => {
 
 		return res.status(200).json({
 			message:
-				'Se ha desactivado el telefono: ' + empresaTelefono.EntidadNegocioId,
+				'Se ha eliminado el telefono: ' + empresaTelefono.EntidadNegocioId,
 		});
 	} catch (error) {
 		return res.status(500).json(error.message);
@@ -547,7 +520,6 @@ export const desactivarEmpresaTelefono = async (req, res) => {
 };
 
 const buscarEmailsPorEmpresa = async (req, res) => {
-	console.log(req.params);
 	const entidadId = parseInt(req.params.id, 10);
 	try {
 		const emails = await sequelize.query(
@@ -560,9 +532,9 @@ const buscarEmailsPorEmpresa = async (req, res) => {
 
 		if (emails.length === 0) {
 			return res.status(404).json({ message: 'No existe el email' });
-		} else {
-			return res.json(emails);
 		}
+
+        
 	} catch (error) {
 		console.error('Error al obtener los emails:', error.message);
 		return res.status(500).json({ error: 'Internal Server Error' });
@@ -607,19 +579,10 @@ const crearEmailEmpresa = async (req, res) => {
 	}
 };
 
-const editarContactoEmails = async (req, res) => {
+const editarEmpresaEmails = async (req, res) => {
 	const emailsBody = req.body;
 
 	try {
-		const validarEmpresa = await EntidadNegocio.findOne({
-			where: {
-				EntidadNegocioId: emailsBody.EntidadNegocioId,
-			},
-		});
-
-		if (!validarEmpresa) {
-			return res.status(404).json({ message: 'La empresa no existe' });
-		}
 
 		const emailExistente = await Email.findOne({
 			where: {
@@ -653,22 +616,22 @@ const editarContactoEmails = async (req, res) => {
 	}
 };
 
-const desactivarContactoEmails = async (req, res) => {
+const desactivarEmpresaEmails = async (req, res) => {
 	try {
-		const contactoEmail = await EmpresaEmails.findOne({
+		const empresaEmail = await EmpresaEmails.findOne({
 			where: {
 				EntidadNegocioId: req.body.EntidadNegocioId,
 				EmailId: req.body.EmailId,
 			},
 		});
 
-		if (!contactoEmail) {
+		if (!empresaEmail) {
 			return res
 				.status(404)
 				.json({ status: 404, message: 'El email no existe' });
 		}
 
-		await contactoEmail.update({
+		await empresaEmail.update({
 			Borrado: true,
 			BorradoPor: req.body.BorradoPor,
 		});
@@ -686,7 +649,7 @@ const desactivarContactoEmails = async (req, res) => {
 		);
 
 		return res.status(200).json({
-			message: 'Se ha descativado el correo: ' + contactoEmail.EntidadNegocioId,
+			message: 'Se ha descativado el correo: ' + empresaEmail.EntidadNegocioId,
 		});
 	} catch (error) {
 		return res.status(500).json(error.message);
@@ -708,8 +671,8 @@ export const methods = {
 	editarEmpresaContacto,
 	buscarEmailsPorEmpresa,
 	crearEmailEmpresa,
-	editarContactoEmails,
-	desactivarContactoEmails,
+	editarEmpresaEmails,
+	desactivarEmpresaEmails,
 	obtenerEmpresas,
 	buscarPorNombreOficial,
 };

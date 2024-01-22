@@ -139,11 +139,6 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo PersonaMoral no puede estar vacío')
 		.isBoolean()
 		.withMessage('El campo PersonaMoral debe ser un booleano'),
-	body('entidad.*.Estatus')
-		.notEmpty()
-		.withMessage('El campo Estatus no puede estar vacio')
-		.isBoolean()
-		.withMessage('El campo Estatus debe ser un booleano'),
 	body('domicilio.*.Calle')
 		.notEmpty()
 		.withMessage('El campo Calle no puede estar vacío')
@@ -286,11 +281,6 @@ export const crearEmpresaTelefonoSchema = [
 ];
 
 export const editarEmpresaTelefonoSchema = [
-    body('EntidadNegocioId')
-        .notEmpty()
-        .withMessage('El campo EntidadNegocioId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EntidadNegocioId debe ser un número entero'),
 	body('TelefonoId')
 		.notEmpty()
 		.withMessage('El campo TelefonoId no puede estar vacío')
@@ -325,8 +315,8 @@ export const crearEmailEmpresaSchema = [
         .withMessage('El campo CreadorPor debe ser un número entero'),
 ];
 
-export const editarContactoEmailsSchema = [
-    body('EntidadNegocioId')
+export const editarEmpresaEmailsSchema = [
+    body('EmailId')
         .notEmpty()
         .withMessage('El campo EntidadNegocioId no puede estar vacío')
         .isInt()

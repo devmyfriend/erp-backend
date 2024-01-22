@@ -46,7 +46,7 @@ const router = Router();
  *                   type: boolean
  *                 NombreOficial:
  *                   type: string
- *                 Estatus:
+ *                 Borrado:
  *                   type: integer
  *                 Domicilio:
  *                   type: object
@@ -90,7 +90,6 @@ router.get(
 	methods.buscarIdEmpresa,
 );
 
-// POST - /api/empresa
 
 /**
  * @swagger
@@ -121,7 +120,7 @@ router.get(
  *                 type: boolean
  *               NombreOficial:
  *                 type: string
- *               Estatus:
+ *               Borrado:
  *                 type: integer
  *               logo:
  *                 type: string
@@ -184,8 +183,6 @@ router.post(
 	middleware.validateSchema,
 	methods.crearIdEmpresa,
 );
-
-// UPDATE - /api/datosEmpresa
 
 /**
  * @swagger
@@ -276,7 +273,6 @@ router.patch(
 	methods.editarIdEmpresa,
 );
 
-// DELETE - /api/datosEmpresa
 
 /**
  * @swagger
@@ -516,8 +512,6 @@ router.patch(
 );
 
 
-// EMPRESA-TELEFONOS CRUD
-
 /**
  * @swagger
  * /api/v1/empresa/{id}/telefono:
@@ -598,7 +592,7 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
+ *               TelefonoId:
  *                 type: integer
  *               NumeroTelefonico:
  *                 type: string
@@ -648,8 +642,6 @@ router.patch(
  *         description: Error del servidor
  */
 router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
-
-// EMPRESA-EMAIL CRUD
 
 /**
  * @swagger
@@ -739,8 +731,6 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
- *                 type: integer
  *               ContactoId:
  *                 type: integer
  *               Email:
@@ -757,9 +747,9 @@ router.post(
  */
 router.patch(
 	'/emails/editar',
-	schemas.editarContactoEmailsSchema,
+	schemas.editarEmpresaEmailsSchema,
 	middleware.validateSchema,
-	methods.editarContactoEmails,
+	methods.editarEmpresaEmails,
 );
 
 /**
@@ -790,7 +780,7 @@ router.patch(
  *       500:
  *         description: Error al eliminar el email
  */
-router.delete('/emails/desactivar', methods.desactivarContactoEmails);
+router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
 
 /**
  * @swagger
