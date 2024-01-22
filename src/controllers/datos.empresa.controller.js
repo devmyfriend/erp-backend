@@ -64,13 +64,13 @@ const buscarIdEmpresa = async (req, res) => {
 		});
 
 		if (entidad.length === 0) {
-			return res.status(404).json({ message: 'No se encontró la entidad' });
+			return res.status(404).json({ message: 'No se encontró la empresa' });
 		} else {
-			return res.status(200).json({ message: 'Entidad obtenida con éxito', entidad });
+			return res.status(200).json({ message: 'Empresa obtenida con éxito', entidad });
 		}
 	} catch (error) {
 		console.error('Error al obtener la entidad:', error.message);
-		return res.status(500).json({ error: 'Error al obtener la entidad' });
+		return res.status(500).json({ error: 'Error al obtener la empresa' });
 	}
 };
 
@@ -128,7 +128,7 @@ const crearIdEmpresa = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al crear la empresa:', error);
-		return res.status(500).json({ error: 'Error al crear la entidad de negocio' });
+		return res.status(500).json({ error: 'Error al crear la empresa' });
 	}
 };
 
@@ -239,10 +239,6 @@ const editarIdEmpresa = async (req, res) => {
 
 export const desactivarIdEmpresa = async (req, res) => {
 	try {
-		if (!req.params.id) {
-			return res.status(400).json({ status: 400, message: 'id es requerido' });
-		}
-
 		const entidad = await EntidadNegocio.findOne({
 			where: {
 				EntidadNegocioId: req.params.id,

@@ -319,7 +319,9 @@ router.patch(
  *               error: "Error interno del servidor"
  */
 
-router.delete('/desactivar/:id', methods.desactivarIdEmpresa);
+router.delete('/desactivar/:id',
+param('id', 'El parametro debe ser un entero').isNumeric(),
+methods.desactivarIdEmpresa);
 
 /**
  * @swagger
