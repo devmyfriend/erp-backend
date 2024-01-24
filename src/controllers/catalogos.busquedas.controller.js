@@ -137,6 +137,16 @@ const findTypeCoin = async (req, res) => {
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
+
+const findCFDI = async (req, res) => {
+	const result = await sequelize.query(
+		'CALL sp_lista_cfdi()',
+		{
+			type: sequelize.QueryTypes.RAW,
+		},
+	);
+	return res.status(200).json( result );
+};
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
@@ -146,4 +156,5 @@ export const methods = {
 	paymentMethods,
 	getTypeCoin,
 	findTypeCoin,
+	findCFDI
 };

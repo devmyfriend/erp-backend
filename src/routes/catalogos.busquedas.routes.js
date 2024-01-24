@@ -15,7 +15,7 @@ const router = Router();
  *     description: Operaciones relacionadas con las colonias
  *
  *   - name: Régimen Fiscal y CFDI
- *     description: Régimen fiscal con susu usos de CFDI
+ *     description: Régimen fiscal con sus usos de CFDI
  *
  *   - name: Metodos de pago
  *     description: Metodos de pago
@@ -187,11 +187,11 @@ router.post(
  * @swagger
  * /api/v1/catalogo/sat/cfdi:
  *   get:
- *     summary: Obtener una lista de códigos postales
+ *     summary: Obtener Régimen Fiscal y CFDI
  *     tags: [Régimen Fiscal y CFDI]
  *     responses:
  *       200:
- *         description: Lista de códigos postales
+ *         description: Régimen Fiscal y CFDI
  *         content:
  *           application/json:
  *             example:
@@ -212,6 +212,29 @@ router.post(
  */
 
 router.get('/sat/cfdi', methods.findSatRF);
+
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/cfdi/lista:
+ *   get:
+ *     summary: Lista CFDI
+ *     tags: [Régimen Fiscal y CFDI]
+ *     responses:
+ *       200:
+ *         description: Lista CFDI
+ *         content:
+ *           application/json:
+ *             example:
+ *                   - ClaveUsoCFDI: "G01"
+ *                     Descripcion: "Adquisición de mercancías."
+ *                     Fisica: 1
+ *                     Moral: 1
+ *                   - ClaveUsoCFDI: "G02"
+ *                     Descripcion: "Devoluciones, descuentos o bonificaciones."
+ *                     Fisica: 1
+ *                     Moral: 1
+ */
+router.get('/sat/cfdi/lista', methods.findCFDI)
 
 /**
  * @swagger
@@ -272,6 +295,8 @@ router.get('/metodos/moneda', methods.getTypeCoin)
  *                   Descripcion: "Peso Mexicano"
  */
 router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin)
+
+
 
 
 export default router;
