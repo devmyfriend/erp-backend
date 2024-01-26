@@ -13,6 +13,10 @@ export const Coin = Connection.define(
 			type: DataTypes.STRING,
 			allowNull: false,
 		},
+		Activo: {
+			type: DataTypes.BOOLEAN,
+			allowNull: false,
+		},
 	},
 	{
 		tableName: 'SAT_Moneda',

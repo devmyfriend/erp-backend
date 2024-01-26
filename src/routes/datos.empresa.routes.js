@@ -379,7 +379,7 @@ router.get('/regimen/listado', methods.obtenerRegimenesFiscales);
  *                 ApellidoPaterno:
  *                   type: string
  *                 ApellidoMaterno:
- *                   type: string
+ *                   type: string	
  *                 Departamento:
  *                   type: string
  *                 Puesto:
