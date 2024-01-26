@@ -7,7 +7,7 @@ import { Coin } from '../models/sat.type.coin.js';
 const getPostalCodes = async (req, res) => {
 	try {
 		const data = await sequelize.query(
-			'CALL sp_codigos_postales(1,NULL,NULL )',
+			'CALL sp_codigos_postales(1,NULL )',
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
@@ -21,10 +21,10 @@ const getPostalCodes = async (req, res) => {
 };
 
 const findPostalCodes = async (req, res) => {
-	const { cp, municipio } = req.body;
+	const { cp} = req.body;
 	try {
-		const data = await sequelize.query('CALL sp_codigos_postales(?,?,? )', {
-			replacements: [2, cp, municipio],
+		const data = await sequelize.query('CALL sp_codigos_postales(?,? )', {
+			replacements: [2, cp],
 			type: sequelize.QueryTypes.RAW,
 		});
 

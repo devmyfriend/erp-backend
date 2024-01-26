@@ -73,9 +73,7 @@ router.get('/cp', methods.getPostalCodes);
  *               cp:
  *                 type: string
  *                 example: "01000"
- *               municipio:
- *                 type: string
- *                 example: "El Llano"
+ * 
  *     responses:
  *       200:
  *         description: Lista de códigos postales encontrados
