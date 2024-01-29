@@ -77,6 +77,7 @@ const crearIdEmpresa = async (req, res) => {
 		const validarRFC = await EntidadNegocio.findOne({
 			where: {
 				RFC: entidad[0].RFC,
+				PersonaMoral: 1
 			},
 		});
 

@@ -5,10 +5,7 @@ export const buscarRFC = [
 		.notEmpty()
 		.withMessage('El RFC no puede estar vacío')
 		.isString()
-		.isLength({ min: 13, max: 13 })
-		.matches(
-			/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
-		)
+		.isLength({ max: 13 })
 		.withMessage('El RFC tiene que mantener la estructura del SAT'),
 ];
 
@@ -24,10 +21,8 @@ export const editarIdEmpresa = [
 		.withMessage('El campo EsPropietaria debe ser un booleano'),
 	body('entidad.*.RFC')
 		.optional()
-		.isLength({ min: 13, max: 13 })
-		.matches(
-			/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
-		)
+		.isLength({ max: 13 })
+
 		.withMessage('El campo RFC no cumple con el formato adecuado'),
 	body('entidad.*.NombreOficial')
 		.optional()
