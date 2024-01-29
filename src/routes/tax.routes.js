@@ -168,6 +168,9 @@ router.put('/',
  *             schema:
  *               type: object
  *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 404
  *                 message:
  *                   type: string
  *                   example: "Impuesto no encontrado"
