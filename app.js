@@ -9,6 +9,7 @@ import catRoutes from './src/routes/catalogos.busquedas.routes.js';
 import contactoSucursalRoutes from './src/routes/contacto.sucursal.routes.js';
 import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
+import taxRoutes from './src/routes/tax.routes.js'
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -42,6 +43,7 @@ const App = {
 		app.use('/api/v1/empresa', datosEmpresa);
 		app.use('/api/v1/sucursal', sucursalesRoutes);
 		app.use('/api/v1/catalogo', catRoutes);
+		app.use('/api/v1/impuestos', taxRoutes);
 		app.use('/', (req, res) => {
 			res.send(`¡ERP-API!`);
 		});
