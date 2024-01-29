@@ -57,6 +57,9 @@ router.get('/', methods.findTax);
  *           schema:
  *             type: object
  *             properties:
+ *               ClaveImpuesto:
+ *                 type: string
+ *                 example: "000"
  *               Nombre:
  *                 type: string
  *                 example: "NEW NAME"
@@ -72,7 +75,7 @@ router.get('/', methods.findTax);
  *                 properties:
  *                   ClaveImpuesto:
  *                     type: string
- *                     example: "NEW"
+ *                     example: "004"
  *                   Nombre:
  *                     type: string
  *                     example: "NEW NAME"
@@ -81,7 +84,15 @@ router.get('/', methods.findTax);
  *                     example: true
  */
 router.post('/',
-
+	body('ClaveImpuesto')
+		.isString()
+		.withMessage('El campo ClaveImpuesto debe ser un string')
+		.notEmpty()
+		.withMessage('El campo ClaveImpuesto es requerido')
+		.isLength({ min: 3, max: 3 })
+		.withMessage(
+			'El campo ClaveImpuesto debe tener 3 caracteres',
+		),
 	body('Nombre')
 		.isString()
 		.withMessage('El campo Nombre debe ser un string')
@@ -134,15 +145,20 @@ router.post('/',
  */
 router.put('/',
 	body('ClaveImpuesto')
-		.isNumeric()
-		.withMessage('El campo ClaveImpuesto debe ser un número')
+		.isString()
+		.withMessage('El campo ClaveImpuesto debe ser un string')
 		.notEmpty()
-		.withMessage('El campo ClaveImpuesto es requerido'),
+		.withMessage('El campo ClaveImpuesto es requerido')
+		.isLength({ min: 3, max: 3 })
+		.withMessage(
+			'El campo ClaveImpuesto debe tener 3 caracteres',
+		),
 	body('Nombre')
 		.isString()
 		.withMessage('El campo Nombre debe ser un string')
 		.notEmpty()
 		.withMessage('El campo Nombre es requerido'), middleware.validateSchema, methods.updateTax)
+
 
 
 

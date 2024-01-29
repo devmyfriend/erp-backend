@@ -6,10 +6,9 @@ export const TaxModel = Connection.define(
     {
         ClaveImpuesto:
         {
-            type: DataTypes.INTEGER,
+            type: DataTypes.NUMBER,
             allowNull: false,
             primaryKey: true,
-            autoIncrement: true
         },
         Nombre:
         {
