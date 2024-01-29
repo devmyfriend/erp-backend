@@ -23,7 +23,7 @@ export const editarIdEmpresa = [
 		.isBoolean()
 		.withMessage('El campo EsPropietaria debe ser un booleano'),
 	body('entidad.*.RFC')
-	    .optional()
+		.optional()
 		.isLength({ min: 13, max: 13 })
 		.matches(
 			/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
@@ -76,27 +76,28 @@ export const editarIdEmpresa = [
 		.optional()
 		.isString()
 		.withMessage('El campo CodigoPostal debe ser una cadena de texto'),
-	body('domicilio.*.ClaveEstado')
+	body('domicilio.*.Estado')
 		.optional()
 		.isString()
-		.withMessage('El campo ClaveEstado debe ser una cadena de texto'),
-	body('domicilio.*.ClaveMunicipio')
+		.withMessage('El campo Estado debe ser una cadena de texto'),
+	body('domicilio.*.Municipio')
 		.optional()
 		.isString()
-		.withMessage('El campo ClaveMunicipio debe ser una cadena de texto'),
-	body('domicilio.*.ClaveLocalidad')
+		.withMessage('El campo Municipio debe ser una cadena de texto'),
+	body('domicilio.*.Localidad')
 		.optional()
 		.isString()
-		.withMessage('El campo ClaveLocalidad debe ser una cadena de texto'),
-	body('domicilio.*.ClaveColonia')
+		.withMessage('El campo Localidad debe ser una cadena de texto'),
+	body('domicilio.*.Colonia')
 		.optional()
 		.isString()
-		.withMessage('El campo ClaveColonia debe ser una cadena de texto'),
-	body('domicilio.*.ClavePais')
+		.withMessage('El campo Colonia debe ser una cadena de texto'),
+	body('domicilio.*.Pais')
 		.optional()
 		.isString()
-		.withMessage('El campo ClavePais debe ser una cadena de texto'),
+		.withMessage('El campo Pais debe ser una cadena de texto'),
 ];
+
 
 export const crearEmpresaSchema = [
 	body('entidad.*.NombreOficial')
@@ -106,24 +107,27 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo NombreOficial debe ser una cadena de texto'),
 	body('entidad.*.RFC')
 		.isString()
+		.notEmpty()
+		.withMessage('El campo RFC no puede estar vacío')
 		.isLength({ min: 12, max: 13 })
 		.withMessage('El RFC tiene que tener de 12 a 13 digitos')
 		.matches(
 			/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
 		)
-		.withMessage('El campo RFC no cumple con el formato adecuado'),
+		.withMessage('El campo RFC no cumple con el formato adecuado')
+	,
 	body('entidad.*.NombreComercial')
 		.optional()
 		.isString()
 		.withMessage('El campo NombreComercial debe ser una cadena de texto'),
 	body('entidad.*.ClavePais')
 		.notEmpty()
-		.withMessage('El campo ClavePais no puede estar vacío')
+		.withMessage('El campo Pais no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClavePais debe ser una cadena de texto'),
+		.withMessage('El campo Pais debe ser una cadena de texto'),
 	body('entidad.*.TaxId')
-	    .optional()
-	    .isString(),
+		.optional()
+		.isString(),
 	body('entidad.*.ClaveRegimenFiscal')
 		.notEmpty()
 		.withMessage('El campo ClaveRegimenFiscal no puede estar vacío')
@@ -159,125 +163,125 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo CodigoPostal no puede estar vacío')
 		.isString()
 		.withMessage('El campo CodigoPostal debe ser una cadena de texto'),
-	body('domicilio.*.ClaveEstado')
+	body('domicilio.*.Estado')
 		.notEmpty()
-		.withMessage('El campo ClaveEstado no puede estar vacío')
+		.withMessage('El campo Estado no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClaveEstado debe ser una cadena de texto'),
-	body('domicilio.*.ClaveMunicipio')
+		.withMessage('El campo Estado debe ser una cadena de texto'),
+	body('domicilio.*.Municipio')
 		.notEmpty()
-		.withMessage('El campo ClaveMunicipio no puede estar vacío')
+		.withMessage('El campo Municipio no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClaveMunicipio debe ser una cadena de texto'),
-	body('domicilio.*.ClaveLocalidad')
+		.withMessage('El campo Municipio debe ser una cadena de texto'),
+	body('domicilio.*.Localidad')
 		.notEmpty()
-		.withMessage('El campo ClaveLocalidad no puede estar vacío')
+		.withMessage('El campo Localidad no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClaveLocalidad debe ser una cadena de texto'),
-	body('domicilio.*.ClaveColonia')
+		.withMessage('El campo Localidad debe ser una cadena de texto'),
+	body('domicilio.*.Colonia')
 		.notEmpty()
-		.withMessage('El campo ClaveColonia no puede estar vacío')
+		.withMessage('El campo Colonia no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClaveColonia debe ser una cadena de texto'),
-	body('domicilio.*.ClavePais')
+		.withMessage('El campo Colonia debe ser una cadena de texto'),
+	body('domicilio.*.Pais')
 		.notEmpty()
-		.withMessage('El campo ClavePais no puede estar vacío')
+		.withMessage('El campo Pais no puede estar vacío')
 		.isString()
-		.withMessage('El campo ClavePais debe ser una cadena de texto'),
+		.withMessage('El campo Pais debe ser una cadena de texto'),
 ];
 
 export const crearEmpresaContactoSchema = [
-    body('EmpresaId')
-        .notEmpty()
-        .withMessage('El campo EmpresaId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EmpresaId debe ser un número entero'),
-    body('Nombres')
-        .notEmpty()
-        .withMessage('El campo Nombres no puede estar vacío')
-        .isString()
-        .withMessage('El campo Nombres debe ser una cadena de texto'),
-    body('ApellidoPaterno')
-        .notEmpty()
-        .withMessage('El campo ApellidoPaterno no puede estar vacío')
-        .isString()
-        .withMessage('El campo ApellidoPaterno debe ser una cadena de texto'),
-    body('ApellidoMaterno')
-        .notEmpty()
-        .withMessage('El campo ApellidoMaterno no puede estar vacío')
-        .isString()
-        .withMessage('El campo ApellidoMaterno debe ser una cadena de texto'),
-    body('Departamento')
-        .notEmpty()
-        .withMessage('El campo Departamento no puede estar vacío')
-        .isString()
-        .withMessage('El campo Departamento debe ser una cadena de texto'),
-    body('Puesto')
-        .notEmpty()
-        .withMessage('El campo Puesto no puede estar vacío')
-        .isString()
-        .withMessage('El campo Puesto debe ser una cadena de texto'),
-    body('CreadoPor')
-        .notEmpty()
-        .withMessage('El campo CreadoPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo CreadoPor debe ser un número entero'),
+	body('EmpresaId')
+		.notEmpty()
+		.withMessage('El campo EmpresaId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EmpresaId debe ser un número entero'),
+	body('Nombres')
+		.notEmpty()
+		.withMessage('El campo Nombres no puede estar vacío')
+		.isString()
+		.withMessage('El campo Nombres debe ser una cadena de texto'),
+	body('ApellidoPaterno')
+		.notEmpty()
+		.withMessage('El campo ApellidoPaterno no puede estar vacío')
+		.isString()
+		.withMessage('El campo ApellidoPaterno debe ser una cadena de texto'),
+	body('ApellidoMaterno')
+		.notEmpty()
+		.withMessage('El campo ApellidoMaterno no puede estar vacío')
+		.isString()
+		.withMessage('El campo ApellidoMaterno debe ser una cadena de texto'),
+	body('Departamento')
+		.notEmpty()
+		.withMessage('El campo Departamento no puede estar vacío')
+		.isString()
+		.withMessage('El campo Departamento debe ser una cadena de texto'),
+	body('Puesto')
+		.notEmpty()
+		.withMessage('El campo Puesto no puede estar vacío')
+		.isString()
+		.withMessage('El campo Puesto debe ser una cadena de texto'),
+	body('CreadoPor')
+		.notEmpty()
+		.withMessage('El campo CreadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo CreadoPor debe ser un número entero'),
 ];
 
 export const editarEmpresaContactoSchema = [
-    body('EntidadNegocioId')
-        .notEmpty()
-        .withMessage('El campo EntidadNegocioId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EntidadNegocioId debe ser un número entero'),
-    body('ContactoId')
-        .notEmpty()
-        .withMessage('El campo ContactoId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo ContactoId debe ser un número entero'),
-    body('Nombres')
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+	body('ContactoId')
+		.notEmpty()
+		.withMessage('El campo ContactoId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo ContactoId debe ser un número entero'),
+	body('Nombres')
 		.optional()
-        .isString()
-        .withMessage('El campo Nombres debe ser una cadena de texto'),
-    body('ApellidoPaterno')
+		.isString()
+		.withMessage('El campo Nombres debe ser una cadena de texto'),
+	body('ApellidoPaterno')
 		.optional()
-        .isString()
-        .withMessage('El campo ApellidoPaterno debe ser una cadena de texto'),
-    body('ApellidoMaterno')
+		.isString()
+		.withMessage('El campo ApellidoPaterno debe ser una cadena de texto'),
+	body('ApellidoMaterno')
 		.optional()
-        .isString()
-        .withMessage('El campo ApellidoMaterno debe ser una cadena de texto'),
-    body('Departamento')
+		.isString()
+		.withMessage('El campo ApellidoMaterno debe ser una cadena de texto'),
+	body('Departamento')
 		.optional()
-        .isString()
-        .withMessage('El campo Departamento debe ser una cadena de texto'),
-    body('Puesto')
+		.isString()
+		.withMessage('El campo Departamento debe ser una cadena de texto'),
+	body('Puesto')
 		.optional()
-        .isString()
-        .withMessage('El campo Puesto debe ser una cadena de texto'),
-    body('ActualizadoPor')
-        .notEmpty()
-        .withMessage('El campo ActualizadoPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo ActualizadoPor debe ser un número entero'),
+		.isString()
+		.withMessage('El campo Puesto debe ser una cadena de texto'),
+	body('ActualizadoPor')
+		.notEmpty()
+		.withMessage('El campo ActualizadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
 
 export const crearEmpresaTelefonoSchema = [
-    body('EntidadNegocioId')
-        .notEmpty()
-        .withMessage('El campo EntidadNegocioId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EntidadNegocioId debe ser un número entero'),
-    body('NumeroTelefonico')
-        .notEmpty()
-        .withMessage('El campo NumeroTelefonico no puede estar vacío')
-        .isString()
-        .withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
-    body('CreadoPor')
-        .notEmpty()
-        .withMessage('El campo CreadoPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo CreadoPor debe ser un número entero'),
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+	body('NumeroTelefonico')
+		.notEmpty()
+		.withMessage('El campo NumeroTelefonico no puede estar vacío')
+		.isString()
+		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
+	body('CreadoPor')
+		.notEmpty()
+		.withMessage('El campo CreadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo CreadoPor debe ser un número entero'),
 ];
 
 export const editarEmpresaTelefonoSchema = [
@@ -286,49 +290,49 @@ export const editarEmpresaTelefonoSchema = [
 		.withMessage('El campo TelefonoId no puede estar vacío')
 		.isInt()
 		.withMessage('El campo TelefonoId debe ser un número entero'),
-    body('NumeroTelefonico')
-       	.optional()
-        .isString()
-        .withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
-    body('ActualizadoPor')
-        .notEmpty()
-        .withMessage('El campo ActualizadoPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo ActualizadoPor debe ser un número entero'),
+	body('NumeroTelefonico')
+		.optional()
+		.isString()
+		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
+	body('ActualizadoPor')
+		.notEmpty()
+		.withMessage('El campo ActualizadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
 
 export const crearEmailEmpresaSchema = [
-    body('EntidadNegocioId')
-        .notEmpty()
-        .withMessage('El campo EntidadNegocioId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EntidadNegocioId debe ser un número entero'),
-    body('Email')
-        .notEmpty()
-        .withMessage('El campo Email no puede estar vacío')
-        .isEmail()
-        .withMessage('El campo Email debe ser un correo electrónico válido'),
-    body('CreadorPor')
-        .notEmpty()
-        .withMessage('El campo CreadorPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo CreadorPor debe ser un número entero'),
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+	body('Email')
+		.notEmpty()
+		.withMessage('El campo Email no puede estar vacío')
+		.isEmail()
+		.withMessage('El campo Email debe ser un correo electrónico válido'),
+	body('CreadorPor')
+		.notEmpty()
+		.withMessage('El campo CreadorPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo CreadorPor debe ser un número entero'),
 ];
 
 export const editarEmpresaEmailsSchema = [
-    body('EmailId')
-        .notEmpty()
-        .withMessage('El campo EntidadNegocioId no puede estar vacío')
-        .isInt()
-        .withMessage('El campo EntidadNegocioId debe ser un número entero'),
-    body('Email')
-        .optional()
-        .isEmail()
-        .withMessage('El campo Email debe ser un correo electrónico válido'),
-    body('ActualizadoPor')
-        .notEmpty()
-        .withMessage('El campo ActualizadoPor no puede estar vacío')
-        .isInt()
-        .withMessage('El campo ActualizadoPor debe ser un número entero'),
+	body('EmailId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+	body('Email')
+		.optional()
+		.isEmail()
+		.withMessage('El campo Email debe ser un correo electrónico válido'),
+	body('ActualizadoPor')
+		.notEmpty()
+		.withMessage('El campo ActualizadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
 

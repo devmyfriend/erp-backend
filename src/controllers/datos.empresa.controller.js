@@ -2,7 +2,6 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { EntidadNegocio } from '../models/empresa.model.js';
 import { Domicilio } from '../models/domicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
-import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 import { Telefono } from '../models/telefono.model.js';
 import { Contacto } from '../models/contacto.model.js';
 import { EmpresaContacto } from '../models/empresa.contacto.model.js';
@@ -260,14 +259,6 @@ export const desactivarIdEmpresa = async (req, res) => {
 	}
 };
 
-const obtenerRegimenesFiscales = async (req, res) => {
-	try {
-		const regimenes = await regimenFiscal.findAll();
-		return res.json(regimenes);
-	} catch (error) {
-		return res.status(500).json({ error: 'Internal Server Error' });
-	}
-};
 
 const buscarContactosPorEntidadNegocioId = async (req, res) => {
 	const entidadId = req.params.id;
@@ -651,7 +642,6 @@ const desactivarEmpresaEmails = async (req, res) => {
 };
 
 export const methods = {
-	obtenerRegimenesFiscales,
 	buscarIdEmpresa,
 	crearIdEmpresa,
 	editarIdEmpresa,
