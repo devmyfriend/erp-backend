@@ -306,7 +306,12 @@ router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin);
  *       500:
  *         description: Error al crear la moneda
  */
-router.post('/metodos/moneda/crear', methods.createTypeCoin);
+router.post(
+	'/metodos/moneda/crear',
+	schemas.createTypeCoinSchema,
+	middleware.validateSchema,
+	methods.createTypeCoin,
+);
 
 /**
  * @swagger
@@ -344,7 +349,12 @@ router.post('/metodos/moneda/crear', methods.createTypeCoin);
  *       500:
  *         description: Error al actualizar la moneda
  */
-router.patch('/metodos/moneda/actualizar', methods.updateTypeCoin);
+router.patch(
+	'/metodos/moneda/actualizar',
+	schemas.updateTypeCoinSchema,
+	middleware.validateSchema,
+	methods.updateTypeCoin,
+);
 
 /**
  * @swagger
@@ -379,7 +389,12 @@ router.patch('/metodos/moneda/actualizar', methods.updateTypeCoin);
  *       500:
  *         description: Error al desactivar la moneda
  */
-router.delete('/metodos/moneda/desactivar', methods.deleteTypeCoin);
+router.delete(
+	'/metodos/moneda/desactivar',
+	schemas.deleteTypeCoinSchema,
+	middleware.validateSchema,
+	methods.deleteTypeCoin,
+);
 
 /**
  * @swagger
@@ -413,7 +428,12 @@ router.delete('/metodos/moneda/desactivar', methods.deleteTypeCoin);
  *       500:
  *         description: Error al crear el régimen fiscal
  */
-router.post('/sat/regimenfiscal/crear', methods.createSatFK);
+router.post(
+	'/sat/regimenfiscal/crear',
+	schemas.createSatFKSchema,
+	middleware.validateSchema,
+	methods.createRegimenFiscal,
+);
 
 /**
  * @swagger
@@ -452,7 +472,12 @@ router.post('/sat/regimenfiscal/crear', methods.createSatFK);
  *       500:
  *         description: Error al actualizar el régimen fiscal
  */
-router.patch('/sat/regimenfiscal/actualizar', methods.updateRegimenFiscal);
+router.patch(
+	'/sat/regimenfiscal/actualizar',
+	schemas.editSatFKSchema,
+	middleware.validateSchema,
+	methods.updateRegimenFiscal,
+);
 
 /**
  * @swagger
@@ -481,7 +506,12 @@ router.patch('/sat/regimenfiscal/actualizar', methods.updateRegimenFiscal);
  *       500:
  *         description: Error al borrar el régimen fiscal
  */
-router.delete('/sat/regimenfiscal/borrar', methods.deleteRegimenFiscal);
+router.delete(
+	'/sat/regimenfiscal/borrar',
+	schemas.deleteSatFKSchema,
+	middleware.validateSchema,
+	methods.deleteRegimenFiscal,
+);
 
 /**
  * @swagger
@@ -515,7 +545,12 @@ router.delete('/sat/regimenfiscal/borrar', methods.deleteRegimenFiscal);
  *       500:
  *         description: Error al crear el uso de CFDI
  */
-router.post('/sat/cfdi/crear', methods.createCFDI);
+router.post(
+	'/sat/cfdi/crear',
+	schemas.createCFDISchema,
+	middleware.validateSchema,
+	methods.createUsoCFDI,
+);
 
 /**
  * @swagger
@@ -551,7 +586,12 @@ router.post('/sat/cfdi/crear', methods.createCFDI);
  *       500:
  *         description: Error al editar el uso de CFDI
  */
-router.patch('/sat/cfdi/editar', methods.editCFDI);
+router.patch(
+	'/sat/cfdi/editar',
+	schemas.editCFDISchema,
+	middleware.validateSchema,
+	methods.updateUsoCFDI,
+);
 
 /**
  * @swagger
@@ -580,6 +620,9 @@ router.patch('/sat/cfdi/editar', methods.editCFDI);
  *       500:
  *         description: Error al borrar el uso de CFDI
  */
-router.delete('/sat/cfdi/borrar', methods.deleteCFDI);
+router.delete('/sat/cfdi/borrar',
+schemas.deleteSatFKSchema,
+middleware.validateSchema,
+methods.deleteCFDI);
 
 export default router;

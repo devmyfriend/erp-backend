@@ -118,6 +118,7 @@ const crearIdEmpresa = async (req, res) => {
 		return res.status(200).json({
 			status: 200,
 			message: 'Se ha creado la empresa',
+			EmpresaId: crearEntidad.EntidadNegocioId
 		});
 	} catch (error) {
 		console.error('Error al crear la empresa:', error);

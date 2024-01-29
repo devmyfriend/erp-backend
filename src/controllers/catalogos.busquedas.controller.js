@@ -30,7 +30,7 @@ const findPostalCodes = async (req, res) => {
 		});
 
 		if (data.length < 1) {
-			return res.status(404).json({ message: 'No hay datos dispobles' });
+			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 		return res.status(200).json(data);
 	} catch (error) {
@@ -47,7 +47,7 @@ const findCol = async (req, res) => {
 
 		return res.status(200).json(data);
 	} catch (error) {
-		console.error('Error al obtener los datos de la colinia', error.message);
+		console.error('Error al obtener los datos de la colonia', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -68,7 +68,7 @@ const findColByName = async (req, res) => {
 
 		return res.status(200).json(data);
 	} catch (error) {
-		console.error('Error al obtener los datos de la colinia', error.message);
+		console.error('Error al obtener los datos de la moneda', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -109,7 +109,7 @@ const paymentMethods = async (req, res) => {
 
 		return res.status(200).send([{ metodos: data1, formas: data0 }]);
 	} catch (error) {
-		console.error('Error al obtener los datos de la colinia', error.message);
+		console.error('Error al obtener los datos de la moneda', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -119,7 +119,7 @@ const getTypeCoin = async (req, res) => {
 		const data = await Coin.findAll({ limit: 15 });
 		return res.status(200).json(data);
 	} catch (error) {
-		console.error('Error al obtener los datos de la colinia', error.message);
+		console.error('Error al obtener los datos de la moneda', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -134,7 +134,7 @@ const findTypeCoin = async (req, res) => {
 		});
 		return res.status(200).json(data);
 	} catch (error) {
-		console.error('Error al obtener los datos de la colinia', error.message);
+		console.error('Error al obtener los datos de la moneda', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -143,7 +143,8 @@ const createTypeCoin = async (req, res) => {
 	const coinBody = req.body;
 
 	try	{
-		const createdCoin = await Coin.create(coinBody);
+		
+		await Coin.create(coinBody);
 
 		return res.status(200).json({ success: true, message: 'Moneda creada'});
 
@@ -191,11 +192,11 @@ const deleteTypeCoin = async (req, res) => {
     }
 }
 
-const createSatFK = async (req, res) => {
+const createRegimenFiscal = async (req, res) => {
     const satFKBody = req.body;
 
     try {
-        const createdRegimenFiscal = await regimenFiscal.create(satFKBody);
+        await regimenFiscal.create(satFKBody);
 
         return res.status(200).json({ success: true, message: 'Régimen Fiscal creado' });
     } catch (error) {
@@ -236,7 +237,7 @@ const deleteRegimenFiscal = async (req, res) => {
             return res.status(400).json({ error: 'El Regimen Fiscal no existe' });
         }
 
-        const [updated] = await regimenFiscal.update({ Activo: false }, { where: { ClaveRegimenFiscal } });
+        await regimenFiscal.update({ Activo: false }, { where: { ClaveRegimenFiscal } });
 
         return res.status(200).json({ success: true, message: 'Régimen fiscal borrado' });
 
@@ -246,11 +247,11 @@ const deleteRegimenFiscal = async (req, res) => {
     }
 }
 
-const createCFDI = async (req, res) => {
+const createUsoCFDI = async (req, res) => {
 	const cfdiBody = req.body;
 
 	try {
-		const createdCFDI = await UsoCFDI.create(cfdiBody);
+		await UsoCFDI.create(cfdiBody);
 
 		return res.status(200).json({ success: true, message: 'CFDI creado' });
 	} catch (error) {
@@ -259,8 +260,7 @@ const createCFDI = async (req, res) => {
 	}
 }
 
-const editCFDI = async (req, res) => {
-    console.log(req.body);
+const updateUsoCFDI = async (req, res) => {
     const cfdiBody = req.body;
 
     try {
@@ -270,9 +270,9 @@ const editCFDI = async (req, res) => {
             return res.status(404).json({ error: 'CFDI no encontrado' });
         }
 
-        const updatedCFDI = await cfdi.update({  ClaveUsoCFDI: cfdiBody.ClaveUsoCFDI ,Descripcion: cfdiBody.Descripcion, Fisica: cfdiBody.Fisica, Moral: cfdiBody.Moral});
+		const updatedCFDI = await cfdi.update(cfdiBody);
 
-        return res.status(200).json({ success: true, message: 'CFDI actualizado', data: updatedCFDI });
+        return res.status(200).json({ success: true, message: 'CFDI actualizado', data: updatedCFDI});
     } catch (error) {
         console.error('Error al actualizar CFDI', error.message);
         return res.status(500).json({ error: 'Error al actualizar CFDI' });
@@ -293,7 +293,7 @@ const deleteCFDI = async (req, res) => {
             return res.status(400).json({ error: 'El CFDI no existe' });
         }
 
-        const [updated] = await UsoCFDI.update({ Activo: false }, { where: { ClaveUsoCFDI } });
+        await UsoCFDI.update({ Activo: false }, { where: { ClaveUsoCFDI } });
 
         return res.status(200).json({ success: true, message: 'CFDI borrado' });
     } catch (error) {
@@ -315,10 +315,10 @@ export const methods = {
 	createTypeCoin,
 	updateTypeCoin,
 	deleteTypeCoin,
-	createSatFK,
+	createRegimenFiscal,
 	updateRegimenFiscal,
 	deleteRegimenFiscal,
-	createCFDI,
-	editCFDI,
+	createUsoCFDI,
+	updateUsoCFDI,
 	deleteCFDI
 };
