@@ -35,7 +35,7 @@ const obtenerEstadoPorPais = async (req, res) => {
 };
 
 const obtenerColonias = async (req, res) => {
-	const { cp,  ClaveEstado } = req.body;
+	const { cp, ClaveEstado } = req.body;
 
 	try {
 		const colonia = await sequelize.query(
@@ -45,28 +45,25 @@ const obtenerColonias = async (req, res) => {
 			},
 		);
 
-		const lol = await filtroLocalidades(
-			cp,
-			ClaveEstado,
-			colonia[0].ClaveColonia,
+		const lol = await sequelize.query(
+			`CALL sp_pais_colonias(4, NULL,${cp},'NULL','NULL')`,
+			{
+				type: sequelize.QueryTypes.RAW,
+			},
 		);
 
-		res.json({ colonias: colonia, localidades: lol });
+		const mun = await sequelize.query(
+			`CALL sp_pais_colonias(5, NULL,${cp},'NULL','NULL')`,
+			{
+				type: sequelize.QueryTypes.RAW,
+			},
+		);
+
+		res.json({ colonias: colonia, localidades: lol, municipios: mun });
 	} catch (error) {
 		console.error('Error al obtener las colonias', error.message);
 		res.status(500).json({ error: 'Error al obtener las colonias' });
 	}
-};
-
-const filtroLocalidades = async (cp, clavePais, claveColonia) => {
-	const localidades = await sequelize.query(
-		`CALL sp_pais_colonias(4, NULL,${cp},'${clavePais}','${claveColonia}')`,
-		{
-			type: sequelize.QueryTypes.RAW,
-		},
-	);
-
-	return localidades;
 };
 
 export const methods = {

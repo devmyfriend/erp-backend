@@ -8,7 +8,7 @@ import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
 const getPostalCodes = async (req, res) => {
 	try {
 		const data = await sequelize.query(
-			'CALL sp_codigos_postales(1,NULL,NULL )',
+			'CALL sp_codigos_postales(1,NULL )',
 			{
 				type: sequelize.QueryTypes.RAW,
 			},
@@ -22,10 +22,10 @@ const getPostalCodes = async (req, res) => {
 };
 
 const findPostalCodes = async (req, res) => {
-	const { cp, municipio } = req.body;
+	const { cp} = req.body;
 	try {
-		const data = await sequelize.query('CALL sp_codigos_postales(?,?,? )', {
-			replacements: [2, cp, municipio],
+		const data = await sequelize.query('CALL sp_codigos_postales(?,? )', {
+			replacements: [2, cp],
 			type: sequelize.QueryTypes.RAW,
 		});
 
@@ -303,6 +303,15 @@ const deleteCFDI = async (req, res) => {
 }
 
 
+const findCFDI = async (req, res) => {
+	const result = await sequelize.query(
+		'CALL sp_lista_cfdi()',
+		{
+			type: sequelize.QueryTypes.RAW,
+		},
+	);
+	return res.status(200).json( result );
+};
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
@@ -320,5 +329,6 @@ export const methods = {
 	deleteRegimenFiscal,
 	createUsoCFDI,
 	updateUsoCFDI,
-	deleteCFDI
+	deleteCFDI,
+	findCFDI
 };
