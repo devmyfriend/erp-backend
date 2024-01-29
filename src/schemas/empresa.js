@@ -1,13 +1,6 @@
 import { body } from 'express-validator';
 
-export const buscarRFC = [
-	body('RFC')
-		.notEmpty()
-		.withMessage('El RFC no puede estar vacío')
-		.isString()
-		.isLength({ max: 13 })
-		.withMessage('El RFC tiene que mantener la estructura del SAT'),
-];
+
 
 export const editarIdEmpresa = [
 	body('entidad.*.EntidadNegocioId')
@@ -21,8 +14,7 @@ export const editarIdEmpresa = [
 		.withMessage('El campo EsPropietaria debe ser un booleano'),
 	body('entidad.*.RFC')
 		.optional()
-		.isLength({ max: 13 })
-
+		.isLength({ min: 12, max: 13 })
 		.withMessage('El campo RFC no cumple con el formato adecuado'),
 	body('entidad.*.NombreOficial')
 		.optional()
@@ -106,10 +98,6 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo RFC no puede estar vacío')
 		.isLength({ min: 12, max: 13 })
 		.withMessage('El RFC tiene que tener de 12 a 13 digitos')
-		.matches(
-			/^([A-ZÑ&]{3,4}) ?(?:- ?)?(\d{2}(?:0[1-9]|1[0-2])(?:0[1-9]|[12]\d|3[01])) ?(?:- ?)?([A-Z\d]{2})([A\d])$/,
-		)
-		.withMessage('El campo RFC no cumple con el formato adecuado')
 	,
 	body('entidad.*.NombreComercial')
 		.optional()
