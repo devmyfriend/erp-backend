@@ -10,6 +10,10 @@ export const Sucursal = Connection.define(
 			allowNull: false,
 			autoIncrement: true,
 		},
+		ResponsableId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+		},
 		Nombre: {
 			type: DataTypes.STRING(255),
 			allowNull: false,
