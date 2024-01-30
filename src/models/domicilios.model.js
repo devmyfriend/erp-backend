@@ -26,24 +26,24 @@ export const Domicilio = Connection.define(
             type: DataTypes.STRING(255),
             allowNull: false
         },
-        ClaveEstado: {
-            type: DataTypes.STRING(3),
+        Estado: {
+            type: DataTypes.STRING,
             allowNull: false
         },
-        ClaveMunicipio: {
-            type: DataTypes.STRING(3),
+        Municipio: {
+            type: DataTypes.STRING,
             allowNull: false
         },
-        ClaveLocalidad: {
-            type: DataTypes.STRING(2),
+        Localidad: {
+            type: DataTypes.STRING,
             allowNull: false
         },
-        ClaveColonia: {
-            type: DataTypes.STRING(4),
+        Colonia: {
+            type: DataTypes.STRING,
             allowNull: false
         },
-        ClavePais: {
-            type: DataTypes.STRING(3),
+        Pais: {
+            type: DataTypes.STRING,
             allowNull: false
         },
         CreadoPor: {

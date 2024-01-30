@@ -88,6 +88,10 @@ router.get(
  *                     CreadoPor:
  *                       type: integer
  *                       description: ID del usuario que crea la sucursal
+ *                     ResponsableId :
+ *                       type: integer
+ *                       description: ID del usuario responsable de la sucursal
+ * 
  *               datos:
  *                 type: array
  *                 items:
@@ -101,15 +105,15 @@ router.get(
  *                       type: string
  *                     CodigoPostal:
  *                       type: string
- *                     ClaveEstado:
+ *                     Estado:
  *                       type: string
- *                     ClaveMunicipio:
+ *                     Municipio:
  *                       type: string
- *                     ClaveLocalidad:
+ *                     Localidad:
  *                       type: string
- *                     ClaveColonia:
+ *                     Colonia:
  *                       type: string
- *                     ClavePais:
+ *                     Pais:
  *                       type: string
  *     responses:
  *       200:
@@ -124,7 +128,10 @@ router.get(
  *                   example: 200
  *                 message:
  *                   type: string
- *                   example: "Se ha creado la sucursal: [Nombre de la Sucursal]"
+ *                   example: "Se ha creado la sucursal"
+ *                 sucursalId: 
+ *                   type: number
+ *                   example: 1010
  *       400:
  *         description: Error en la solicitud
  *         content:
@@ -266,19 +273,19 @@ router.delete(
  *                     CodigoPostal:
  *                       type: string
  *                       description: Código postal de la sucursal
- *                     ClaveEstado:
+ *                     Estado:
  *                       type: string
  *                       description: Clave del estado
- *                     ClaveMunicipio:
+ *                     Municipio:
  *                       type: string
  *                       description: Clave del municipio
- *                     ClaveLocalidad:
+ *                     Localidad:
  *                       type: string
  *                       description: Clave de la localidad
- *                     ClaveColonia:
+ *                     Colonia:
  *                       type: string
  *                       description: Clave de la colonia
- *                     ClavePais:
+ *                     Pais:
  *                       type: string
  *                       description: Clave del país
  *           example:
@@ -292,11 +299,11 @@ router.delete(
  *                 NumeroExt: "123"
  *                 NumeroInt: "A"
  *                 CodigoPostal: "45678"
- *                 ClaveEstado: "EST"
- *                 ClaveMunicipio: "MUN"
- *                 ClaveLocalidad: "LOC"
- *                 ClaveColonia: "COL"
- *                 ClavePais: "PAI"
+ *                 Estado: "EST"
+ *                 Municipio: "Benito Juarez"
+ *                 Localidad: "LOC"
+ *                 Colonia: "Hola soy una colonia"
+ *                 Pais: "México"
  *     responses:
  *       200:
  *         description: Sucursal actualizada con éxito

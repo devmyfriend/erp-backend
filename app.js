@@ -45,8 +45,10 @@ const App = {
 		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/api/v1/impuestos', taxRoutes);
 		app.use('/', (req, res) => {
-			res.send(`¡ERP-API!`);
+			res.status(404).json({message:'Request not found'})
 		});
+
+
 
 		async function connectDatabase() {
 			try {

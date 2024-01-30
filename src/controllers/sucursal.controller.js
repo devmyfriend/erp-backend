@@ -14,7 +14,7 @@ const obtenerSucursales = async (req, res) => {
 			},
 		);
 
-		if(sucursales.length < 1){
+		if (sucursales.length < 1) {
 
 			return res.status(404).json({
 				status: 404,
@@ -58,10 +58,11 @@ const crearSucursal = async (req, res) => {
 			DomicilioId: sucursalDatos._previousDataValues.DomicilioId,
 		});
 
-		console.log(crearSucursal.SucursalId);
+
 		res.status(200).json({
 			status: 200,
 			message: 'Se ha creado la sucursal ',
+			sucursalId: crearSucursal.SucursalId
 		});
 	} catch (error) {
 		console.error('Error al crear la sucursal:', error);

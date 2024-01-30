@@ -23,7 +23,12 @@ export const crearSucursal = [
 		.exists()
 		.withMessage(
 			'El campo CreadoPor es obligatorio y debe ser un número entero.',
-		),
+		), body('sucursal.*.ResponsableId')
+			.isInt()
+			.exists()
+			.withMessage(
+				'El campo CreadoPor es obligatorio y debe ser un número entero.',
+			),
 
 	body('datos.*.Calle')
 		.isString()
@@ -48,48 +53,48 @@ export const crearSucursal = [
 		.not()
 		.isEmpty()
 		.withMessage('El código postal es obligatorio y debe ser un string.'),
-	body('datos.*.ClaveEstado')
+	body('datos.*.Estado')
 		.isString()
-		.withMessage('La clave del estado es obligatoria y debe ser un string.')
+		.withMessage('El estado es obligatoria y debe ser un string.')
 		.not()
 		.isEmpty()
-		.withMessage('La clave del estado no puede estar vacía.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave del estado debe ser un string de 3 dígitos.'),
+		.withMessage('El estado no puede estar vacío.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('La clave del estado debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveMunicipio')
+	body('datos.*.Municipio')
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave del municipio es obligatoria y debe ser un string.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave del municipio debe ser un string de 3 dígitos.'),
+		.withMessage('El municipio es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('El municipio debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveLocalidad')
+	body('datos.*.Localidad')
 		.isString()
 		.not()
 		.isEmpty()
 		.withMessage(
-			'La clave de la localidad es obligatoria y debe ser un string.',
+			'La localidad es obligatoria y debe ser un string.',
 		)
-		.isLength({ min: 2, max: 2 })
-		.withMessage('La clave localidad debe ser un string de 2 dígitos.'),
+		.isLength({ min: 3, max: 50 })
+		.withMessage('La clave localidad debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveColonia')
+	body('datos.*.Colonia')
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave de la colonia es obligatoria y debe ser un string.')
-		.isLength({ min: 4, max: 4 })
-		.withMessage('La clave colonia debe ser un string de 4 dígitos.'),
+		.withMessage('La Colonia es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('La Colonia debe ser un string con almenos 3 dígitos.'),
 
-	body('datos.*.ClavePais')
+	body('datos.*.Pais')
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave del país es obligatoria y debe ser un string.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave país debe ser un string de 3 dígitos.'),
+		.withMessage('El país es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('El país debe ser un string con almenos 3 dígitos.'),
 ];
 
 export const editarSucursal = [
@@ -149,51 +154,51 @@ export const editarSucursal = [
 		.not()
 		.isEmpty()
 		.withMessage('El código postal es obligatorio y debe ser un string.'),
-	body('datos.*.ClaveEstado')
+	body('datos.*.Estado')
 		.optional()
 		.isString()
-		.withMessage('La clave del estado es obligatoria y debe ser un string.')
+		.withMessage('El estado es obligatoria y debe ser un string.')
 		.not()
 		.isEmpty()
-		.withMessage('La clave del estado no puede estar vacía.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave del estado debe ser un string de 3 dígitos.'),
+		.withMessage('El estado no puede estar vacío.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('El estado debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveMunicipio')
+	body('datos.*.Municipio')
 		.optional()
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave del municipio es obligatoria y debe ser un string.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave del municipio debe ser un string de 3 dígitos.'),
+		.withMessage('El municipio es obligatorio y debe ser un string.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('El estado debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveLocalidad')
+	body('datos.*.Localidad')
 		.optional()
 		.isString()
 		.not()
 		.isEmpty()
 		.withMessage(
-			'La clave de la localidad es obligatoria y debe ser un string.',
+			'La localidad es obligatoria y debe ser un string.',
 		)
-		.isLength({ min: 2, max: 2 })
-		.withMessage('La clave localidad debe ser un string de 2 dígitos.'),
+		.isLength({ min: 3, max: 50 })
+		.withMessage('La clave localidad debe ser un string de almenos 3 dígitos.'),
 
-	body('datos.*.ClaveColonia')
+	body('datos.*.Colonia')
 		.optional()
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage('La clave de la colonia es obligatoria y debe ser un string.')
-		.isLength({ min: 4, max: 4 })
-		.withMessage('La clave colonia debe ser un string de 4 dígitos.'),
+		.withMessage('La colonia es obligatoria y debe ser un string.')
+		.isLength({ min: 3, max: 50 })
+		.withMessage('La clave colonia debe ser un string de almenos 4 dígitos.'),
 
-	body('datos.*.ClavePais')
+	body('datos.*.Pais')
 		.optional()
 		.isString()
 		.not()
 		.isEmpty()
 		.withMessage('La clave del país es obligatoria y debe ser un string.')
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave país debe ser un string de 3 dígitos.'),
+		.isLength({ min: 3, max: 50 })
+		.withMessage('El país debe ser un string de almenos 3 dígitos.'),
 ];

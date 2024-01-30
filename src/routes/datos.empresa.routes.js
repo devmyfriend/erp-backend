@@ -7,6 +7,28 @@ const router = Router();
 
 /**
  * @swagger
+ * /api/v1/empresa:
+ *   get:
+ *     tags:
+ *       - Datos Empresa
+ *     summary: Obtiene una lista de todas las empresas
+ *     responses:
+ *       200:
+ *         description: Lista de empresas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *  
+ *
+ */
+router.get('/', methods.obtenerEmpresas);
+
+/**
+ * @swagger
  * /api/v1/empresa/{id}:
  *   get:
  *     summary: Obtener datos de la empresa por ID
@@ -140,15 +162,15 @@ router.get(
  *                 type: string
  *               CodigoPostal:
  *                 type: string
- *               ClaveEstado:
+ *               Estado:
  *                 type: string
- *               ClaveMunicipio:
+ *               Municipio:
  *                 type: string
- *               ClaveLocalidad:
+ *               Localidad:
  *                 type: string
- *               ClaveColonia:
+ *               Colonia:
  *                 type: string
- *               ClavePais:
+ *               Pais:
  *                 type: string
  * /api/v1/empresa/crear:
  *   post:
@@ -186,7 +208,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/empresa/editar/{id}:
+ * /api/v1/empresa/editar/:
  *   patch:
  *     summary: Editar datos fiscales de la empresa
  *     tags: [Datos Empresa]
@@ -204,8 +226,6 @@ router.post(
  *                   properties:
  *                     EntidadNegocioId:
  *                      type: integer
- *                     EsPropietaria:
- *                       type: boolean
  *                     RFC:
  *                       type: string
  *                     NombreComercial:
@@ -237,15 +257,15 @@ router.post(
  *                       type: string
  *                     CodigoPostal:
  *                       type: string
- *                     ClaveEstado:
+ *                     Estado:
  *                       type: string
- *                     ClaveMunicipio:
+ *                     Municipio:
  *                       type: string
- *                     ClaveLocalidad:
+ *                     Localidad:
  *                       type: string
- *                     ClaveColonia:
+ *                     Colonia:
  *                       type: string
- *                     ClavePais:
+ *                     Pais:
  *                       type: string
  *     responses:
  *       200:
@@ -267,7 +287,7 @@ router.post(
  *         description: Internal Server Error
  */
 router.patch(
-	'/editar/:id',
+	'/editar/',
 	schemas.editarIdEmpresa,
 	middleware.validateSchema,
 	methods.editarIdEmpresa,
@@ -316,37 +336,9 @@ router.patch(
  */
 
 router.delete('/desactivar/:id',
-param('id', 'El parametro debe ser un entero').isNumeric(),
-methods.desactivarIdEmpresa);
+	param('id', 'El parametro debe ser un entero').isNumeric(),
+	methods.desactivarIdEmpresa);
 
-/**
- * @swagger
- * /api/v1/empresa/regimen/listado:
- *   get:
- *     summary: Obtener la lista de regímenes fiscales
- *     tags: [Datos Empresa]
- *     responses:
- *       200:
- *         description: La lista de regímenes fiscales
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   ClaveRegimenFiscal:
- *                     type: string
- *                   Descripcion:
- *                     type: string
- *                   Fisica:
- *                     type: boolean
- *                   Moral:
- *                     type: boolean
- *       500:
- *         description: Internal Server Error
- */
-router.get('/regimen/listado', methods.obtenerRegimenesFiscales);
 
 /**
  * @swagger
@@ -411,7 +403,7 @@ router.get(
 	'/contactos/:id',
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	methods.buscarContactosPorEntidadNegocioId,
-  );
+);
 
 /**
  * @swagger
@@ -678,7 +670,7 @@ router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
  */
 router.get(
 	'/emails/:id',
-	param('id','El parametro debe ser un entero').isNumeric(),
+	param('id', 'El parametro debe ser un entero').isNumeric(),
 	methods.buscarEmailsPorEmpresa,
 );
 
@@ -782,47 +774,7 @@ router.patch(
  */
 router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
 
-/**
- * @swagger
- * /api/v1/empresa:
- *   get:
- *     tags:
- *       - Datos Empresa
- *     summary: Obtiene una lista de todas las empresas
- *     responses:
- *       200:
- *         description: Lista de empresas
- *         content:
- *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   EntidadNegocioId:
- *                     type: integer
- *                   NombreOficial:
- *                     type: string
- *                   NombreComercial:
- *                     type: string
- *                   RFC:
- *                     type: string
- *                   ClaveRegimenFiscal:
- *                     type: integer
- *                   PersonaMoral:
- *                     type: integer
- *                   PersonaFisica:
- *                     type: integer
- *                   DomicilioId:
- *                     type: integer
- *                   Calle:
- *                     type: string
- *                   CodigoPostal:
- *                     type: string
- *       500:
- *         description: Error interno del servidor
- */
-router.get('/', methods.obtenerEmpresas);
+
 
 /**
  * @swagger
