@@ -7,12 +7,9 @@ import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
-		const data = await sequelize.query(
-			'CALL sp_codigos_postales(1,NULL )',
-			{
-				type: sequelize.QueryTypes.RAW,
-			},
-		);
+		const data = await sequelize.query('CALL sp_codigos_postales(1,NULL )', {
+			type: sequelize.QueryTypes.RAW,
+		});
 
 		return res.status(200).json(data);
 	} catch (error) {
@@ -22,7 +19,7 @@ const getPostalCodes = async (req, res) => {
 };
 
 const findPostalCodes = async (req, res) => {
-	const { cp} = req.body;
+	const { cp } = req.body;
 	try {
 		const data = await sequelize.query('CALL sp_codigos_postales(?,? )', {
 			replacements: [2, cp],
@@ -142,110 +139,147 @@ const findTypeCoin = async (req, res) => {
 const createTypeCoin = async (req, res) => {
 	const coinBody = req.body;
 
-	try	{
-		
+	try {
+
+		const validateCoin = await Coin.findOne({
+			where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
+		});
+
+		if (validateCoin) {
+			return res
+				.status(409)
+				.json({ error: 'La clave de la moneda ya esta en uso ' });
+		}
+
 		await Coin.create(coinBody);
 
-		return res.status(200).json({ success: true, message: 'Moneda creada'});
-
+		return res.status(200).json({ success: true, message: 'Moneda creada' });
 
 	} catch (error) {
 		console.error('Error al crear la moneda', error.message);
-		return res.status(500).json({ error: ''})
-	} 
-} 
+		return res.status(500).json({ error: 'Error al crear la moneda' });
+	}
+};
 
 const updateTypeCoin = async (req, res) => {
-    const { ClaveMoneda, Descripcion } = req.body;
+	const { ClaveMoneda, Descripcion } = req.body;
 
-    try {
-        const [updated] = await Coin.update({ Descripcion }, { where: { ClaveMoneda } });
+	try {
+		const [updated] = await Coin.update(
+			{ Descripcion },
+			{ where: { ClaveMoneda } },
+		);
 
-        if (!updated) {
-            return res.status(404).json({ error: 'Moneda no encontrada' });
-        }
+		if (!updated) {
+			return res.status(404).json({ error: 'Moneda no encontrada' });
+		}
 
-        return res.status(200).json({ success: true, message: 'Moneda actualizada' });
-
-    } catch (error) {
-        console.error('Error al actualizar la moneda', error.message);
-        return res.status(500).json({ error: 'Error al actualizar la moneda' });
-    }
-}
-
+		return res
+			.status(200)
+			.json({ success: true, message: 'Moneda actualizada' });
+	} catch (error) {
+		console.error('Error al actualizar la moneda', error.message);
+		return res.status(500).json({ error: 'Error al actualizar la moneda' });
+	}
+};
 
 const deleteTypeCoin = async (req, res) => {
-    const { ClaveMoneda } = req.body;
+	const { ClaveMoneda } = req.body;
 
-    try {
-        const [updated] = await Coin.update({ Activo: false }, { where: { ClaveMoneda } });
+	try {
+		const [updated] = await Coin.update(
+			{ Activo: false },
+			{ where: { ClaveMoneda } },
+		);
 
-        if (!updated) {
-            return res.status(404).json({ error: 'Moneda no encontrada' });
-        }
+		if (!updated) {
+			return res.status(404).json({ error: 'Moneda no encontrada' });
+		}
 
-        return res.status(200).json({ success: true, message: 'Moneda borrada' });
-
-    } catch (error) {
-        console.error('Error al desactivar la moneda', error.message);
-        return res.status(500).json({ error: 'Error al desactivar la moneda' });
-    }
-}
+		return res.status(200).json({ success: true, message: 'Moneda borrada' });
+	} catch (error) {
+		console.error('Error al desactivar la moneda', error.message);
+		return res.status(500).json({ error: 'Error al desactivar la moneda' });
+	}
+};
 
 const createRegimenFiscal = async (req, res) => {
-    const satFKBody = req.body;
+	const satFKBody = req.body;
+	try {
 
-    try {
-        await regimenFiscal.create(satFKBody);
+		const validateRegimenFiscal = await regimenFiscal.findOne({
+			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
+		});
 
-        return res.status(200).json({ success: true, message: 'Régimen Fiscal creado' });
-    } catch (error) {
-        console.error('Error al crear SatFK', error.message);
-        return res.status(500).json({ error: 'Error al crear régimen fiscal' });
-    }
-}
+		if (validateRegimenFiscal) {
+			return res
+				.status(409)
+				.json({ error: 'La clave del regimen fiscal ya esta en uso ' });
+		}
+
+
+		await regimenFiscal.create(satFKBody);
+		return res
+			.status(200)
+			.json({ success: true, message: 'Régimen Fiscal creado' });
+	} catch (error) {
+		console.error('Error al crear SatFK', error);
+		return res.status(500).json({ error: 'Error al crear régimen fiscal' });
+	}
+};
 
 const updateRegimenFiscal = async (req, res) => {
-    const satFKBody = req.body;
+	const satFKBody = req.body;
 
-    try {
-        const [updated] = await regimenFiscal.update(satFKBody, { where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal } });
+	try {
+		const [updated] = await regimenFiscal.update(satFKBody, {
+			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1},
+		});
 
-        if (!updated) {
-            return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
-        }
+		if (!updated) {
+			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
+		}
 
-        return res.status(200).json({ success: true, message: 'Regimen Fiscal actualizado' });
-
-    } catch (error) {
-        console.error('Error al actualizar el regimen fiscal', error.message);
-        return res.status(500).json({ error: 'Error al actualizar el regimen fiscal' });
-    }
-}
+		return res
+			.status(200)
+			.json({ success: true, message: 'Regimen Fiscal actualizado' });
+	} catch (error) {
+		console.error('Error al actualizar el regimen fiscal', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al actualizar el regimen fiscal' });
+	}
+};
 
 const deleteRegimenFiscal = async (req, res) => {
-    const { ClaveRegimenFiscal } = req.body;
+	const { ClaveRegimenFiscal } = req.body;
 
-    try {
-        const regimen = await regimenFiscal.findOne({ where: { ClaveRegimenFiscal } });
+	try {
+		const regimen = await regimenFiscal.findOne({
+			where: { ClaveRegimenFiscal },
+		});
 
-        if (!regimen) {
-            return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
-        }
+		if (!regimen) {
+			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
+		}
 
-        if (!regimen.Activo) {
-            return res.status(400).json({ error: 'El Regimen Fiscal no existe' });
-        }
+		if (!regimen.Activo) {
+			return res.status(400).json({ error: 'El Regimen Fiscal no existe' });
+		}
 
-        await regimenFiscal.update({ Activo: false }, { where: { ClaveRegimenFiscal } });
+		await regimenFiscal.update(
+			{ Activo: false },
+			{ where: { ClaveRegimenFiscal } },
+		);
 
-        return res.status(200).json({ success: true, message: 'Régimen fiscal borrado' });
-
-    } catch (error) {
-        console.error('Error al borrar el regimen fiscal', error.message);
-        return res.status(500).json({ error: 'Error al borrar el regimen fiscal' });
-    }
-}
+		return res
+			.status(200)
+			.json({ success: true, message: 'Régimen fiscal borrado' });
+	} catch (error) {
+		console.error('Error al borrar el regimen fiscal', error.message);
+		return res.status(500).json({ error: 'Error al borrar el regimen fiscal' });
+	}
+};
 
 const createUsoCFDI = async (req, res) => {
 	const cfdiBody = req.body;
@@ -258,59 +292,60 @@ const createUsoCFDI = async (req, res) => {
 		console.error('Error al crear CFDI', error.message);
 		return res.status(500).json({ error: 'Error al crear CFDI' });
 	}
-}
+};
 
 const updateUsoCFDI = async (req, res) => {
-    const cfdiBody = req.body;
+	const cfdiBody = req.body;
 
-    try {
-        const cfdi = await UsoCFDI.findOne({ where: { ClaveUsoCFDI: cfdiBody.ClaveUsoCFDI } });
+	try {
+		const cfdi = await UsoCFDI.findOne({
+			where: { ClaveUsoCFDI: cfdiBody.ClaveUsoCFDI },
+		});
 
-        if (!cfdi) {
-            return res.status(404).json({ error: 'CFDI no encontrado' });
-        }
+		if (!cfdi) {
+			return res.status(404).json({ error: 'CFDI no encontrado' });
+		}
 
 		const updatedCFDI = await cfdi.update(cfdiBody);
 
-        return res.status(200).json({ success: true, message: 'CFDI actualizado', data: updatedCFDI});
-    } catch (error) {
-        console.error('Error al actualizar CFDI', error.message);
-        return res.status(500).json({ error: 'Error al actualizar CFDI' });
-    }
-}
-	
+		return res
+			.status(200)
+			.json({ success: true, message: 'CFDI actualizado', data: updatedCFDI });
+	} catch (error) {
+		console.error('Error al actualizar CFDI', error.message);
+		return res.status(500).json({ error: 'Error al actualizar CFDI' });
+	}
+};
+
 const deleteCFDI = async (req, res) => {
-    const { ClaveUsoCFDI } = req.body;
+	const { ClaveUsoCFDI } = req.body;
 
-    try {
-        const cfdi = await UsoCFDI.findOne({ where: { ClaveUsoCFDI } });
+	try {
+		const cfdi = await UsoCFDI.findOne({ where: { ClaveUsoCFDI } });
 
-        if (!cfdi) {
-            return res.status(404).json({ error: 'CFDI no encontrado' });
-        }
+		if (!cfdi) {
+			return res.status(404).json({ error: 'CFDI no encontrado' });
+		}
 
-        if (!cfdi.Activo) {
-            return res.status(400).json({ error: 'El CFDI no existe' });
-        }
+		if (!cfdi.Activo) {
+			return res.status(400).json({ error: 'El CFDI no existe' });
+		}
 
-        await UsoCFDI.update({ Activo: false }, { where: { ClaveUsoCFDI } });
+		await UsoCFDI.update({ Activo: false }, { where: { ClaveUsoCFDI } });
 
-        return res.status(200).json({ success: true, message: 'CFDI borrado' });
-    } catch (error) {
-        console.error('Error al borrar el CFDI', error.message);
-        return res.status(500).json({ error: 'Error al borrar el CFDI' });
-    }
-}
+		return res.status(200).json({ success: true, message: 'CFDI borrado' });
+	} catch (error) {
+		console.error('Error al borrar el CFDI', error.message);
+		return res.status(500).json({ error: 'Error al borrar el CFDI' });
+	}
+};
 
 
 const findCFDI = async (req, res) => {
-	const result = await sequelize.query(
-		'CALL sp_lista_cfdi()',
-		{
-			type: sequelize.QueryTypes.RAW,
-		},
-	);
-	return res.status(200).json( result );
+	const result = await sequelize.query('CALL sp_lista_cfdi()', {
+		type: sequelize.QueryTypes.RAW,
+	});
+	return res.status(200).json(result);
 };
 export const methods = {
 	getPostalCodes,
@@ -330,5 +365,5 @@ export const methods = {
 	createUsoCFDI,
 	updateUsoCFDI,
 	deleteCFDI,
-	findCFDI
+	findCFDI,
 };

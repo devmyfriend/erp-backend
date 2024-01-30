@@ -308,7 +308,7 @@ router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin);
  *           schema:
  *             type: object
  *             properties:
- *               Moneda:
+ *               ClaveMoneda:
  *                 type: string
  *               Descripcion:
  *                 type: string
@@ -421,8 +421,7 @@ router.delete(
  * @swagger
  * /api/v1/catalogo/sat/regimenfiscal/crear:
  *   post:
- *     tags:
- *       - Regimen Fiscal
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Crea un nuevo régimen fiscal
  *     requestBody:
  *       required: true
@@ -460,8 +459,7 @@ router.post(
  * @swagger
  * /api/v1/catalogo/sat/regimenfiscal/actualizar:
  *   patch:
- *     tags:
- *       - Regimen Fiscal
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Actualiza un régimen fiscal existente
  *     requestBody:
  *       required: true
@@ -482,9 +480,6 @@ router.post(
  *               Moral:
  *                 type: boolean
  *                 description: Si el régimen fiscal es para personas morales
- *               Activo:
- *                 type: boolean
- *                 description: Si el régimen fiscal está activo
  *     responses:
  *       200:
  *         description: Régimen fiscal actualizado con éxito
@@ -504,8 +499,7 @@ router.patch(
  * @swagger
  * /api/v1/catalogo/sat/regimenfiscal/borrar:
  *   delete:
- *     tags:
- *       - Regimen Fiscal
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Borra un régimen fiscal existente
  *     requestBody:
  *       required: true
@@ -515,7 +509,7 @@ router.patch(
  *             type: object
  *             properties:
  *               ClaveRegimenFiscal:
- *                 type: integer
+ *                 type: string
  *                 description: La clave del régimen fiscal
  *     responses:
  *       200:
@@ -538,8 +532,7 @@ router.delete(
  * @swagger
  * /api/v1/catalogo/sat/cfdi/crear:
  *   post:
- *     tags:
- *       - CFDI
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Crea un nuevo uso de CFDI
  *     requestBody:
  *       required: true
@@ -577,8 +570,7 @@ router.post(
  * @swagger
  * /api/v1/catalogo/sat/cfdi/editar:
  *   patch:
- *     tags:
- *       - CFDI
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Edita un uso de CFDI existente
  *     requestBody:
  *       required: true
@@ -618,8 +610,7 @@ router.patch(
  * @swagger
  * /api/v1/catalogo/sat/cfdi/borrar:
  *   delete:
- *     tags:
- *       - CFDI
+ *     tags: [Régimen Fiscal y CFDI]
  *     summary: Borra un uso de CFDI existente
  *     requestBody:
  *       required: true
@@ -642,7 +633,7 @@ router.patch(
  *         description: Error al borrar el uso de CFDI
  */
 router.delete('/sat/cfdi/borrar',
-schemas.deleteSatFKSchema,
+schemas.deleteCFDISchema,
 middleware.validateSchema,
 methods.deleteCFDI);
 

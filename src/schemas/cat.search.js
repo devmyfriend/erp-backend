@@ -22,7 +22,7 @@ export const findColSchema = [
 ];
 
 export const createTypeCoinSchema = [
-	body('Moneda')
+	body('ClaveMoneda')
 		.notEmpty()
 		.withMessage('El codigo de moneda no puede estar vacia')
 		.isString()
@@ -35,7 +35,7 @@ export const createTypeCoinSchema = [
 ];
 
 export const updateTypeCoinSchema = [
-	body('Moneda')
+	body('ClaveMoneda')
 		.notEmpty()
 		.isString()
 		.withMessage('El codigo de la moneda no puede estar vacia'),
@@ -46,7 +46,7 @@ export const updateTypeCoinSchema = [
 ];
 
 export const deleteTypeCoinSchema = [
-	body('Moneda')
+	body('ClaveMoneda')
 		.notEmpty()
 		.isString()
 		.withMessage('El codigo de la moneda no puede estar vacia'),
@@ -122,7 +122,9 @@ export const createCFDISchema = [
 		.notEmpty()
 		.withMessage('La clave del uso del CFDI no puede estar vacia')
 		.isString()
-		.withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+		.withMessage('La clave del uso del CFDI tiene que ser una cadena de texto')
+		.isLength({ min: 4, max: 4 })
+		.withMessage('La clave CFDI tiene que ser de 4 caracteres'),
 	body('Descripcion')
 		.notEmpty()
 		.withMessage('La descripcion no puede estar vacia')

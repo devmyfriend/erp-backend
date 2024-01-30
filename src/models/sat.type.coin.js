@@ -15,7 +15,7 @@ export const Coin = Connection.define(
 		},
 		Activo: {
 			type: DataTypes.BOOLEAN,
-			allowNull: false,
+			allowNull: true,
 		},
 	},
 	{
