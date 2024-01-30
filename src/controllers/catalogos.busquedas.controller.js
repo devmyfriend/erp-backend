@@ -156,7 +156,7 @@ const createTypeCoin = async (req, res) => {
 		return res.status(200).json({ success: true, message: 'Moneda creada' });
 
 	} catch (error) {
-		console.error('Error al crear la moneda', error.message);
+		console.error('Error al crear la moneda', error);
 		return res.status(500).json({ error: 'Error al crear la moneda' });
 	}
 };
