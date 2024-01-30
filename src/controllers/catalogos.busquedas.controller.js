@@ -256,17 +256,13 @@ const deleteRegimenFiscal = async (req, res) => {
 
 	try {
 		const regimen = await regimenFiscal.findOne({
-			where: { ClaveRegimenFiscal },
+			where: { ClaveRegimenFiscal, Activo: 0 },
 		});
 
 		if (!regimen) {
 			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
 		}
-
-		if (!regimen.Activo) {
-			return res.status(400).json({ error: 'El Regimen Fiscal no existe' });
-		}
-
+		
 		await regimenFiscal.update(
 			{ Activo: false },
 			{ where: { ClaveRegimenFiscal } },

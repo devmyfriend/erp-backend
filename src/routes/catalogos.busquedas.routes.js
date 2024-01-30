@@ -637,6 +637,4 @@ schemas.deleteCFDISchema,
 middleware.validateSchema,
 methods.deleteCFDI);
 
-
-
 export default router;
