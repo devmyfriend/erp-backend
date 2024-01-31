@@ -10,6 +10,7 @@ import contactoSucursalRoutes from './src/routes/contacto.sucursal.routes.js';
 import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
 import taxRoutes from './src/routes/tax.routes.js'
+import paymentRoutes from './src/routes/payment.routes.js'
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -44,6 +45,7 @@ const App = {
 		app.use('/api/v1/sucursal', sucursalesRoutes);
 		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/api/v1/impuestos', taxRoutes);
+		app.use('/api/v1/pagos', paymentRoutes);
 		app.use('/', (req, res) => {
 			res.status(404).json({message:'Request not found'})
 		});

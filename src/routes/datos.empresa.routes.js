@@ -371,7 +371,7 @@ router.delete('/desactivar/:id',
  *                 ApellidoPaterno:
  *                   type: string
  *                 ApellidoMaterno:
- *                   type: string
+ *                   type: string	
  *                 Departamento:
  *                   type: string
  *                 Puesto:
@@ -443,7 +443,8 @@ router.get(
  *               properties:
  *                 success:
  *                   type: boolean
- *                 
+ *                 data:
+ *                   $ref: '#/components/schemas/EmpresaContacto'
  *       400:
  *         description: Cuerpo de la petición inválido
  *       500:

@@ -1,7 +1,6 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Sucursal } from '../models/sucursal.model.js';
 import { SucursalDomicilio } from '../models/sucursal.domicilio.model.js';
-
 import { Domicilio } from '../models/domicilios.model.js';
 
 const obtenerSucursales = async (req, res) => {

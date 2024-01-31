@@ -1,33 +1,25 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
-
-export const regimenFiscal = Connection.define(
-    'SAT_RegimenFiscal',
+export const paymentMethods = Connection.define(
+    'PaymentMethods',
     {
-        ClaveRegimenFiscal: {
+        ClaveFormaPago: {
             type: DataTypes.STRING,
-            autoIncrement: false,
             primaryKey: true,
-            allowNull: false,
         },
         Descripcion: {
             type: DataTypes.STRING,
         },
-        Fisica : {
-            type: DataTypes.BOOLEAN,
-        },
-        Moral : {
+        Bancarizado: {
             type: DataTypes.BOOLEAN,
         },
         Activo: {
             type: DataTypes.BOOLEAN,
-        }
+        },
     },
     {
-        sequelize: Connection,
-        modelName: 'SAT_RegimenFiscal',
-        tableName: 'SAT_RegimenFiscal',
+        tableName: 'SAT_FormaPago',
         timestamps: false,
-        freezeTableName: false,
+        freezeTableName: true,
     },
 );

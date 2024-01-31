@@ -1,10 +1,10 @@
-import { DataTypes } from 'sequelize';
-import { Connection } from '../database/mariadb.database.js';
+import { DataTypes } from "sequelize";
+import { Connection } from "../database/mariadb.database.js";
 
-export const regimenFiscal = Connection.define(
-    'SAT_RegimenFiscal',
+export const UsoCFDI = Connection.define(
+    "CFDI",
     {
-        ClaveRegimenFiscal: {
+        ClaveUsoCFDI: {
             type: DataTypes.STRING,
             autoIncrement: false,
             primaryKey: true,
@@ -13,21 +13,21 @@ export const regimenFiscal = Connection.define(
         Descripcion: {
             type: DataTypes.STRING,
         },
-        Fisica : {
+        Fisica: {
             type: DataTypes.BOOLEAN,
         },
-        Moral : {
+        Moral: {
             type: DataTypes.BOOLEAN,
         },
         Activo: {
             type: DataTypes.BOOLEAN,
-        }
+        },
     },
     {
         sequelize: Connection,
-        modelName: 'SAT_RegimenFiscal',
-        tableName: 'SAT_RegimenFiscal',
+        modelName: "CFDI",
+        tableName: "SAT_UsoCFDI",
         timestamps: false,
         freezeTableName: false,
-    },
+    }
 );

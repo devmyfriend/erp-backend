@@ -21,6 +21,7 @@ export const Email = Connection.define(
 		BorradoPor: {
 			type: DataTypes.INTEGER,
 		},
+
 		BorradoEn: {
 			type: DataTypes.DATE,
 		},

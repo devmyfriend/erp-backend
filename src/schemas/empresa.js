@@ -1,7 +1,5 @@
 import { body } from 'express-validator';
 
-
-
 export const editarIdEmpresa = [
 	body('entidad.*.EntidadNegocioId')
 		.notEmpty()
@@ -84,7 +82,6 @@ export const editarIdEmpresa = [
 		.isString()
 		.withMessage('El campo Pais debe ser una cadena de texto'),
 ];
-
 
 export const crearEmpresaSchema = [
 	body('entidad.*.NombreOficial')
