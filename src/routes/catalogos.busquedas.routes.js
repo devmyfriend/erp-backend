@@ -296,7 +296,7 @@ router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin);
 
 /**
  * @swagger
- * /api/v1/catalogo/metodos/moneda/crear:
+ * /api/v1/catalogo/metodos/moneda:
  *   post:
  *     tags:
  *       - Moneda
@@ -328,7 +328,7 @@ router.get('/metodos/moneda/buscar/:id', methods.findTypeCoin);
  *         description: Error al crear la moneda
  */
 router.post(
-	'/metodos/moneda/crear',
+	'/metodos/moneda',
 	schemas.createTypeCoinSchema,
 	middleware.validateSchema,
 	methods.createTypeCoin,
@@ -336,7 +336,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/metodos/moneda/actualizar:
+ * /api/v1/catalogo/metodos/moneda:
  *   patch:
  *     summary: Actualiza una moneda existente
  *     tags: [Moneda]
@@ -371,7 +371,7 @@ router.post(
  *         description: Error al actualizar la moneda
  */
 router.patch(
-	'/metodos/moneda/actualizar',
+	'/metodos/moneda',
 	schemas.updateTypeCoinSchema,
 	middleware.validateSchema,
 	methods.updateTypeCoin,
@@ -379,7 +379,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/catalogo/metodos/moneda/desactivar:
+ * /api/v1/catalogo/metodos/moneda:
  *   delete:
  *     summary: Desactiva una moneda existente
  *     tags: [Moneda]
@@ -411,7 +411,7 @@ router.patch(
  *         description: Error al desactivar la moneda
  */
 router.delete(
-	'/metodos/moneda/desactivar',
+	'/metodos/moneda',
 	schemas.deleteTypeCoinSchema,
 	middleware.validateSchema,
 	methods.deleteTypeCoin,
@@ -419,7 +419,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/regimenfiscal/crear:
+ * /api/v1/catalogo/sat/regimenfiscal:
  *   post:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Crea un nuevo régimen fiscal
@@ -449,7 +449,7 @@ router.delete(
  *         description: Error al crear el régimen fiscal
  */
 router.post(
-	'/sat/regimenfiscal/crear',
+	'/sat/regimenfiscal',
 	schemas.createSatFKSchema,
 	middleware.validateSchema,
 	methods.createRegimenFiscal,
@@ -457,7 +457,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/regimenfiscal/actualizar:
+ * /api/v1/catalogo/sat/regimenfiscal:
  *   patch:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Actualiza un régimen fiscal existente
@@ -489,7 +489,7 @@ router.post(
  *         description: Error al actualizar el régimen fiscal
  */
 router.patch(
-	'/sat/regimenfiscal/actualizar',
+	'/sat/regimenfiscal',
 	schemas.editSatFKSchema,
 	middleware.validateSchema,
 	methods.updateRegimenFiscal,
@@ -497,7 +497,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/regimenfiscal/borrar:
+ * /api/v1/catalogo/sat/regimenfiscal:
  *   delete:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Borra un régimen fiscal existente
@@ -522,7 +522,7 @@ router.patch(
  *         description: Error al borrar el régimen fiscal
  */
 router.delete(
-	'/sat/regimenfiscal/borrar',
+	'/sat/regimenfiscal',
 	schemas.deleteSatFKSchema,
 	middleware.validateSchema,
 	methods.deleteRegimenFiscal,
@@ -530,7 +530,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/cfdi/crear:
+ * /api/v1/catalogo/sat/cfdi:
  *   post:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Crea un nuevo uso de CFDI
@@ -560,7 +560,7 @@ router.delete(
  *         description: Error al crear el uso de CFDI
  */
 router.post(
-	'/sat/cfdi/crear',
+	'/sat/cfdi',
 	schemas.createCFDISchema,
 	middleware.validateSchema,
 	methods.createUsoCFDI,
@@ -568,7 +568,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/cfdi/editar:
+ * /api/v1/catalogo/sat/cfdi:
  *   patch:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Edita un uso de CFDI existente
@@ -600,7 +600,7 @@ router.post(
  *         description: Error al editar el uso de CFDI
  */
 router.patch(
-	'/sat/cfdi/editar',
+	'/sat/cfdi',
 	schemas.editCFDISchema,
 	middleware.validateSchema,
 	methods.updateUsoCFDI,
@@ -608,7 +608,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/cfdi/borrar:
+ * /api/v1/catalogo/sat/cfdi:
  *   delete:
  *     tags: [Régimen Fiscal y CFDI]
  *     summary: Borra un uso de CFDI existente
@@ -632,7 +632,7 @@ router.patch(
  *       500:
  *         description: Error al borrar el uso de CFDI
  */
-router.delete('/sat/cfdi/borrar',
+router.delete('/sat/cfdi',
 schemas.deleteCFDISchema,
 middleware.validateSchema,
 methods.deleteCFDI);
