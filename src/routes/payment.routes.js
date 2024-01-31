@@ -6,7 +6,7 @@ import router from './sucursal.routes.js';
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentMethods/crear:
+ * /api/v1/pagos/formapago/crear:
  *   post:
  *     tags:
  *       - Forma Pago
@@ -36,7 +36,7 @@ import router from './sucursal.routes.js';
  *         description: Error al crear el método de pago
  */
 router.post(
-	'/sat/paymentMethods/crear',
+	'/formapago/crear',
 	schemas.createPaymentMethodsSchema,
 	middleware.validateSchema,
 	methods.createPaymentMethods,
@@ -44,7 +44,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentMethods/actualizar:
+ * /api/v1/pagos/formapago/actualizar:
  *   patch:
  *     tags:
  *       - Forma Pago
@@ -74,7 +74,7 @@ router.post(
  *         description: Error al actualizar el método de pago
  */
 router.patch(
-	'/sat/paymentMethods/actualizar',
+	'/formapago/actualizar',
 	schemas.updatePaymentMethodsSchema,
 	middleware.validateSchema,
 	methods.updatePaymentMethods,
@@ -82,7 +82,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentMethods/eliminar/{ClaveFormaPago}:
+ * /api/v1/pagos/formapago/eliminar/{ClaveFormaPago}:
  *   delete:
  *     tags:
  *       - Forma Pago
@@ -103,7 +103,7 @@ router.patch(
  *         description: Error al eliminar el método de pago
  */
 router.delete(
-	'/sat/paymentMethods/eliminar/:ClaveFormaPago',
+	'/formapago/eliminar/:ClaveFormaPago',
 	param('ClaveFormaPago', 'La clave del método de pago es requerida')
 		.notEmpty()
 		.isLength({ min: 3, max: 3 })
@@ -113,7 +113,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentType/crear:
+ * /api/v1/pagos/metodopago/crear:
  *   post:
  *     tags:
  *       - Metodo de pago
@@ -143,7 +143,7 @@ router.delete(
  *         description: Error al crear el tipo de pago
  */
 router.post(
-	'/sat/paymentType/crear',
+	'/metodopago/crear',
 	schemas.createPaymentTypeSchema,
 	middleware.validateSchema,
 	methods.createPaymentType,
@@ -151,7 +151,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentType/actualizar:
+ * /api/v1/pagos/metodopago/actualizar:
  *   patch:
  *     tags:
  *       - Metodo de pago
@@ -181,7 +181,7 @@ router.post(
  *         description: Error al actualizar el tipo de pago
  */
 router.patch(
-	'/sat/paymentType/actualizar',
+	'/metodopago/actualizar',
 	schemas.updatePaymentTypeSchema,
 	middleware.validateSchema,
 	methods.updatedPaymentType,
@@ -189,7 +189,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/paymentType/eliminar/{ClaveMetodoPago}:
+ * /api/v1/pagos/metodopago/eliminar/{ClaveMetodoPago}:
  *   delete:
  *     tags:
  *       - Metodo de pago
@@ -210,7 +210,7 @@ router.patch(
  *         description: Error al eliminar el tipo de pago
  */
 router.delete(
-	'/sat/paymentType/eliminar/:ClaveMetodoPago',
+	'/metodopago/eliminar/:ClaveMetodoPago',
 	param('ClaveMetodoPago', 'La clave del método de pago es requerida'),
 	methods.deletePaymentType,
 );

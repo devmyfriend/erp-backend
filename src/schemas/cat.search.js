@@ -25,6 +25,8 @@ export const createTypeCoinSchema = [
 	body('ClaveMoneda')
 		.notEmpty()
 		.withMessage('El codigo de moneda no puede estar vacia')
+		.isLength({ min: 3, max: 3 })
+		.withMessage('El codigo moneda tiene que ser de 3 caracteres')
 		.isString()
 		.withMessage('El codigo moneda tiene que ser un valor de texto o numero'),
 	body('Descripcion')

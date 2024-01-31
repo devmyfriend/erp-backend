@@ -45,7 +45,7 @@ const App = {
 		app.use('/api/v1/sucursal', sucursalesRoutes);
 		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/api/v1/impuestos', taxRoutes);
-		app.use('/api/v1/catalogo', paymentRoutes);
+		app.use('/api/v1/pagos', paymentRoutes);
 		app.use('/', (req, res) => {
 			res.status(404).json({message:'Request not found'})
 		});
