@@ -2,7 +2,7 @@ import { DataTypes } from "sequelize";
 import { Connection } from "../database/mariadb.database.js";
 
 export const ProductsServices = Connection.define(
-    'satProductServices',
+    'ProductsServices',
     {
         ClaveProductoServicio: {
             type: DataTypes.STRING,

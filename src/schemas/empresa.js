@@ -315,4 +315,3 @@ export const editarEmpresaEmailsSchema = [
 		.isInt()
 		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
-
