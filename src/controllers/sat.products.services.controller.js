@@ -1,5 +1,4 @@
 import { Op } from "sequelize";
-import { Connection as sequelize } from "../database/mariadb.database.js";
 import { ProductsServices } from "../models/sat.product.services.model.js";
 
 const findProductServicesByCode = async (req, res) => {
@@ -9,10 +8,10 @@ const findProductServicesByCode = async (req, res) => {
 			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ message: 'No hay datos isponibles' });
 		}
 
-		return res.status(200).json(data);
+		return res.status(200).json({ response: data});
 	} catch (error) {
 		console.error('Error al obtener los datos del producto', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -30,7 +29,7 @@ const findProductServicesByDescription = async (req, res) => {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 
-		return res.status(200).json(data);
+		return res.status(200).json({response: data });
 	} catch (error) {
 		console.error('Error al obtener los datos del producto', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -46,7 +45,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
-		return res.status(200).json(data);
+		return res.status(200).json({response: data });
 	} catch (error) {
 		console.error('Error al obtener los datos del producto', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -84,20 +83,32 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const [updated] = await ProductsServices.update(productServicesBody, {
+
+		const validateProductServices = await ProductsServices.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
 			},
 		});
 
-		if (!updated) {
-			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
+		if (!validateProductServices) {
+			return res
+				.status(404)
+				.json({ error: 'Producto/Servicio no encontrado' });
 		}
 
+
+
+		await ProductsServices.update(productServicesBody, {
+			where: {
+				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
+				Activo: 1,
+			},
+		});
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio actualizado' });
+			
 	} catch (error) {
 		console.error('Error al actualizar el producto/servicio', error.message);
 		return res
@@ -107,7 +118,7 @@ const updateProductServices = async (req, res) => {
 };
 
 const deleteProductServices = async (req, res) => {
-	const { ClaveProductsServices } = req.body;
+	const { ClaveProductoServicio } = req.body;
 
 	try {
 		const product = await ProductsServices.findOne({

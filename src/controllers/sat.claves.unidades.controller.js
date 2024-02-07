@@ -14,9 +14,11 @@ const findAllUnitKeys = async (req, res) => {
 		const totalPages = Math.ceil(count / limit);
 
 		return res.status(200).json({
-			totalPages,
-			currentPage: page,
-			totalItems: count,
+			info: {
+				totalPages,
+				currentPage: page,
+				totalItems: count,
+			},
 			items: rows,
 		});
 	} catch (error) {
@@ -33,15 +35,15 @@ const findUnitKeysByKey = async (req, res) => {
 		const data = await UnitKey.findAll({
 			where: {
 				ClaveUnidadSat: key,
-				Activo: 1
+				Activo: 1,
 			},
 		});
 
-		if (data.length < 1) {
+		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 
-		return res.status(200).json(data);
+		return res.status(200).json({ response: data });
 	} catch (error) {
 		console.error(
 			'Error al obtener los datos de la clave de unidad',
@@ -57,32 +59,30 @@ const createUnitKey = async (req, res) => {
 		const validateUnitKey = await UnitKey.findOne({
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
-				Activo: 0,
+				Activo: 1,
 			},
 		});
-
-		if (validateUnitKey) {
-			return res
-				.status(409)
-				.json({ error: 'La clave de unidad ya esta en uso ' });
-		}
 
 		const validateUnitKeyName = await UnitKey.findOne({
 			where: {
 				NombreUnidadSat: unitKeyBody.NombreUnidadSat,
-				Activo: 0,
-			}
-		})
+				Activo: 1,
+			},
+		});
 
-		if (validateUnitKeyName) {
-			return res
-				.status(409)
-				.json({ error: 'El nombre de la unidad ya esta en uso ' });
+		if (validateUnitKey || validateUnitKeyName) {
+			return res.status(409).json({
+				error: validateUnitKey
+					? 'La clave de unidad ya esta en uso '
+					: 'El nombre de la unidad ya esta en uso ',
+			});
 		}
 
 		const unitKeyAdd = await UnitKey.create(unitKeyBody);
 
-		return res.status(200).json({ success: true, message: 'Clave de unidad creada', unitKeyAdd });
+		return res
+			.status(200)
+			.json({ success: true, message: 'Clave de unidad creada', unitKeyAdd });
 	} catch (error) {
 		console.error('Error al crear la clave de unidad', error.message);
 		return res.status(500).json({ error: 'Error al crear la clave de unidad' });
@@ -92,20 +92,38 @@ const createUnitKey = async (req, res) => {
 const updateUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const [updated] = await UnitKey.update(unitKeyBody, {
+		const validateUnitKey = await UnitKey.findOne({
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
 				Activo: 1,
 			},
 		});
 
-		if (!updated) {
-			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
+		const validateUnitKeyName = await UnitKey.findOne({
+			where: {
+				NombreUnidadSat: unitKeyBody.NombreUnidadSat,
+				Activo: 1,
+			},
+		});
+
+		if (!validateUnitKey || validateUnitKeyName) {
+			return res.status(409).json({
+				error: validateUnitKey
+					? 'El nombre de la unidad ya esta en uso'
+					: 'La clave de unidad no existe',
+			});
 		}
+
+		await UnitKey.update(unitKeyBody, {
+			where: {
+				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
+				Activo: 1,
+			},
+		});
 
 		return res
 			.status(200)
-			.json({ success: true, message: 'Clave de unidad actualizada' });
+			.json({ success: true, message: 'Clave de unidad actualizada'});
 	} catch (error) {
 		console.error('Error al actualizar la clave de unidad', error.message);
 		return res

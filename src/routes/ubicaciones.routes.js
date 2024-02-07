@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { methods } from '../controllers/cat.ubicaciones.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/ubicaciones.js';
+import { param } from 'express-validator';
 const router = Router();
 
 /**
@@ -39,7 +40,9 @@ const router = Router();
  *       500:
  *         description: Error al obtener las ubicaciones
  */
-router.get('/:page', methods.findAllUbications);
+router.get('/:page',
+param('page').isInt().withMessage('La página tiene que ser un número entero'),
+methods.findAllUbications);
 
 /**
  * @swagger
@@ -67,7 +70,9 @@ router.get('/:page', methods.findAllUbications);
  *       500:
  *         description: Error al obtener la ubicación
  */
-router.get('/:Nombre', methods.findUbicationByName);
+router.get('/:Nombre',
+param('Nombre').isString().withMessage('El nombre de la ubicación tiene que ser una cadena de texto'),
+ methods.findUbicationByName);
 
 /**
  * @swagger

@@ -2,6 +2,7 @@ import { Router }  from 'express'
 import { methods } from '../controllers/sat.products.services.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/products.services.js';
+import { param } from 'express-validator';
 const router = Router()
 
 /**
@@ -39,6 +40,13 @@ const router = Router()
  */
 router.get(
 	'/servicio/buscar/:code',
+	param('code')
+	.notEmpty()
+	.withMessage('El código del producto o servicio no puede estar vacio')
+    .isString()
+    .withMessage('El código del producto o servicio tiene que ser una cadena de texto')
+    .matches(/^\S*$/)
+    .withMessage('El código del producto o servicio no puede contener espacios'),	
 	methods.findProductServicesByCode,
 );
 
@@ -77,6 +85,11 @@ router.get(
  */
 router.get(
 	'/servicio/buscar/:descripcion',
+	param('descripcion')
+	.notEmpty()
+	.withMessage('La descripción del producto o servicio no puede estar vacia')
+	.isString()
+	.withMessage('La descripción del producto o servicio tiene que ser una cadena de texto'),
 	methods.findProductServicesByDescription,
 );
 

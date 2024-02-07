@@ -15,9 +15,11 @@ const findAllUbications = async (req, res) => {
 		const totalPages = Math.ceil(count / limit);
 
 		return res.status(200).json({
-			totalPages,
-			currentPage: page,
-			totalItems: count,
+			info: {
+				totalPages,
+				currentPage: page,
+				totalItems: count,
+			},
 			items: rows,
 		});
 	} catch (error) {
@@ -92,11 +94,13 @@ const updateUbication = async (req, res) => {
 			where: {
 				Nombre: ubicacionBody.Nombre,
 				Borrado: 0,
-			}
+			},
 		});
 
 		if (validateUbicacionName) {
-			return res.status(400).json({ message: 'El nombre de la ubicacion ya está en uso' })
+			return res
+				.status(400)
+				.json({ message: 'El nombre de la ubicacion ya está en uso' });
 		}
 
 		const ubicacion = await Ubicaciones.update(ubicacionBody, {
@@ -107,7 +111,7 @@ const updateUbication = async (req, res) => {
 
 		return res
 			.status(200)
-			.json({ message: 'Ubicación actualizada', ubicacion: ubicacionBody });
+			.json({ message: 'Ubicación actualizada', ubicacion });
 	} catch (error) {
 		console.error('Error al actualizar la ubicación', error.message);
 		return res.status(500).json({ error: 'Error al actualizar la ubicación' });
