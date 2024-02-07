@@ -12,7 +12,7 @@ import sucursalesRoutes from './src/routes/sucursal.routes.js';
 import taxRoutes from './src/routes/tax.routes.js'
 import paymentRoutes from './src/routes/payment.routes.js'
 import productsServices from './src/routes/sat.products.services.routes.js'
-import unitKeyRoutes from './src/routes/sat.unit.key.routes.js'
+import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js'
 import ubicationsRoutes from './src/routes/ubicaciones.routes.js'
 
 // Base de datos

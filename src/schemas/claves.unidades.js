@@ -6,7 +6,7 @@ export const createUnitKeySchema = [
 		.withMessage('La clave de la unidad no puede estar vacia')
 		.isString()
 		.withMessage('La clave de la unidad tiene que ser una cadena de texto')
-		.isLength({ min: 3, max: 3 })
+		.isLength({ min: 1, max: 3 })
 		.withMessage('La clave de la unidad tiene que ser de 3 caracteres'),
 	body('NombreUnidadSat')
 		.notEmpty()

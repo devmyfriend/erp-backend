@@ -58,7 +58,7 @@ const createProductServices = async (req, res) => {
 	try {
 		const validateProductServices = await ProductsServices.findOne({
 			where: {
-				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
 			},
 		});
@@ -86,7 +86,7 @@ const updateProductServices = async (req, res) => {
 	try {
 		const [updated] = await ProductsServices.update(productServicesBody, {
 			where: {
-				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
 			},
 		});
@@ -111,7 +111,7 @@ const deleteProductServices = async (req, res) => {
 
 	try {
 		const product = await ProductsServices.findOne({
-			where: { ClaveProductsServices, Activo: 1 },
+			where: { ClaveProductoServicio, Activo: 1 },
 		});
 
 		if (!product) {
@@ -120,7 +120,7 @@ const deleteProductServices = async (req, res) => {
 
 		await ProductsServices.update(
 			{ Activo: false },
-			{ where: { ClaveProductsServices } },
+			{ where: { ClaveProductoServicio } },
 		);
 
 		return res

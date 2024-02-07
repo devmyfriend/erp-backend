@@ -1,8 +1,7 @@
 import { Router } from "express";
-import { methods } from "../controllers/sat.unit.key.controller.js";
-
+import { methods } from "../controllers/sat.claves.unidades.controller.js";
 import * as middleware from "../middlewares/express-validator.js";
-import * as schemas from "../schemas/unit.key.js";
+import * as schemas from "../schemas/claves.unidades.js";
 const router = Router();
 
 /**
@@ -102,7 +101,7 @@ router.get('/buscar/:key', methods.findUnitKeysByKey);
  *             properties:
  *               ClaveUnidadSat:
  *                 type: string
- *               NOmbreUnidadSat:
+ *               NombreUnidadSat:
  *                 type: string
  *           example:
  *             ClaveUnidadSat: "KGM"

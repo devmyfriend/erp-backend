@@ -1,4 +1,3 @@
-import { Connection as sequelize } from '../database/mariadb.database.js';
 import UnitKey from '../models/sat.clave.unidad.model.js';
 
 const findAllUnitKeys = async (req, res) => {
@@ -34,6 +33,7 @@ const findUnitKeysByKey = async (req, res) => {
 		const data = await UnitKey.findAll({
 			where: {
 				ClaveUnidadSat: key,
+				Activo: 1
 			},
 		});
 
@@ -57,7 +57,7 @@ const createUnitKey = async (req, res) => {
 		const validateUnitKey = await UnitKey.findOne({
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
-				Activo: 1,
+				Activo: 0,
 			},
 		});
 
@@ -67,10 +67,22 @@ const createUnitKey = async (req, res) => {
 				.json({ error: 'La clave de unidad ya esta en uso ' });
 		}
 
-		await UnitKey.create(unitKeyBody);
-		return res
-			.status(200)
-			.json({ success: true, message: 'Clave de unidad creada' });
+		const validateUnitKeyName = await UnitKey.findOne({
+			where: {
+				NombreUnidadSat: unitKeyBody.NombreUnidadSat,
+				Activo: 0,
+			}
+		})
+
+		if (validateUnitKeyName) {
+			return res
+				.status(409)
+				.json({ error: 'El nombre de la unidad ya esta en uso ' });
+		}
+
+		const unitKeyAdd = await UnitKey.create(unitKeyBody);
+
+		return res.status(200).json({ success: true, message: 'Clave de unidad creada', unitKeyAdd });
 	} catch (error) {
 		console.error('Error al crear la clave de unidad', error.message);
 		return res.status(500).json({ error: 'Error al crear la clave de unidad' });

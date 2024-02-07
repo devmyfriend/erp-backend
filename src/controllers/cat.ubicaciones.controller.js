@@ -26,29 +26,28 @@ const findAllUbications = async (req, res) => {
 	}
 };
 
-
 const findUbicationByName = async (req, res) => {
-    const { Nombre } = req.params;
+	const { Nombre } = req.params;
 
-    try {
-        const ubicacion = await Ubicaciones.findOne({
-            where: {
-                Nombre: {
-                    [Op.like]: Nombre
-                },
-                Borrado: 0,
-            },
-        });
+	try {
+		const ubicacion = await Ubicaciones.findOne({
+			where: {
+				Nombre: {
+					[Op.like]: Nombre,
+				},
+				Borrado: 0,
+			},
+		});
 
-        if (!ubicacion) {
-            return res.status(400).json({ message: 'La ubicación no existe' });
-        }
+		if (!ubicacion) {
+			return res.status(400).json({ message: 'La ubicación no existe' });
+		}
 
-        return res.status(200).json(ubicacion);
-    } catch (error) {
-        console.error('Error al obtener la ubicación', error.message);
-        return res.status(500).json({ error: 'Error al obtener la ubicación' });
-    }
+		return res.status(200).json(ubicacion);
+	} catch (error) {
+		console.error('Error al obtener la ubicación', error.message);
+		return res.status(500).json({ error: 'Error al obtener la ubicación' });
+	}
 };
 
 const createUbication = async (req, res) => {
@@ -87,6 +86,17 @@ const updateUbication = async (req, res) => {
 
 		if (!validateUbicacion) {
 			return res.status(400).json({ message: 'La ubicación no existe' });
+		}
+
+		const validateUbicacionName = await Ubicaciones.findOne({
+			where: {
+				Nombre: ubicacionBody.Nombre,
+				Borrado: 0,
+			}
+		});
+
+		if (validateUbicacionName) {
+			return res.status(400).json({ message: 'El nombre de la ubicacion ya está en uso' })
 		}
 
 		const ubicacion = await Ubicaciones.update(ubicacionBody, {
