@@ -12,28 +12,42 @@ const router = Router();
  *     tags:
  *       - Claves Unidades
  *     summary: Obtiene todos los registros de la tabla SAT_UnidadesClave
+ *     parameters:
+ *       - in: path
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Número de página
  *     responses:
  *       200:
  *         description: Lista de registros de SAT_UnidadesClave
  *         content:
  *           application/json:
  *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   ClaveUnidadSat:
- *                     type: string
- *                   NombreUnidadSat:
- *                     type: string
- *                   Activo:
- *                     type: boolean
- *             example:
- *               - ClaveUnidadSat: "KGM"
- *                 NombreUnidadSat: "Kilogramo"
- *                 Activo: true
+ *               type: object
+ *               properties:
+ *                 totalPages:
+ *                   type: integer
+ *                 currentPage:
+ *                   type: integer
+ *                 totalItems:
+ *                   type: integer
+ *                 items:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       ClaveUnidadSat:
+ *                         type: string
+ *                       NombreUnidadSat:
+ *                         type: string
+ *                       Activo:
+ *                         type: boolean
+ *       500:
+ *         description: Error al obtener las unidades
  */
-router.get('/unidades/:page', methods.findAllUnitKeys);
+router.get('/:page', methods.findAllUnitKeys);
 
 /**
  * @swagger

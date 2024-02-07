@@ -142,6 +142,7 @@ const createTypeCoin = async (req, res) => {
 	const coinBody = req.body;
 
 	try {
+
 		const validateCoin = await Coin.findOne({
 			where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
 		});
@@ -155,6 +156,7 @@ const createTypeCoin = async (req, res) => {
 		await Coin.create(coinBody);
 
 		return res.status(200).json({ success: true, message: 'Moneda creada' });
+
 	} catch (error) {
 		console.error('Error al crear la moneda', error);
 		return res.status(500).json({ error: 'Error al crear la moneda' });
