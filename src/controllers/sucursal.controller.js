@@ -2,6 +2,8 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Sucursal } from '../models/sucursal.model.js';
 import { SucursalDomicilio } from '../models/sucursal.domicilio.model.js';
 import { Domicilio } from '../models/domicilios.model.js';
+import { EntidadNegocio } from '../models/empresa.model.js';
+import { EmpresaSucursal } from '../models/empresa.sucursalmodel.js';
 
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
@@ -32,6 +34,17 @@ const obtenerSucursales = async (req, res) => {
 const crearSucursal = async (req, res) => {
 	const { sucursal, datos } = req.body;
 
+	const empresa =  await EntidadNegocio.findOne({ where:{
+		EntidadNegocioId: sucursal[0].EntidadNegocioId
+	}})
+
+	if(!empresa){
+		return res.status(404).json({
+			status: 404,
+			message: 'No se ha encontrado la empresa',
+		});
+	}
+
 	try {
 		const validarNombre = await Sucursal.findOne({
 			where: {
@@ -57,6 +70,11 @@ const crearSucursal = async (req, res) => {
 			SucursalId: crearSucursal._previousDataValues.SucursalId,
 			DomicilioId: sucursalDatos._previousDataValues.DomicilioId,
 		});
+
+		await EmpresaSucursal.create({
+			SucursalId: crearSucursal._previousDataValues.SucursalId,
+			EntidadNegocioId: sucursal[0].EntidadNegocioId
+		})
 
 
 		res.status(200).json({

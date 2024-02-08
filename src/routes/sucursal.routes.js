@@ -88,9 +88,6 @@ router.get(
  *                     CreadoPor:
  *                       type: integer
  *                       description: ID del usuario que crea la sucursal
- *                     ResponsableId :
- *                       type: integer
- *                       description: ID del usuario responsable de la sucursal
  * 
  *               datos:
  *                 type: array
