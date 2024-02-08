@@ -27,6 +27,12 @@ export const Ubicaciones = Connection.define(
         BorradoEn: {
             type: DataTypes.DATE,
         },
+        CreadoEn: {
+            type: DataTypes.DATE,
+        },
+        ActualizadoEn: {
+            type: DataTypes.DATE,
+        },
     },
 
     {

@@ -1,8 +1,8 @@
-import { Op } from "sequelize";
-import { ProductsServices } from "../models/sat.product.services.model.js";
+import { Op, Sequelize } from 'sequelize';
+import { ProductsServices } from '../models/sat.product.services.model.js';
 
 const findProductServicesByCode = async (req, res) => {
-	const code  = req.params.code;
+	const code = req.params.code;
 	try {
 		const data = await ProductsServices.findAll({
 			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
@@ -11,7 +11,7 @@ const findProductServicesByCode = async (req, res) => {
 			return res.status(404).json({ message: 'No hay datos isponibles' });
 		}
 
-		return res.status(200).json({ response: data});
+		return res.status(200).json({ response: data });
 	} catch (error) {
 		console.error('Error al obtener los datos del producto', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -23,13 +23,13 @@ const findProductServicesByDescription = async (req, res) => {
 
 	try {
 		const data = await ProductsServices.findAll({
-			where: { Descripcion: { [Op.like]: `%${descripcion}%`  }, Activo: 1 },
+			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 
-		return res.status(200).json({response: data });
+		return res.status(200).json({ response: data });
 	} catch (error) {
 		console.error('Error al obtener los datos del producto', error.message);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
@@ -40,14 +40,20 @@ const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
 		const data = await ProductsServices.findAll({
-			where: { PalabrasSimilares: { [Op.like]: palabra  }, Activo: 1 },
-		});
+            where: Sequelize.where(
+                Sequelize.fn('lower', Sequelize.col('PalabrasSimilares')),
+                {
+                    [Op.like]: `%${palabra.toLowerCase()}%`,
+                }
+            ),
+            Activo: 1,
+        });
 		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
-		return res.status(200).json({response: data });
+		return res.status(200).json({ response: data });
 	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
+		console.error('Error al obtener los datos del producto', error);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
 };
@@ -83,7 +89,6 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-
 		const validateProductServices = await ProductsServices.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
@@ -92,12 +97,8 @@ const updateProductServices = async (req, res) => {
 		});
 
 		if (!validateProductServices) {
-			return res
-				.status(404)
-				.json({ error: 'Producto/Servicio no encontrado' });
+			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
-
-
 
 		await ProductsServices.update(productServicesBody, {
 			where: {
@@ -108,7 +109,6 @@ const updateProductServices = async (req, res) => {
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio actualizado' });
-			
 	} catch (error) {
 		console.error('Error al actualizar el producto/servicio', error.message);
 		return res
@@ -118,27 +118,26 @@ const updateProductServices = async (req, res) => {
 };
 
 const deleteProductServices = async (req, res) => {
-	const { ClaveProductoServicio } = req.body;
 
 	try {
 		const product = await ProductsServices.findOne({
-			where: { ClaveProductoServicio, Activo: 1 },
+			where: 
+			{ ClaveProductoServicio: req.body.ClaveProductoServicio,
+			 Activo: 1 },
 		});
 
 		if (!product) {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductsServices.update(
-			{ Activo: false },
-			{ where: { ClaveProductoServicio } },
-		);
+		product.Activo = false;
+		await product.save()
 
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio borrado' });
 	} catch (error) {
-		console.error('Error al borrar el producto/servicio', error.message);
+		console.error('Error al borrar el producto/servicio', error);
 		return res
 			.status(500)
 			.json({ error: 'Error al borrar el producto/servicio' });
@@ -146,10 +145,10 @@ const deleteProductServices = async (req, res) => {
 };
 
 export const methods = {
-    findProductServicesByCode,
-    findProductServicesByDescription,
-    findProductServicesByMatchWord,
-    createProductServices,
-    updateProductServices,
-    deleteProductServices,
+	findProductServicesByCode,
+	findProductServicesByDescription,
+	findProductServicesByMatchWord,
+	createProductServices,
+	updateProductServices,
+	deleteProductServices,
 };

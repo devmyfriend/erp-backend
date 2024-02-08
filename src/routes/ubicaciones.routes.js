@@ -41,7 +41,7 @@ const router = Router();
  *         description: Error al obtener las ubicaciones
  */
 router.get('/:page',
-param('page').isInt().withMessage('La página tiene que ser un número entero'),
+param('page').notEmpty().withMessage('El assda').isInt().withMessage('La página tiene que ser un número entero'),
 methods.findAllUbications);
 
 /**

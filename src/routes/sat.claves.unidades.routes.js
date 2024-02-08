@@ -2,6 +2,7 @@ import { Router } from "express";
 import { methods } from "../controllers/sat.claves.unidades.controller.js";
 import * as middleware from "../middlewares/express-validator.js";
 import * as schemas from "../schemas/claves.unidades.js";
+import { param } from "express-validator";
 const router = Router();
 
 /**
@@ -46,7 +47,14 @@ const router = Router();
  *       500:
  *         description: Error al obtener las unidades
  */
-router.get('/:page', methods.findAllUnitKeys);
+router.get('/:page',
+	[
+        param('page')
+            .isInt({ gt: 0 })
+            .withMessage('El número de página debe ser un número entero mayor que 1')
+    ], 
+	middleware.validateSchema,
+methods.findAllUnitKeys);
 
 /**
  * @swagger
@@ -83,7 +91,10 @@ router.get('/:page', methods.findAllUnitKeys);
  *                 NombreUnidadSat: "Kilogramo"
  *                 Activo: true
  */
-router.get('/buscar/:key', methods.findUnitKeysByKey);
+router.get('/buscar/:key',
+param('key').isInt().withMessage('La clave de la unidad debe ser un número entero'),
+middleware.validateSchema,
+methods.findUnitKeysByKey);
 
 /**
  * @swagger

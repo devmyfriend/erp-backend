@@ -4,8 +4,8 @@ export const createProductServicesSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
 		.withMessage('La clave del producto o servicio no puede estar vacia')
-		.isString()
-		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto'),
+		.isInt()
+		.withMessage('La clave del producto o servicio tiene que ser un numero entero'),
 	body('Descripcion')
 		.notEmpty()
 		.withMessage('La descripcion no puede estar vacia')
@@ -21,8 +21,8 @@ export const updateProductServicesSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
 		.withMessage('La clave del producto o servicio no puede estar vacia')
-		.isString()
-		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto'),
+		.isInt()
+		.withMessage('La clave del producto o servicio tiene que ser un numero entero'),
 	body('Descripcion')
 		.optional()
 		.isString()
@@ -37,6 +37,6 @@ export const deleteProductServicesSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
 		.withMessage('La clave del producto o servicio no puede estar vacia')
-		.isString()
-		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto'),
+		.isInt()
+		.withMessage('La clave del producto o servicio tiene que ser un numero entero'),
 ]

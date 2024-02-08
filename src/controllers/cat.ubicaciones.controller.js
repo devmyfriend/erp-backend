@@ -66,6 +66,7 @@ const createUbication = async (req, res) => {
 			return res.status(400).json({ message: 'La ubicación ya existe' });
 		}
 
+		ubicacionBody.CreadoEn = new Date()
 		const ubicacion = await Ubicaciones.create(ubicacionBody);
 
 		return res.status(201).json(ubicacion);
@@ -102,7 +103,8 @@ const updateUbication = async (req, res) => {
 				.status(400)
 				.json({ message: 'El nombre de la ubicacion ya está en uso' });
 		}
-
+		
+		ubicacionBody.ActualizadoEn = new Date()
 		const ubicacion = await Ubicaciones.update(ubicacionBody, {
 			where: {
 				UbicacionId: ubicacionBody.UbicacionId,

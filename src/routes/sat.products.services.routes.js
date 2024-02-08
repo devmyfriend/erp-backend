@@ -43,16 +43,17 @@ router.get(
 	param('code')
 	.notEmpty()
 	.withMessage('El código del producto o servicio no puede estar vacio')
-    .isString()
-    .withMessage('El código del producto o servicio tiene que ser una cadena de texto')
+    .isInt()
+    .withMessage('El código del producto o servicio tiene que ser un numero entero')
     .matches(/^\S*$/)
     .withMessage('El código del producto o servicio no puede contener espacios'),	
+	middleware.validateSchema,
 	methods.findProductServicesByCode,
 );
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/{descripcion}:
+ * /api/v1/productos/servicio/buscar/descripcion/{descripcion}:
  *   get:
  *     tags:
  *       - Productos Servicios
@@ -84,18 +85,19 @@ router.get(
  *               PalabrasSimilares: "Palabra 1"
  */
 router.get(
-	'/servicio/buscar/:descripcion',
+	'/servicio/buscar/descripcion/:descripcion',
 	param('descripcion')
 	.notEmpty()
 	.withMessage('La descripción del producto o servicio no puede estar vacia')
 	.isString()
 	.withMessage('La descripción del producto o servicio tiene que ser una cadena de texto'),
+	middleware.validateSchema,
 	methods.findProductServicesByDescription,
 );
 
 /**
  * @swagger
- * /ap1/v1/productos/servicio/palabra/{palabra}:
+ * /api/v1/productos/servicio/palabra/{palabra}:
  *   get:
  *     tags:
  *       - Productos Servicios
@@ -128,6 +130,12 @@ router.get(
  */
 router.get(
 	'/servicio/palabra/:palabra',
+	param('palabra')
+	.notEmpty()
+	.withMessage('La palabra similar del producto o servicio no puede estar vacia')
+	.isString()
+	.withMessage('La palabra similar del producto o servicio tiene que ser una cadena de texto'),
+	middleware.validateSchema,
 	methods.findProductServicesByMatchWord,
 );
 
@@ -146,13 +154,13 @@ router.get(
  *             type: object
  *             properties:
  *               ClaveProductoServicio:
- *                 type: string
+ *                 type: integer
  *               Descripcion:
  *                 type: string
  *               PalabrasSimilares:
  *                 type: string
  *           example:
- *             ClaveProductoServicio: "101"
+ *             ClaveProductoServicio: 101
  *             Descripcion: "Producto Servicio"
  *             PalabrasSimilares: "Palabra 1"
  *     responses:
@@ -193,13 +201,13 @@ router.post(
  *             type: object
  *             properties:
  *               ClaveProductoServicio:
- *                 type: string
+ *                 type: integer
  *               Descripcion:
  *                 type: string
  *               PalabrasSimilares:
  *                 type: string
  *           example:
- *             ClaveProductoServicio: "101"
+ *             ClaveProductoServicio: 101
  *             Descripcion: "Producto Servicio"
  *             PalabrasSimilares: "Palabra 1"
  *     responses:
@@ -240,9 +248,9 @@ router.patch(
  *             type: object
  *             properties:
  *               ClaveProductoServicio:
- *                 type: string
+ *                 type: integer
  *           example:
- *             ClaveProductoServicio: "101"
+ *             ClaveProductoServicio: 101
  *     responses:
  *       200:
  *         description: Producto/Servicio borrado
