@@ -235,7 +235,7 @@ router.post(
  *                     TaxId:
  *                       type: string
  *                     ClaveRegimenFiscal:
- *                       type: string
+ *                       type: integer
  *                     PersonaFisica:
  *                       type: boolean
  *                     PersonaMoral:
@@ -244,6 +244,8 @@ router.post(
  *                       type: string
  *                     Estatus:
  *                       type: integer
+ *               ActualizadoPor:
+ *                 type: integer
  *               domicilio:
  *                 type: array
  *                 items:
@@ -267,6 +269,31 @@ router.post(
  *                       type: string
  *                     Pais:
  *                       type: string
+ *           examples:
+ *             example:
+ *               value:
+ *                 entidad:
+ *                   - EntidadNegocioId: 153
+ *                     RFC: "CATL212445CH7"
+ *                     NombreComercial: "string"
+ *                     ClavePais: "MEX"
+ *                     TaxId: "string"
+ *                     ClaveRegimenFiscal: 156
+ *                     PersonaFisica: true
+ *                     PersonaMoral: true
+ *                     NombreOficial: "string"
+ *                     Estatus: 0
+ *                 ActualizadoPor: 2
+ *                 domicilio:
+ *                   - Calle: "string"
+ *                     NumeroExt: "string"
+ *                     NumeroInt: "string"
+ *                     CodigoPostal: "string"
+ *                     Estado: "string"
+ *                     Municipio: "string"
+ *                     Localidad: "string"
+ *                     Colonia: "string"
+ *                     Pais: "MEX"
  *     responses:
  *       200:
  *         description: Datos fiscales de la empresa editados con éxito
@@ -279,12 +306,6 @@ router.post(
  *                   type: boolean
  *                 data:
  *                   $ref: '#/components/schemas/EntidadNegocio'
- *       400:
- *         description: Cuerpo de la petición inválido
- *       404:
- *         description: Entidad de negocio no encontrada
- *       500:
- *         description: Internal Server Error
  */
 router.patch(
 	'/editar/',
@@ -336,7 +357,6 @@ router.patch(
  */
 
 router.delete('/desactivar/:id',
-	param('id', 'El parametro debe ser un entero').isNumeric(),
 	methods.desactivarIdEmpresa);
 
 
