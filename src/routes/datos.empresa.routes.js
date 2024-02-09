@@ -135,7 +135,7 @@ router.get(
  *               ClavePais:
  *                 type: string
  *               ClaveRegimenFiscal:
- *                 type: string
+ *                 type: integer
  *               PersonaFisica:
  *                 type: boolean
  *               PersonaMoral:
