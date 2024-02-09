@@ -1,4 +1,3 @@
-import { Connection as sequelize } from '../database/mariadb.database.js';
 import { paymentMethods } from '../models/sat.payment.methods.model.js';
 import { paymentType } from '../models/sat.payment.type.model.js';
 

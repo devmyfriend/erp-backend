@@ -11,6 +11,9 @@ import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
 import taxRoutes from './src/routes/tax.routes.js'
 import paymentRoutes from './src/routes/payment.routes.js'
+import productsServices from './src/routes/sat.products.services.routes.js'
+import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js'
+import ubicationsRoutes from './src/routes/ubicaciones.routes.js'
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -46,6 +49,9 @@ const App = {
 		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/api/v1/impuestos', taxRoutes);
 		app.use('/api/v1/pagos', paymentRoutes);
+		app.use('/api/v1/productos', productsServices);
+		app.use('/api/v1/unidades', unitKeyRoutes);
+		app.use('/api/v1/ubicaciones', ubicationsRoutes);
 		app.use('/', (req, res) => {
 			res.status(404).json({message:'Request not found'})
 		});

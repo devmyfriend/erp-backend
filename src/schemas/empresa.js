@@ -31,8 +31,8 @@ export const editarIdEmpresa = [
 		.isString(),
 	body('entidad.*.ClaveRegimenFiscal')
 		.optional()
-		.isString()
-		.withMessage('El campo ClaveRegimenFiscal debe ser una cadena de texto'),
+		.isInt()
+		.withMessage('El campo ClaveRegimenFiscal debe ser un entero'),
 	body('entidad.*.PersonaFisica')
 		.optional()
 		.isBoolean()
@@ -81,6 +81,11 @@ export const editarIdEmpresa = [
 		.optional()
 		.isString()
 		.withMessage('El campo Pais debe ser una cadena de texto'),
+	body('ActualizadoPor')
+		.notEmpty()
+		.withMessage('El campo ActualizadoPor no puede estar vacio')
+		.isInt()
+		.withMessage('El campo ActualizadoPor debe ser un entero'),
 ];
 
 export const crearEmpresaSchema = [
@@ -111,8 +116,8 @@ export const crearEmpresaSchema = [
 	body('entidad.*.ClaveRegimenFiscal')
 		.notEmpty()
 		.withMessage('El campo ClaveRegimenFiscal no puede estar vacío')
-		.isString()
-		.withMessage('El campo ClaveRegimenFiscal debe ser una cadena de texto'),
+		.isInt()
+		.withMessage('El campo ClaveRegimenFiscal debe ser un entero'),
 	body('entidad.*.PersonaFisica')
 		.notEmpty()
 		.withMessage('El campo PersonaFisica no puede estar vacío')
@@ -168,6 +173,11 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo Pais no puede estar vacío')
 		.isString()
 		.withMessage('El campo Pais debe ser una cadena de texto'),
+	body('CreadoPor')
+		.notEmpty()
+		.withMessage('El campo CreadoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo CreadoPor debe ser un entero'),
 ];
 
 export const crearEmpresaContactoSchema = [
@@ -315,4 +325,3 @@ export const editarEmpresaEmailsSchema = [
 		.isInt()
 		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
-

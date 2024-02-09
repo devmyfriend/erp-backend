@@ -183,6 +183,7 @@ const editarIdEmpresa = async (req, res) => {
 			...entidadActual.dataValues,
 			...entidad[0],
 			ActualizadoPor: actualizadoPor,
+			ActualizadoEn: new Date(),
 		};
 
 		const buscarDomicilio = await EmpresaDomicilio.findOne({
@@ -201,7 +202,7 @@ const editarIdEmpresa = async (req, res) => {
 
 		await EntidadNegocio.update(actualizacionEntidad, {
 			where: {
-				EntidadNegocioId: actualizacionEntidad.EntidadNegocioId,
+				EntidadNegocioId: entidad[0].EntidadNegocioId,
 			},
 		});
 
@@ -213,12 +214,13 @@ const editarIdEmpresa = async (req, res) => {
 			...domicilioActual.dataValues,
 			...domicilio[0],
 			ActualizadoPor: actualizadoPor,
-			ClavePais: actualizacionEntidad.ClavePais,
+			ActualizadoEn: new Date(),
+			ClavePais: entidad[0].ClavePais,
 		};
 
 		await Domicilio.update(actualizacionDomicilio, {
 			where: {
-				DomicilioId: actualizacionDomicilio.DomicilioId,
+				DomicilioId: buscarDomicilio.DomicilioId,
 			},
 		});
 
@@ -234,6 +236,7 @@ const editarIdEmpresa = async (req, res) => {
 };
 
 export const desactivarIdEmpresa = async (req, res) => {
+	const entidadBody = req.body;
 	try {
 		const entidad = await EntidadNegocio.findOne({
 			where: {
@@ -248,8 +251,10 @@ export const desactivarIdEmpresa = async (req, res) => {
 				.json({ status: 404, message: 'La empresa no existe' });
 		}
 
-		entidad.Borrado = true;
-		entidad.BorradoPor = req.body.BorradoPor;
+		entidadBody.Borrado = true;
+		entidadBody.BorradoPor = req.body.BorradoPor;
+		entidadBody.BorradoEn = new Date();
+		await entidad.save();
 
 		await entidad.save();
 		return res.status(200).json({

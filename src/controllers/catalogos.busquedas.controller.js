@@ -4,6 +4,8 @@ import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 import { Coin } from '../models/sat.type.coin.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
+import { ProductsServices } from '../models/sat.product.services.model.js';
+import { UnitKey }from '../models/sat.clave.unidad.model.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -206,7 +208,6 @@ const deleteTypeCoin = async (req, res) => {
 const createRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 	try {
-
 		const validateRegimenFiscal = await regimenFiscal.findOne({
 			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
 		});
@@ -216,7 +217,6 @@ const createRegimenFiscal = async (req, res) => {
 				.status(409)
 				.json({ error: 'La clave del regimen fiscal ya esta en uso ' });
 		}
-
 
 		await regimenFiscal.create(satFKBody);
 		return res
@@ -233,7 +233,7 @@ const updateRegimenFiscal = async (req, res) => {
 
 	try {
 		const [updated] = await regimenFiscal.update(satFKBody, {
-			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1},
+			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
 		});
 
 		if (!updated) {
@@ -262,7 +262,7 @@ const deleteRegimenFiscal = async (req, res) => {
 		if (!regimen) {
 			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
 		}
-		
+
 		await regimenFiscal.update(
 			{ Activo: false },
 			{ where: { ClaveRegimenFiscal } },
@@ -336,13 +336,278 @@ const deleteCFDI = async (req, res) => {
 	}
 };
 
-
 const findCFDI = async (req, res) => {
 	const result = await sequelize.query('CALL sp_lista_cfdi()', {
 		type: sequelize.QueryTypes.RAW,
 	});
 	return res.status(200).json(result);
 };
+
+const findProductServicesByCode = async (req, res) => {
+	const code  = req.params.code;
+	try {
+		const data = await ProductsServices.findAll({
+			where: { ClaveProductsServices: { [Op.like]: code }, Activo: 1 },
+		});
+		if (!data) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos del producto', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
+const findProductServicesByDescription = async (req, res) => {
+	const descripcion = req.params.descripcion;
+
+	try {
+		const data = await ProductsServices.findAll({
+			where: { Descripcion: { [Op.like]: `%${descripcion}%`  }, Activo: 1 },
+		});
+		if (!data) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos del producto', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
+const findProductServicesByMatchWord = async (req, res) => {
+	const { palabra } = req.params;
+	try {
+		const data = await ProductsServices.findAll({
+			where: { PalabrasSimilares: { [Op.like]: palabra  }, Activo: 1 },
+		});
+		if (!data) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos del producto', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
+const createProductServices = async (req, res) => {
+	const productServicesBody = req.body;
+	try {
+		const validateProductServices = await ProductsServices.findOne({
+			where: {
+				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				Activo: 1,
+			},
+		});
+
+		if (validateProductServices) {
+			return res
+				.status(409)
+				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
+		}
+
+		await ProductsServices.create(productServicesBody);
+		return res
+			.status(200)
+			.json({ success: true, message: 'Producto/Servicio creado' });
+	} catch (error) {
+		console.error('Error al crear el producto/servicio', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al crear el producto/servicio' });
+	}
+};
+
+const updateProductServices = async (req, res) => {
+	const productServicesBody = req.body;
+	try {
+		const [updated] = await ProductsServices.update(productServicesBody, {
+			where: {
+				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				Activo: 1,
+			},
+		});
+
+		if (!updated) {
+			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
+		}
+
+		return res
+			.status(200)
+			.json({ success: true, message: 'Producto/Servicio actualizado' });
+	} catch (error) {
+		console.error('Error al actualizar el producto/servicio', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al actualizar el producto/servicio' });
+	}
+};
+
+const deleteProductServices = async (req, res) => {
+	const { ClaveProductsServices } = req.body;
+
+	try {
+		const product = await ProductsServices.findOne({
+			where: { ClaveProductsServices, Activo: 1 },
+		});
+
+		if (!product) {
+			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
+		}
+
+		await ProductsServices.update(
+			{ Activo: false },
+			{ where: { ClaveProductsServices } },
+		);
+
+		return res
+			.status(200)
+			.json({ success: true, message: 'Producto/Servicio borrado' });
+	} catch (error) {
+		console.error('Error al borrar el producto/servicio', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al borrar el producto/servicio' });
+	}
+};
+
+const findAllUnitKeys = async (req, res) => {
+    const page = Number(req.params.page) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
+    try {
+        const { count, rows } = await UnitKey.findAndCountAll({
+            limit,
+            offset
+        });
+
+        const totalPages = Math.ceil(count / limit);
+
+        return res.status(200).json({
+            totalPages,
+            currentPage: page,
+            totalItems: count,
+            items: rows
+        });
+    } catch (error) {
+        console.error('Error al obtener las claves de unidades', error.message);
+        return res
+            .status(500)
+            .json({ error: 'Error al obtener las claves de unidades' });
+    }
+};
+
+const findUnitKeysByKey = async (req, res) => {
+	const { key } = req.params;
+	try {
+		const data = await UnitKey.findAll({
+			where: {
+				ClaveUnidadSat: key,
+			}
+		});
+
+		if (data.length < 1) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos de la clave de unidad', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+}
+
+const createUnitKey = async (req, res) => {
+	const unitKeyBody = req.body;
+	try {
+		const validateUnitKey = await UnitKey.findOne({
+			where: {
+				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
+				Activo: 1
+			}
+		});
+
+		if (validateUnitKey) {
+			return res
+				.status(409)
+				.json({ error: 'La clave de unidad ya esta en uso ' });
+		}
+
+		await UnitKey.create(unitKeyBody);
+		return res
+			.status(200)
+			.json({ success: true, message: 'Clave de unidad creada' });
+	}
+	catch (error) {
+		console.error('Error al crear la clave de unidad', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al crear la clave de unidad' });
+	}
+}
+
+const updateUnitKey = async (req, res) => {
+	const unitKeyBody = req.body;
+	try {
+		const [updated] = await UnitKey.update(unitKeyBody, {
+			where: {
+				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
+				Activo: 1
+			}
+		});
+
+		if (!updated) {
+			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
+		}
+
+		return res
+			.status(200)
+			.json({ success: true, message: 'Clave de unidad actualizada' });
+	}
+	catch (error) {
+		console.error('Error al actualizar la clave de unidad', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al actualizar la clave de unidad' });
+	}
+}
+
+const deleteUnitKey = async (req, res) => {
+	const { ClaveUnidadSat } = req.body;
+
+	try {
+		const unitKey = await
+			UnitKey.findOne({
+				where: { ClaveUnidadSat, Activo: 1 }
+			});
+
+		if (!unitKey) {
+			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
+		}
+
+		await UnitKey.update(
+			{ Activo: false },
+			{ where: { ClaveUnidadSat } }
+		);
+
+		return res
+			.status(200)
+			.json({ success: true, message: 'Clave de unidad borrada' });
+	}
+	catch (error) {
+		console.error('Error al borrar la clave de unidad', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al borrar la clave de unidad' });
+	}
+}
+
+
 export const methods = {
 	getPostalCodes,
 	findPostalCodes,
@@ -362,4 +627,15 @@ export const methods = {
 	updateUsoCFDI,
 	deleteCFDI,
 	findCFDI,
+	findProductServicesByCode,
+	findProductServicesByDescription,
+	findProductServicesByMatchWord,
+	createProductServices,
+	updateProductServices,
+	deleteProductServices,
+	findAllUnitKeys,
+	findUnitKeysByKey,
+	createUnitKey,
+	updateUnitKey,
+	deleteUnitKey
 };
