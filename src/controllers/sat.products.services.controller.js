@@ -130,7 +130,7 @@ const deleteProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		product.Activo = false;
+		product	.Activo = false;
 		await product.save()
 
 		return res

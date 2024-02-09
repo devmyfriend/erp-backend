@@ -92,7 +92,7 @@ methods.findAllUnitKeys);
  *                 Activo: true
  */
 router.get('/buscar/:key',
-param('key').isInt().withMessage('La clave de la unidad debe ser un número entero'),
+param('key').isInt({ gt: -1}).withMessage('La clave de la unidad debe ser un número entero'),
 middleware.validateSchema,
 methods.findUnitKeysByKey);
 

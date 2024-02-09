@@ -1,4 +1,6 @@
 import UnitKey from '../models/sat.clave.unidad.model.js';
+import { Op } from 'sequelize';
+
 
 const findAllUnitKeys = async (req, res) => {
     let page = Number(req.params.page);
@@ -39,27 +41,23 @@ const findAllUnitKeys = async (req, res) => {
 };
 
 const findUnitKeysByKey = async (req, res) => {
-	const { key } = req.params;
-	try {
+	const key = req.params.key;
+
+	try{ 
 		const data = await UnitKey.findAll({
 			where: {
-				ClaveUnidadSat: key,
-				Activo: 1,
-			},
-		});
+				ClaveUnidadSat: { [Op.like]: `%${key}%` }, Activo: 1 },
+	});
 
-		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
-		}
-
-		return res.status(200).json({ response: data });
-	} catch (error) {
-		console.error(
-			'Error al obtener los datos de la clave de unidad',
-			error.message,
-		);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
+	if (!data) {
+		return res.status(404).json({ message: 'No hay datos disponibles' });
 	}
+
+	return res.status(200).json({ response: data });
+} catch (error) {
+	console.error('Error al obtener los datos de la clave de unidad', error.message);
+	return res.status(500).json({ error: 'Error al obtener los datos' });
+}
 };
 
 const createUnitKey = async (req, res) => {
