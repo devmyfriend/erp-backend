@@ -435,21 +435,21 @@ const crearEmpresaTelefono = async (req, res) => {
 };
 
 const editarEmpresaTelefono = async (req, res) => {
-	const { TelefonoId, NumeroTelefonico, ActualizadoPor } = req.body;
+	const { TelefonoId, NumeroTelefonico, ActualizadoPor, EntidadNegocioId } = req.body;
 
 	try {
 
-		const validarRelacion = await EmpresaTelefono.findOne({
-			where: {
-				TelefonoId,
+		const validarEmpresa = await EntidadNegocio.findOne({
+			where:{
+				EntidadNegocioId,
 			},
 		});
 
-		if (!validarRelacion) {
+		if (!validarEmpresa) {
 			return res.status(404).json({
 				status: 404,
-				error: 'El telefono no pertenece a la empresa',
-			});
+				error: 'La empresa no existe'
+			})
 		}
 
 		const validatePhoneId = await Telefono.findOne({
@@ -462,6 +462,19 @@ const editarEmpresaTelefono = async (req, res) => {
 			return res.status(404).json({
 				status: 404,
 				error: 'El telefono no existe',
+			});
+		}
+		const validarRelacion = await EmpresaTelefono.findOne({
+			where: {
+				EntidadNegocioId,
+				TelefonoId,
+			},
+		});
+
+		if (!validarRelacion) {
+			return res.status(404).json({
+				status: 404,
+				error: 'El telefono no pertenece a la empresa',
 			});
 		}
 
@@ -585,6 +598,25 @@ const editarEmpresaEmails = async (req, res) => {
 	const emailsBody = req.body;
 
 	try {
+		const empresaExistente = await EntidadNegocio.findOne({
+			where: {
+				EntidadNegocioId: emailsBody.EntidadNegocioId,
+			},
+		});
+
+		if (!empresaExistente) {
+			return res.status(404).json({ message: 'La empresa no existe' });
+		}
+
+		const emailExistente = await Email.findOne({
+			where: {
+				EmailId: emailsBody.EmailId,
+			},
+		});
+
+		if (!emailExistente) {
+			return res.status(404).json({ message: 'El email no existe' });
+		}
 
 		const validarRelacion = await EmpresaEmails.findOne({
 			where: {
@@ -598,17 +630,7 @@ const editarEmpresaEmails = async (req, res) => {
 				error: 'El email no pertenece a la empresa',
 			});
 		}
-
-		const emailExistente = await Email.findOne({
-			where: {
-				EmailId: emailsBody.EmailId,
-			},
-		});
-
-		if (!emailExistente) {
-			return res.status(404).json({ message: 'El email no existe' });
-		}
-
+		
 		await Email.update(
 			{
 				Email: emailsBody.Email,

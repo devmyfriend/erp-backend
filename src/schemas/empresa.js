@@ -275,6 +275,11 @@ export const crearEmpresaTelefonoSchema = [
 ];
 
 export const editarEmpresaTelefonoSchema = [
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage("El campo EntidadNegocioId no puede estar vacio")
+		.isString()
+		.withMessage("El campo EntidadNegocioId debe ser una cadena de texto"),
 	body('TelefonoId')
 		.notEmpty()
 		.withMessage('El campo TelefonoId no puede estar vacío')
@@ -283,7 +288,9 @@ export const editarEmpresaTelefonoSchema = [
 	body('NumeroTelefonico')
 		.optional()
 		.isString()
-		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
+		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto')
+		.isLength({ min: 13, max: 13})
+		.withMessage('El campo NumeroTelefonico debe tener 13 caracteres'),
 	body('ActualizadoPor')
 		.notEmpty()
 		.withMessage('El campo ActualizadoPor no puede estar vacío')
@@ -310,6 +317,11 @@ export const crearEmailEmpresaSchema = [
 ];
 
 export const editarEmpresaEmailsSchema = [
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
 	body('EmailId')
 		.notEmpty()
 		.withMessage('El campo EntidadNegocioId no puede estar vacío')

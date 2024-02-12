@@ -22,7 +22,7 @@ const router = Router();
  *               items:
  *                 type: object
  *                 properties:
- *  
+ *
  *
  */
 router.get('/', methods.obtenerEmpresas);
@@ -111,7 +111,6 @@ router.get(
 	param('id', 'El parametro debe ser un entero').isNumeric(),
 	methods.buscarIdEmpresa,
 );
-
 
 /**
  * @swagger
@@ -314,7 +313,6 @@ router.patch(
 	methods.editarIdEmpresa,
 );
 
-
 /**
  * @swagger
  * /api/v1/empresa/desactivar/:
@@ -377,9 +375,7 @@ router.patch(
  *             example:
  *               message: "Error message"
  */
-router.delete('/desactivar',
-    methods.desactivarIdEmpresa);
-
+router.delete('/desactivar', methods.desactivarIdEmpresa);
 
 /**
  * @swagger
@@ -412,12 +408,12 @@ router.delete('/desactivar',
  *                 ApellidoPaterno:
  *                   type: string
  *                 ApellidoMaterno:
- *                   type: string	
+ *                   type: string
  *                 Departamento:
  *                   type: string
  *                 Puesto:
  *                   type: string
- *             example: 
+ *             example:
  *               {
  *                 "EntidadNegocioId": 33,
  *                 "ContactoId": 5,
@@ -544,7 +540,6 @@ router.patch(
 	methods.editarEmpresaContacto,
 );
 
-
 /**
  * @swagger
  * /api/v1/empresa/{id}/telefono:
@@ -625,6 +620,8 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
  *               TelefonoId:
  *                 type: integer
  *               NumeroTelefonico:
@@ -639,6 +636,8 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
  *                 TelefonoId:
  *                   type: integer
  *                 NumeroTelefonico:
@@ -646,6 +645,7 @@ router.post(
  *                 ActualizadoPor:
  *                   type: integer
  *             example:
+ *               EntidadNegocioId: 1
  *               TelefonoId: 123
  *               NumeroTelefonico: "1234567890"
  *               ActualizadoPor: 1
@@ -689,7 +689,7 @@ router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
 
 /**
  * @swagger
- * /api/v1/empresa/emails/:id:	
+ * /api/v1/empresa/emails/:id:
  *   get:
  *     tags:
  *       - EmpresaEmail
@@ -775,6 +775,8 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
  *               EmailId:
  *                 type: integer
  *               Email:
@@ -789,6 +791,8 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
  *                 EmailId:
  *                   type: integer
  *                 Email:
@@ -796,6 +800,7 @@ router.post(
  *                 ActualizadoPor:
  *                   type: integer
  *             example:
+ *               EntidadNegocioId: 1
  *               EmailId: 123
  *               Email: "example@example.com"
  *               ActualizadoPor: 1
@@ -834,8 +839,6 @@ router.patch(
  *         description: Error al eliminar el email
  */
 router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
-
-
 
 /**
  * @swagger
