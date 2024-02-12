@@ -317,47 +317,68 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/empresa/desactivar/{id}:
+ * /api/v1/empresa/desactivar/:
  *   delete:
- *     summary: Desactivar una entidad de negocio
+ *     summary: Desactivar una empresa
  *     tags: [Datos Empresa]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la entidad de negocio a desactivar
- *         schema:
- *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
+ *                 description: El ID de la empresa a desactivar
+ *               BorradoPor:
+ *                 type: integer
+ *                 description: El ID del usuario que desactiva la empresa
+ *           examples:
+ *             example:
+ *               value:
+ *                 EntidadNegocioId: 153
+ *                 BorradoPor: 2
  *     responses:
  *       200:
- *         description: Entidad de negocio desactivada con éxito
+ *         description: La empresa ha sido borrada con éxito
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *             example:
- *               message: "Entidad de negocio desactivada: 1"
- *       400:
- *         description: Error de validación. Los datos proporcionados no son válidos.
- *         content:
- *           application/json:
- *             example:
- *               status: "Error de validación"
- *               errors: ["Mensaje de error 1", "Mensaje de error 2"]
+ *               message: "La empresa 153 ha sido borrada"
  *       404:
- *         description: Entidad de negocio no encontrada
+ *         description: La empresa no existe
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
  *             example:
- *               error: "Entidad de negocio no encontrada"
+ *               status: 404
+ *               message: "La empresa no existe"
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *             example:
- *               error: "Error interno del servidor"
+ *               message: "Error message"
  */
-
-router.delete('/desactivar/:id',
-	methods.desactivarIdEmpresa);
+router.delete('/desactivar',
+    methods.desactivarIdEmpresa);
 
 
 /**
@@ -613,10 +634,21 @@ router.post(
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha actualizado correctamente
- *       400:
- *         description: Cuerpo de la petición inválido
- *       500:
- *         description: Error al actualizar la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 TelefonoId:
+ *                   type: integer
+ *                 NumeroTelefonico:
+ *                   type: string
+ *                 ActualizadoPor:
+ *                   type: integer
+ *             example:
+ *               TelefonoId: 123
+ *               NumeroTelefonico: "1234567890"
+ *               ActualizadoPor: 1
  */
 router.patch(
 	'/telefono/editar',
@@ -743,7 +775,7 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               ContactoId:
+ *               EmailId:
  *                 type: integer
  *               Email:
  *                 type: string
@@ -751,11 +783,22 @@ router.post(
  *                 type: integer
  *     responses:
  *       200:
- *         description: Se ha actualizado el email
- *       404:
- *         description: La empresa o el email no existe
- *       500:
- *         description: Error al actualizar el email
+ *         description: La relación EmpresaEmail se ha actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 EmailId:
+ *                   type: integer
+ *                 Email:
+ *                   type: string
+ *                 ActualizadoPor:
+ *                   type: integer
+ *             example:
+ *               EmailId: 123
+ *               Email: "example@example.com"
+ *               ActualizadoPor: 1
  */
 router.patch(
 	'/emails/editar',
@@ -778,8 +821,6 @@ router.patch(
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
- *                 type: integer
  *               EmailId:
  *                 type: integer
  *               BorradoPor:
