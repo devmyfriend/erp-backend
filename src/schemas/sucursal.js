@@ -22,13 +22,8 @@ export const crearSucursal = [
 		.isInt()
 		.exists()
 		.withMessage(
-			'El campo CreadoPor es obligatorio y debe ser un número entero.',
-		), body('sucursal.*.ResponsableId')
-			.isInt()
-			.exists()
-			.withMessage(
-				'El campo CreadoPor es obligatorio y debe ser un número entero.',
-			),
+			'El campo CreadoPor es obligatorio y debe ser un número entero.'
+		),
 
 	body('datos.*.Calle')
 		.isString()
