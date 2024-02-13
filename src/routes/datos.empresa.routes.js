@@ -676,14 +676,10 @@ router.patch(
  *               TelefonoId:
  *                 type: integer
  *               BorradoPor:
- *                 type: string
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Relación EmpresaTelefono desactivada
- *       404:
- *         description: La relación EmpresaTelefono no existe
- *       500:
- *         description: Error del servidor
  */
 router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
 
