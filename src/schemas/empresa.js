@@ -26,9 +26,7 @@ export const editarIdEmpresa = [
 		.optional()
 		.isString()
 		.withMessage('El campo ClavePais debe ser una cadena de texto'),
-	body('entidad.*.TaxId')
-		.optional()
-		.isString(),
+	body('entidad.*.TaxId').optional().isString(),
 	body('entidad.*.ClaveRegimenFiscal')
 		.optional()
 		.isInt()
@@ -99,8 +97,7 @@ export const crearEmpresaSchema = [
 		.notEmpty()
 		.withMessage('El campo RFC no puede estar vacío')
 		.isLength({ min: 12, max: 13 })
-		.withMessage('El RFC tiene que tener de 12 a 13 digitos')
-	,
+		.withMessage('El RFC tiene que tener de 12 a 13 digitos'),
 	body('entidad.*.NombreComercial')
 		.optional()
 		.isString()
@@ -110,9 +107,7 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo Pais no puede estar vacío')
 		.isString()
 		.withMessage('El campo Pais debe ser una cadena de texto'),
-	body('entidad.*.TaxId')
-		.optional()
-		.isString(),
+	body('entidad.*.TaxId').optional().isString(),
 	body('entidad.*.ClaveRegimenFiscal')
 		.notEmpty()
 		.withMessage('El campo ClaveRegimenFiscal no puede estar vacío')
@@ -277,9 +272,9 @@ export const crearEmpresaTelefonoSchema = [
 export const editarEmpresaTelefonoSchema = [
 	body('EntidadNegocioId')
 		.notEmpty()
-		.withMessage("El campo EntidadNegocioId no puede estar vacio")
+		.withMessage('El campo EntidadNegocioId no puede estar vacio')
 		.isInt()
-		.withMessage("El campo EntidadNegocioId debe ser un número entero"),
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
 	body('TelefonoId')
 		.notEmpty()
 		.withMessage('El campo TelefonoId no puede estar vacío')
@@ -289,13 +284,31 @@ export const editarEmpresaTelefonoSchema = [
 		.optional()
 		.isString()
 		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto')
-		.isLength({ min: 10, max: 13})
+		.isLength({ min: 10, max: 13 })
 		.withMessage('El campo NumeroTelefonico debe tener 13 caracteres'),
 	body('ActualizadoPor')
 		.notEmpty()
 		.withMessage('El campo ActualizadoPor no puede estar vacío')
 		.isInt()
 		.withMessage('El campo ActualizadoPor debe ser un número entero'),
+];
+
+export const desactivarTelefonoEmpresaSchema = [
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+	body('TelefonoId')
+		.notEmpty()
+		.withMessage('El campo TelefonoId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo TelefonoId debe ser un número entero'),
+	body('BorradoPor')
+		.notEmpty()
+		.withMessage('El campo BorradoPor no puede estar vacío')
+		.isInt()
+		.withMessage('El campo BorradoPor debe ser un número entero'),
 ];
 
 export const crearEmailEmpresaSchema = [

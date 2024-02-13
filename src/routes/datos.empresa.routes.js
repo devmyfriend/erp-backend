@@ -141,8 +141,6 @@ router.get(
  *                 type: boolean
  *               NombreOficial:
  *                 type: string
- *               Borrado:
- *                 type: integer
  *               logo:
  *                 type: string
  *         CreadoPor:
@@ -241,8 +239,6 @@ router.post(
  *                       type: boolean
  *                     NombreOficial:
  *                       type: string
- *                     Estatus:
- *                       type: integer
  *               ActualizadoPor:
  *                 type: integer
  *               domicilio:
@@ -281,7 +277,6 @@ router.post(
  *                     PersonaFisica: true
  *                     PersonaMoral: true
  *                     NombreOficial: "string"
- *                     Estatus: 0
  *                 ActualizadoPor: 2
  *                 domicilio:
  *                   - Calle: "string"
@@ -681,7 +676,12 @@ router.patch(
  *       200:
  *         description: Relación EmpresaTelefono desactivada
  */
-router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
+router.delete(
+	'/telefono/desactivar',
+	schemas.desactivarTelefonoEmpresaSchema,
+	middleware.validateSchema,
+	methods.desactivarEmpresaTelefono,
+);
 
 /**
  * @swagger
