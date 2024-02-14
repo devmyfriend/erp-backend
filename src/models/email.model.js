@@ -18,6 +18,9 @@ export const Email = Connection.define(
 		ActualizadoPor: {
 			type: DataTypes.INTEGER,
 		},
+		ActualizadoEn: {
+			type: DataTypes.DATE,
+		},
 		BorradoPor: {
 			type: DataTypes.INTEGER,
 		},

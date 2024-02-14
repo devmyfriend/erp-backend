@@ -22,7 +22,7 @@ const router = Router();
  *               items:
  *                 type: object
  *                 properties:
- *  
+ *
  *
  */
 router.get('/', methods.obtenerEmpresas);
@@ -112,6 +112,114 @@ router.get(
 	methods.buscarIdEmpresa,
 );
 
+/**
+ * @swagger
+ * /api/v1/empresa/detalle/{id}:
+ *   get:
+ *     tags:
+ *       - Datos Empresa
+ *     summary: Obtener detalles de una empresa
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: El ID de la entidad de negocio
+ *     responses:
+ *       200:
+ *         description: Detalles de la empresa obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 telefono:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       TelefonoId:
+ *                         type: integer
+ *                       ContactoId:
+ *                         type: integer
+ *                       NumeroTelefonico:
+ *                         type: string
+ *                 email:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       EmailId:
+ *                         type: integer
+ *                       ContactoId:
+ *                         type: integer
+ *                       Email:
+ *                         type: string
+ *             example:
+ *               telefono:
+ *                 - TelefonoId: 1
+ *                   ContactoId: 1
+ *                   NumeroTelefonico: "1234567890"
+ *               email:
+ *                 - EmailId: 1
+ *                   ContactoId: 1
+ *                   Email: "contacto@example.com"
+ *       500:
+ *         description: Error al obtener el teléfono
+ */
+router.get(
+	'/detalle/:id',
+	param('id', 'El parametro debe ser un entero')
+		.isNumeric()
+		.withMessage('El parametro debe ser un entero'),
+	middleware.validateSchema,
+	methods.empresaDetalle,
+);
+
+/**
+ * @swagger
+ * /api/v1/empresa/telefono/{id}:
+ *   get:
+ *     tags:
+ *       - Empresa
+ *     summary: Obtener los teléfonos de una empresa
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: El ID de la entidad de negocio
+ *     responses:
+ *       200:
+ *         description: Teléfonos de la empresa obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   TelefonoId:
+ *                     type: integer
+ *                   ContactoId:
+ *                     type: integer
+ *                   NumeroTelefonico:
+ *                     type: string
+ *       404:
+ *         description: No hay teléfonos disponibles
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get(
+	'/telefono/:id',
+	param('id', 'El parametro debe ser un entero')
+		.isNumeric()
+		.withMessage('El parametro debe ser un entero'),
+	middleware.validateSchema,
+	methods.obtenerEmpresaTelefono,
+);
 
 /**
  * @swagger
@@ -142,8 +250,6 @@ router.get(
  *                 type: boolean
  *               NombreOficial:
  *                 type: string
- *               Borrado:
- *                 type: integer
  *               logo:
  *                 type: string
  *         CreadoPor:
@@ -242,8 +348,6 @@ router.post(
  *                       type: boolean
  *                     NombreOficial:
  *                       type: string
- *                     Estatus:
- *                       type: integer
  *               ActualizadoPor:
  *                 type: integer
  *               domicilio:
@@ -282,7 +386,6 @@ router.post(
  *                     PersonaFisica: true
  *                     PersonaMoral: true
  *                     NombreOficial: "string"
- *                     Estatus: 0
  *                 ActualizadoPor: 2
  *                 domicilio:
  *                   - Calle: "string"
@@ -314,51 +417,69 @@ router.patch(
 	methods.editarIdEmpresa,
 );
 
-
 /**
  * @swagger
- * /api/v1/empresa/desactivar/{id}:
+ * /api/v1/empresa/desactivar/:
  *   delete:
- *     summary: Desactivar una entidad de negocio
+ *     summary: Desactivar una empresa
  *     tags: [Datos Empresa]
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de la entidad de negocio a desactivar
- *         schema:
- *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
+ *                 description: El ID de la empresa a desactivar
+ *               BorradoPor:
+ *                 type: integer
+ *                 description: El ID del usuario que desactiva la empresa
+ *           examples:
+ *             example:
+ *               value:
+ *                 EntidadNegocioId: 153
+ *                 BorradoPor: 2
  *     responses:
  *       200:
- *         description: Entidad de negocio desactivada con éxito
+ *         description: La empresa ha sido borrada con éxito
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *             example:
- *               message: "Entidad de negocio desactivada: 1"
- *       400:
- *         description: Error de validación. Los datos proporcionados no son válidos.
- *         content:
- *           application/json:
- *             example:
- *               status: "Error de validación"
- *               errors: ["Mensaje de error 1", "Mensaje de error 2"]
+ *               message: "La empresa 153 ha sido borrada"
  *       404:
- *         description: Entidad de negocio no encontrada
+ *         description: La empresa no existe
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 message:
+ *                   type: string
  *             example:
- *               error: "Entidad de negocio no encontrada"
+ *               status: 404
+ *               message: "La empresa no existe"
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
  *             example:
- *               error: "Error interno del servidor"
+ *               message: "Error message"
  */
-
-router.delete('/desactivar/:id',
-	methods.desactivarIdEmpresa);
-
+router.delete('/desactivar', methods.desactivarIdEmpresa);
 
 /**
  * @swagger
@@ -391,12 +512,12 @@ router.delete('/desactivar/:id',
  *                 ApellidoPaterno:
  *                   type: string
  *                 ApellidoMaterno:
- *                   type: string	
+ *                   type: string
  *                 Departamento:
  *                   type: string
  *                 Puesto:
  *                   type: string
- *             example: 
+ *             example:
  *               {
  *                 "EntidadNegocioId": 33,
  *                 "ContactoId": 5,
@@ -523,10 +644,9 @@ router.patch(
 	methods.editarEmpresaContacto,
 );
 
-
 /**
  * @swagger
- * /api/v1/empresa/{id}/telefono:
+ * /api/v1/empresa/telefono/{id}:
  *   get:
  *     tags:
  *       - EmpresaTelefono
@@ -604,6 +724,8 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
+ *               EntidadNegocioId:
+ *                 type: integer
  *               TelefonoId:
  *                 type: integer
  *               NumeroTelefonico:
@@ -613,10 +735,24 @@ router.post(
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha actualizado correctamente
- *       400:
- *         description: Cuerpo de la petición inválido
- *       500:
- *         description: Error al actualizar la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
+ *                 TelefonoId:
+ *                   type: integer
+ *                 NumeroTelefonico:
+ *                   type: string
+ *                 ActualizadoPor:
+ *                   type: integer
+ *             example:
+ *               EntidadNegocioId: 1
+ *               TelefonoId: 123
+ *               NumeroTelefonico: "1234567890"
+ *               ActualizadoPor: 1
  */
 router.patch(
 	'/telefono/editar',
@@ -644,20 +780,21 @@ router.patch(
  *               TelefonoId:
  *                 type: integer
  *               BorradoPor:
- *                 type: string
+ *                 type: integer
  *     responses:
  *       200:
  *         description: Relación EmpresaTelefono desactivada
- *       404:
- *         description: La relación EmpresaTelefono no existe
- *       500:
- *         description: Error del servidor
  */
-router.delete('/telefono/desactivar', methods.desactivarEmpresaTelefono);
+router.delete(
+	'/telefono/desactivar',
+	schemas.desactivarTelefonoEmpresaSchema,
+	middleware.validateSchema,
+	methods.desactivarEmpresaTelefono,
+);
 
 /**
  * @swagger
- * /api/v1/empresa/emails/:id:	
+ * /api/v1/empresa/emails/:id:
  *   get:
  *     tags:
  *       - EmpresaEmail
@@ -743,7 +880,9 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               ContactoId:
+ *               EntidadNegocioId:
+ *                 type: integer
+ *               EmailId:
  *                 type: integer
  *               Email:
  *                 type: string
@@ -751,11 +890,25 @@ router.post(
  *                 type: integer
  *     responses:
  *       200:
- *         description: Se ha actualizado el email
- *       404:
- *         description: La empresa o el email no existe
- *       500:
- *         description: Error al actualizar el email
+ *         description: La relación EmpresaEmail se ha actualizado correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 EntidadNegocioId:
+ *                   type: integer
+ *                 EmailId:
+ *                   type: integer
+ *                 Email:
+ *                   type: string
+ *                 ActualizadoPor:
+ *                   type: integer
+ *             example:
+ *               EntidadNegocioId: 1
+ *               EmailId: 123
+ *               Email: "example@example.com"
+ *               ActualizadoPor: 1
  */
 router.patch(
 	'/emails/editar',
@@ -778,8 +931,6 @@ router.patch(
  *           schema:
  *             type: object
  *             properties:
- *               EntidadNegocioId:
- *                 type: integer
  *               EmailId:
  *                 type: integer
  *               BorradoPor:
@@ -793,8 +944,6 @@ router.patch(
  *         description: Error al eliminar el email
  */
 router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
-
-
 
 /**
  * @swagger

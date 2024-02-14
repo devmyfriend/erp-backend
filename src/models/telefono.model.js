@@ -28,6 +28,12 @@ export const Telefono = Connection.define(
 		Borrado: {
 			type: DataTypes.BOOLEAN,
 		},
+		ActualizadoEn: {
+			type: DataTypes.DATE,	
+		},
+		CreadoEn: {
+			type: DataTypes.DATE,
+		}
 	},
 	{
 		tableName: 'orgTelefonos',
