@@ -382,7 +382,7 @@ const empresaDetalle = async (req, res) => {
 	const entidadId = req.params.id;
 	try {
 		const telefono = await sequelize.query(
-			'CALL buscarTelefonoPorEntidadNegocioId(?, 0)',
+			'CALL buscarTelefonoPorEntidadNegocioId(?)',
 			{
 				replacements: [entidadId],
 				type: sequelize.QueryTypes.RAW,
@@ -401,6 +401,28 @@ const empresaDetalle = async (req, res) => {
 	} catch (error) {
 		console.error('Error al obtener el teléfono:', error.message);
 		return res.status(500).json({ error: 'Error al obtener el teléfono' });
+	}
+};
+
+const obtenerEmpresaTelefono = async (req, res) => {
+	const entidadId = req.params.id;
+	try {
+		const telefonos = await sequelize.query(
+			'CALL buscarTelefonoPorEntidadNegocioId(?)',
+			{
+				replacements: [entidadId],
+				type: sequelize.QueryTypes.RAW,
+			},
+		);
+
+		if (telefonos.length === 0) {
+			return res.status(404).json({ message: 'No hay telefonos disponibles' });
+		}
+
+		return res.status(200).json(telefonos);
+	} catch (error) {
+		console.error('Error al obtener los telefonos:', error.message);
+		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
 
@@ -508,7 +530,6 @@ const editarEmpresaTelefono = async (req, res) => {
 };
 
 export const desactivarEmpresaTelefono = async (req, res) => {
-	console.log('lala', req.body);
 	try {
 
 		const validarTelefono = await Telefono.findOne({
@@ -730,6 +751,7 @@ export const methods = {
 	editarIdEmpresa,
 	desactivarIdEmpresa,
 	empresaDetalle,
+	obtenerEmpresaTelefono,
 	crearEmpresaTelefono,
 	editarEmpresaTelefono,
 	desactivarEmpresaTelefono,

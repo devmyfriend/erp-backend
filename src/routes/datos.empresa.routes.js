@@ -114,6 +114,115 @@ router.get(
 
 /**
  * @swagger
+ * /api/v1/empresa/detalle/{id}:
+ *   get:
+ *     tags:
+ *       - Datos Empresa
+ *     summary: Obtener detalles de una empresa
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: El ID de la entidad de negocio
+ *     responses:
+ *       200:
+ *         description: Detalles de la empresa obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 telefono:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       TelefonoId:
+ *                         type: integer
+ *                       ContactoId:
+ *                         type: integer
+ *                       NumeroTelefonico:
+ *                         type: string
+ *                 email:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       EmailId:
+ *                         type: integer
+ *                       ContactoId:
+ *                         type: integer
+ *                       Email:
+ *                         type: string
+ *             example:
+ *               telefono:
+ *                 - TelefonoId: 1
+ *                   ContactoId: 1
+ *                   NumeroTelefonico: "1234567890"
+ *               email:
+ *                 - EmailId: 1
+ *                   ContactoId: 1
+ *                   Email: "contacto@example.com"
+ *       500:
+ *         description: Error al obtener el teléfono
+ */
+router.get(
+	'/detalle/:id',
+	param('id', 'El parametro debe ser un entero')
+		.isNumeric()
+		.withMessage('El parametro debe ser un entero'),
+	middleware.validateSchema,
+	methods.empresaDetalle,
+);
+
+/**
+ * @swagger
+ * /api/v1/empresa/telefono/{id}:
+ *   get:
+ *     tags:
+ *       - Empresa
+ *     summary: Obtener los teléfonos de una empresa
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: El ID de la entidad de negocio
+ *     responses:
+ *       200:
+ *         description: Teléfonos de la empresa obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   TelefonoId:
+ *                     type: integer
+ *                   ContactoId:
+ *                     type: integer
+ *                   NumeroTelefonico:
+ *                     type: string
+ *       404:
+ *         description: No hay teléfonos disponibles
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get(
+	'/telefono/:id',
+	param('id', 'El parametro debe ser un entero')
+		.isNumeric()
+		.withMessage('El parametro debe ser un entero'),
+	middleware.validateSchema,
+	methods.obtenerEmpresaTelefono,
+);
+
+/**
+ * @swagger
  * components:
  *   schemas:
  *     crearEmpresaSchema:
@@ -537,7 +646,7 @@ router.patch(
 
 /**
  * @swagger
- * /api/v1/empresa/{id}/telefono:
+ * /api/v1/empresa/telefono/{id}:
  *   get:
  *     tags:
  *       - EmpresaTelefono
