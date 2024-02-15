@@ -759,6 +759,7 @@ const buscarContactosPorNombreYEntidad = async (req, res) => {
     }
 }
 
+
 export const methods = {
 	buscarIdEmpresa,
 	crearIdEmpresa,
