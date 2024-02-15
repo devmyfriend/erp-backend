@@ -462,71 +462,63 @@ const crearEmpresaTelefono = async (req, res) => {
 };
 
 const editarEmpresaTelefono = async (req, res) => {
-	const { TelefonoId, NumeroTelefonico, ActualizadoPor, EntidadNegocioId } = req.body;
+    const telefonoUpdateBody = req.body;
 
-	try {
+    try {
+        const validarEmpresa = await EntidadNegocio.findOne({
+            where:{
+                EntidadNegocioId: telefonoUpdateBody.EntidadNegocioId,
+                Borrado: 0,
+            },
+        });
 
-		const validarEmpresa = await EntidadNegocio.findOne({
-			where:{
-				EntidadNegocioId,
-				Borrado: 0,
-			},
-		});
+        if (!validarEmpresa) {
+            return res.status(404).json({
+                status: 404,
+                error: 'La empresa no existe'
+            })
+        }
 
-		if (!validarEmpresa) {
-			return res.status(404).json({
-				status: 404,
-				error: 'La empresa no existe'
-			})
-		}
+        const validatePhoneId = await Telefono.findOne({
+            where: {
+                TelefonoId: telefonoUpdateBody.TelefonoId,
+                Borrado: 0,
+            },
+        });
 
-		const validatePhoneId = await Telefono.findOne({
-			where: {
-				TelefonoId,
-				Borrado: 0,
-			},
-		});
+        if (!validatePhoneId) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El telefono no existe',
+            });
+        }
+        const validarRelacion = await EmpresaTelefono.findOne({
+            where: {
+                EntidadNegocioId: telefonoUpdateBody.EntidadNegocioId,
+                TelefonoId: telefonoUpdateBody.TelefonoId,
+            },
+        });
 
-		if (!validatePhoneId) {
-			return res.status(404).json({
-				status: 404,
-				error: 'El telefono no existe',
-			});
-		}
-		const validarRelacion = await EmpresaTelefono.findOne({
-			where: {
-				EntidadNegocioId,
-				TelefonoId,
-			},
-		});
+        if (!validarRelacion) {
+            return res.status(404).json({	
+                status: 404,
+                error: 'El telefono no pertenece a la empresa',
+            });
+        }
 
-		if (!validarRelacion) {
-			return res.status(404).json({
-				status: 404,
-				error: 'El telefono no pertenece a la empresa',
-			});
-		}
+        await Telefono.update(telefonoUpdateBody, {
+            where: {
+                TelefonoId: telefonoUpdateBody.TelefonoId,
+            },
+        });
 
-		const actualizacionTelefono = {
-			TelefonoId,
-			NumeroTelefonico,
-			ActualizadoPor,
-		};
-
-		await Telefono.update(actualizacionTelefono, {
-			where: {
-				TelefonoId,
-				ActualizadoEn: new Date(),
-			},
-		});
-
-		return res.status(200).json({
-			message: 'Se ha actualizado el telefono ' + TelefonoId,
-		});
-	} catch (error) {
-		console.error('Error al actualizar el telefono:', error);
-		return res.status(500).json({ error: 'Error al actualizar el telefono' });
-	}
+        return res.status(200).json({
+            message: 'Se ha actualizado el telefono ' + telefonoUpdateBody.TelefonoId,
+        });
+    } catch (error) {
+        console.error('Error al actualizar el telefono:', error);
+        return res.status(500).json({ error: 'Error al actualizar el telefono' });
+    }
 };
 
 export const desactivarEmpresaTelefono = async (req, res) => {
@@ -745,6 +737,28 @@ const desactivarEmpresaEmails = async (req, res) => {
 	}
 };
 
+const buscarContactosPorNombreYEntidad = async (req, res) => {
+    const { Nombre, EntidadNegocioId } = req.body;
+    try {
+        const contactos = await sequelize.query(
+            'CALL BuscarContactosPorNombreYEntidad(?, ?)',
+            {
+                replacements: [Nombre, EntidadNegocioId],
+                type: sequelize.QueryTypes.RAW,
+            },
+        );
+
+        if (contactos.length === 0) {
+            return res.status(404).json({ message: 'No hay contactos disponibles' });
+        }
+
+        return res.status(200).json(contactos);
+    } catch (error) {
+        console.error('Error al obtener los contactos:', error.message);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+}
+
 export const methods = {
 	buscarIdEmpresa,
 	crearIdEmpresa,
@@ -764,4 +778,5 @@ export const methods = {
 	desactivarEmpresaEmails,
 	obtenerEmpresas,
 	buscarPorNombreOficial,
+	buscarContactosPorNombreYEntidad,
 };

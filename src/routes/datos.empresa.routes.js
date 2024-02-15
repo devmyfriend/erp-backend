@@ -977,4 +977,51 @@ router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
  */
 router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
 
+/**
+ * @swagger
+ * /api/v1/empresa/contacto/nombre:
+ *   post:
+ *     tags:
+ *       - EmpresaContacto
+ *     summary: Buscar contactos por nombre y entidad
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Nombre:
+ *                 type: string
+ *               EntidadNegocioId:
+ *                 type: integer
+ *           example:
+ *             Nombre: "lalo"
+ *             EntidadNegocioId: 126
+ *     responses:
+ *       200:
+ *         description: Contactos obtenidos correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ContactoId:
+ *                     type: integer
+ *                   Nombre:
+ *                     type: string
+ *                   EntidadNegocioId:
+ *                     type: integer
+ *       404:
+ *         description: No hay contactos disponibles
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post('/contacto/nombre',
+schemas.buscarContactoNombreSchema,
+middleware.validateSchema,
+methods.buscarContactosPorNombreYEntidad);
+
 export default router;

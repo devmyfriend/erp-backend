@@ -102,7 +102,7 @@ const agregarDetalleContacto = async (req, res) => {
 				});
 			}),
 		);
-		// Asignar correos
+	
 		await Promise.all(
 			correosCreados.map(async correo => {
 				await ContactoCorreo.create({

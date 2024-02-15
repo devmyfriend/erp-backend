@@ -350,3 +350,17 @@ export const editarEmpresaEmailsSchema = [
 		.isInt()
 		.withMessage('El campo ActualizadoPor debe ser un número entero'),
 ];
+
+export const buscarContactoNombreSchema = [
+	body('Nombre')
+		.notEmpty()
+		.withMessage('El campo Nombre no puede estar vacío')
+		.isString()
+		.withMessage('El campo Nombre debe ser una cadena de texto'),
+	body('EntidadNegocioId')
+		.notEmpty()
+		.withMessage('El campo EntidadNegocioId no puede estar vacío')
+		.isInt()
+		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+];
+
