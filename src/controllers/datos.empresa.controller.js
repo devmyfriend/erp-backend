@@ -521,22 +521,31 @@ const editarEmpresaTelefono = async (req, res) => {
     }
 };
 
-export const desactivarEmpresaTelefono = async (req, res) => {
+const desactivarEmpresaTelefono = async (req, res) => {
 	try {
 
-		const validarTelefono = await Telefono.findOne({
+		const empresa = await EntidadNegocio.findOne({
+			where: {
+				EntidadNegocioId: req.body.EntidadNegocioId,
+				Borrado: 0,
+			}
+		})
+
+		const telefono = await Telefono.findOne({
 			where: {
 				TelefonoId: req.body.TelefonoId,
 				Borrado: 0,
 			},
 		});
 
-		if (!validarTelefono) {
+		if (!empresa || !telefono) {
 			return res.status(404).json({
 				status: 404,
-				error: 'El telefono no existe',
+				error: empresa
+					? 'El telefono no existe'
+					: 'La empresa no existe',
 			});
-		}
+		};
 	
 
 		const empresaTelefono = await EmpresaTelefono.findOne({
@@ -567,7 +576,7 @@ export const desactivarEmpresaTelefono = async (req, res) => {
 
 		return res.status(200).json({
 			message:
-				'Se ha eliminado el telefono: ' + empresaTelefono.EntidadNegocioId,
+				'Se ha eliminado el telefono: ' + empresaTelefono.TelefonoId,
 		});
 	} catch (error) {
 		console.log(error);
