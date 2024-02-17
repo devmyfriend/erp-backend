@@ -1,5 +1,6 @@
 import { paymentMethods } from '../models/sat.payment.methods.model.js';
 import { paymentType } from '../models/sat.payment.type.model.js';
+import { Op } from 'sequelize';	
 
 const createPaymentMethods = async (req, res) => {
 	const paymentBody = req.body;
@@ -186,11 +187,34 @@ const deletePaymentType = async (req, res) => {
 	}
 };
 
+const searchPaymentTypeByDescription = async (req, res) => {
+	const description = req.params.Descripcion;
+
+	try {
+		const payment = await paymentMethods.findAll({
+			where: {
+				Descripcion: {
+					[Op.like]: `%${description}%`,
+				},
+				Activo: 1,
+			},
+		});
+
+		return res.status(200).json({ data: payment });
+	} catch (error) {
+		console.log('Error al buscar el tipo de pago', error);
+		return res
+			.status(500)
+			.json({ message: 'Error al buscar el tipo de pago' });
+	}
+}
+
 export const methods = {
 	createPaymentMethods,
 	updatePaymentMethods,
 	deletePaymentMethods,
 	createPaymentType,
 	updatedPaymentType,
-	deletePaymentType
+	deletePaymentType,
+	searchPaymentTypeByDescription,
 };
