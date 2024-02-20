@@ -64,7 +64,6 @@ const updatePaymentMethods = async (req, res) => {
 };
 
 const deletePaymentMethods = async (req, res) => {
-	console.log(req.params);
 	const id = req.params.ClaveFormaPago;
 
 	try {

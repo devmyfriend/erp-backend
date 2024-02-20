@@ -191,14 +191,15 @@ const deleteTypeCoin = async (req, res) => {
 	const { ClaveMoneda } = req.body;
 
 	try {
-		const [updated] = await Coin.update(
-			{ Activo: false },
-			{ where: { ClaveMoneda } },
-		);
+		const coin = await Coin.findOne({
+			where: { ClaveMoneda, Activo: 1 },
+		});
 
-		if (!updated) {
+		if (!coin) {
 			return res.status(404).json({ error: 'Moneda no encontrada' });
 		}
+
+		await Coin.update({ Activo: false }, { where: { ClaveMoneda } });
 
 		return res.status(200).json({ success: true, message: 'Moneda borrada' });
 	} catch (error) {
@@ -258,7 +259,7 @@ const deleteRegimenFiscal = async (req, res) => {
 
 	try {
 		const regimen = await regimenFiscal.findOne({
-			where: { ClaveRegimenFiscal, Activo: 0 },
+			where: { ClaveRegimenFiscal, Activo: 1 },
 		});
 
 		if (!regimen) {
