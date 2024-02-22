@@ -5,7 +5,7 @@ export const ProductsServices = Connection.define(
     'ProductsServices',
     {
         ClaveProductoServicio: {
-            type: DataTypes.STRING,
+            type: DataTypes.NUMBER,
             primaryKey: true
         },
         Descripcion: {

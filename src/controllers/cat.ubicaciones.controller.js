@@ -10,6 +10,7 @@ const findAllUbications = async (req, res) => {
 		const { count, rows } = await Ubicaciones.findAndCountAll({
 			limit,
 			offset,
+			attributes: ['UbicacionId', 'Nombre'],
 		});
 
 		const totalPages = Math.ceil(count / limit);
@@ -39,6 +40,7 @@ const findUbicationByName = async (req, res) => {
                 },
                 Borrado: 0,
             },
+		attributes: ['UbicacionId', 'Nombre'],
 			paginate: false,
         });
 
