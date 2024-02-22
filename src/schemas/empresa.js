@@ -107,7 +107,10 @@ export const crearEmpresaSchema = [
 		.withMessage('El campo Pais no puede estar vacío')
 		.isString()
 		.withMessage('El campo Pais debe ser una cadena de texto'),
-	body('entidad.*.TaxId').optional().isString(),
+	body('entidad.*.TaxId')
+		.optional()
+		.isString()
+		.withMessage('El campo TaxId debe ser una cadena de texto'),
 	body('entidad.*.ClaveRegimenFiscal')
 		.notEmpty()
 		.withMessage('El campo ClaveRegimenFiscal no puede estar vacío')
@@ -261,7 +264,9 @@ export const crearEmpresaTelefonoSchema = [
 		.notEmpty()
 		.withMessage('El campo NumeroTelefonico no puede estar vacío')
 		.isString()
-		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto'),
+		.withMessage('El campo NumeroTelefonico debe ser una cadena de texto')
+		.isLength({ min: 10, max: 10 })
+		.withMessage('El campo NumeroTelefonico debe tener 13 caracteres'),
 	body('CreadoPor')
 		.notEmpty()
 		.withMessage('El campo CreadoPor no puede estar vacío')
@@ -363,4 +368,3 @@ export const buscarContactoNombreSchema = [
 		.isInt()
 		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
 ];
-

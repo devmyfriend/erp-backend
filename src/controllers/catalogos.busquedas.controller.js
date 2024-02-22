@@ -169,6 +169,13 @@ const updateTypeCoin = async (req, res) => {
 	const { ClaveMoneda, Descripcion } = req.body;
 
 	try {
+		const validateCoin = await Coin.findOne({
+			where: { ClaveMoneda, Activo: 1 },
+		});
+
+		if (!validateCoin)
+			return res.status(404).json({ error: 'Moneda no encontrada' });
+
 		const [updated] = await Coin.update(
 			{ Descripcion },
 			{ where: { ClaveMoneda } },
@@ -235,6 +242,16 @@ const updateRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 
 	try {
+
+		const validateRegimenFiscal = await regimenFiscal.findOne({
+			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
+		});
+
+		if (!validateRegimenFiscal) {
+			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
+		}
+
+
 		const [updated] = await regimenFiscal.update(satFKBody, {
 			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
 		});
@@ -284,6 +301,18 @@ const createUsoCFDI = async (req, res) => {
 	const cfdiBody = req.body;
 
 	try {
+
+		const validateCFDI = await UsoCFDI.findOne({
+			where: { ClaveUsoCFDI: cfdiBody.ClaveUsoCFDI },
+		});
+
+		if (validateCFDI) {
+			return res
+				.status(409)
+				.json({ error: 'La clave del CFDI ya esta en uso ' });
+		}
+		
+
 		await UsoCFDI.create(cfdiBody);
 
 		return res.status(200).json({ success: true, message: 'CFDI creado' });
@@ -428,6 +457,17 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
+		const validateProductServices = await ProductsServices.findOne({
+			where: {
+				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				Activo: 1,
+			},
+		});
+
+		if (!validateProductServices) {
+			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
+		}
+
 		const [updated] = await ProductsServices.update(productServicesBody, {
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,

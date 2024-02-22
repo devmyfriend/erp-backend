@@ -252,6 +252,8 @@ router.get(
  *                 type: string
  *               logo:
  *                 type: string
+ *               TaxId:
+ *                 type: string
  *         CreadoPor:
  *           type: integer
  *           default: 1
