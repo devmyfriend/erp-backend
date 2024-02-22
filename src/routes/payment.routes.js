@@ -154,7 +154,7 @@ router.post(
  * /api/v1/pagos/metodo/forma/{Descripcion}:
  *   get:
  *     tags:
- *       - PaymentType
+ *       - Metodos de pago
  *     summary: Buscar tipo de pago por descripción
  *     parameters:
  *       - in: path
