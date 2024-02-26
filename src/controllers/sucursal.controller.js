@@ -20,7 +20,7 @@ const obtenerSucursales = async (req, res) => {
 
 			return res.status(404).json({
 				status: 404,
-				message: 'La empresa no tiene sucursales',
+				error: 'La empresa no tiene sucursales',
 			});
 		}
 
@@ -41,7 +41,7 @@ const crearSucursal = async (req, res) => {
 	if(!empresa){
 		return res.status(404).json({
 			status: 404,
-			message: 'No se ha encontrado la empresa',
+			error: 'No se ha encontrado la empresa',
 		});
 	}
 
@@ -181,10 +181,9 @@ export const desactivarSucursal = async (req, res) => {
 		});
 
 		if (!sucursal) {
-			console.log('hola');
 			return res
 				.status(404)
-				.json({ starus: 404, message: 'La sucursal no existe' });
+				.json({ starus: 404, error: 'La sucursal no existe' });
 		}
 
 		sucursal.Borrado = true;

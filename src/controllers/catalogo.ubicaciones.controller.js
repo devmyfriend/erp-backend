@@ -24,7 +24,7 @@ const findAllUbications = async (req, res) => {
 			items: rows,
 		});
 	} catch (error) {
-		console.error('Error al obtener las ubicaciones', error.message);
+		console.error('Error al obtener las ubicaciones', error);
 		return res.status(500).json({ error: 'Error al obtener las ubicaciones' });
 	}
 };
@@ -97,7 +97,7 @@ const updateUbication = async (req, res) => {
 		});
 
 		if (!validateUbicacion) {
-			return res.status(400).json({ message: 'La ubicación no existe' });
+			return res.status(400).json({ error: 'La ubicación no existe' });
 		}
 
 		const validateUbicacionName = await Ubicaciones.findOne({
@@ -110,7 +110,7 @@ const updateUbication = async (req, res) => {
 		if (validateUbicacionName) {
 			return res
 				.status(400)
-				.json({ message: 'El nombre de la ubicacion ya está en uso' });
+				.json({ error: 'El nombre de la ubicacion ya está en uso' });
 		}
 		
 		ubicacionBody.ActualizadoEn = new Date()
@@ -141,7 +141,7 @@ const deleteUbication = async (req, res) => {
 		});
 
 		if (!ubicacion) {
-			return res.status(400).json({ message: 'La ubicación no existe' });
+			return res.status(400).json({ error: 'La ubicación no existe' });
 		}
 
 		ubicacion.Borrado = 1;
@@ -151,7 +151,7 @@ const deleteUbication = async (req, res) => {
 
 		return res
 			.status(200)
-			.json({ message: 'Ubicación eliminada', UbicacionId: UbicacionId });
+			.json({ error: 'Ubicación eliminada', UbicacionId: UbicacionId });
 	} catch (error) {
 		console.error('Error al eliminar la ubicación', error.message);
 		return res.status(500).json({ error: 'Error al eliminar la ubicación' });

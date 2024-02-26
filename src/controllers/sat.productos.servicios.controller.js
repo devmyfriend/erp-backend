@@ -8,7 +8,7 @@ const findProductServicesByCode = async (req, res) => {
 			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos isponibles' });
+			return res.status(404).json({ error: 'No hay datos isponibles' });
 		}
 
 		return res.status(200).json({ response: data });
@@ -26,7 +26,7 @@ const findProductServicesByDescription = async (req, res) => {
 			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 
 		return res.status(200).json({ response: data });
@@ -49,7 +49,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 			Activo: 1,
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 		return res.status(200).json({ response: data });
 	} catch (error) {

@@ -79,7 +79,7 @@ const createUnitKey = async (req, res) => {
 		});
 
 		if (validateUnitKey) {
-			return res.status(409).json({ message: 'La clave de unidad ya existe' });
+			return res.status(409).json({ error: 'La clave de unidad ya existe' });
 		}
 
 		const unitKeyAdd = await UnitKey.create(unitKeyBody);
@@ -104,7 +104,7 @@ const updateUnitKey = async (req, res) => {
 		});
 
 		if (!validateUnitKey) {
-			return res.status(404).json({ message: 'La clave de unidad no existe' });
+			return res.status(404).json({ error: 'La clave de unidad no existe' });
 		}
 
 		await UnitKey.update(unitKeyBody, {

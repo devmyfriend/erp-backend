@@ -12,7 +12,7 @@ const getTypeOfReceipt = async (req, res) => {
         if (validateTypeOfReceipt.length < 1) {
             return res.status(404).json({
                 status: 404,
-                message: 'No hay tipos de comprobante',
+                error: 'No hay tipos de comprobante',
             });
         }
 

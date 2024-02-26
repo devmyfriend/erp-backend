@@ -555,7 +555,7 @@ const findUnitKeysByKey = async (req, res) => {
 		});
 
 		if (data.length < 1) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 
 		return res.status(200).json(data);
@@ -589,7 +589,7 @@ const createUnitKey = async (req, res) => {
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad creada' });
 	} catch (error) {
-		console.error('Error al crear la clave de unidad', error.message);
+		console.error('Error al crear la clave de unidad', error);
 		return res.status(500).json({ error: 'Error al crear la clave de unidad' });
 	}
 };
@@ -637,7 +637,7 @@ const deleteUnitKey = async (req, res) => {
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad borrada' });
 	} catch (error) {
-		console.error('Error al borrar la clave de unidad', error.message);
+		console.error('Error al borrar la clave de unidad', error);
 		return res
 			.status(500)
 			.json({ error: 'Error al borrar la clave de unidad' });

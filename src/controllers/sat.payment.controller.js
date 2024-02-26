@@ -16,7 +16,7 @@ const createPaymentMethods = async (req, res) => {
 		if (validatePaymenthMethod) {
 			return res
 				.status(400)
-				.json({ message: 'Ya existe un metodo de pago con esa clave' });
+				.json({ error: 'Ya existe un metodo de pago con esa clave' });
 		}
 
 		await FormaDePago.create(paymentBody);
@@ -26,7 +26,7 @@ const createPaymentMethods = async (req, res) => {
 		console.log('Error al crear el metodo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al crear el metodo de pago' });
+			.json({ error: 'Error al crear el metodo de pago' });
 	}
 };
 
@@ -44,7 +44,7 @@ const updatePaymentMethods = async (req, res) => {
 		if (!payment) {
 			return res
 				.status(404)
-				.json({ message: 'No se encontro el metodo de pago' });
+				.json({ error: 'No se encontro el metodo de pago' });
 		}
 
 		const updatedPayment = await payment.update(paymentBody);
@@ -59,7 +59,7 @@ const updatePaymentMethods = async (req, res) => {
 		console.log('Error al actualizar el metodo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al actualizar el metodo de pago' });
+			.json({ error: 'Error al actualizar el metodo de pago' });
 	}
 };
 
@@ -77,7 +77,7 @@ const deletePaymentMethods = async (req, res) => {
 		if (!payment) {
 			return res
 				.status(404)
-				.json({ message: 'No se encontro el metodo de pago' });
+				.json({ error: 'No se encontro el metodo de pago' });
 		}
 
 		payment.Activo = 0;
@@ -90,7 +90,7 @@ const deletePaymentMethods = async (req, res) => {
 		console.log('Error al eliminar el metodo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al eliminar el metodo de pago' });
+			.json({ error: 'Error al eliminar el metodo de pago' });
 	}
 };
 
@@ -108,7 +108,7 @@ const createPaymentType = async (req, res) => {
 		if (validatePaymentType) {
 			return res
 				.status(400)
-				.json({ message: 'Ya existe un tipo de pago con esa clave' });
+				.json({ error: 'Ya existe un tipo de pago con esa clave' });
 		}
 
 		await MetodoDePago.create(paymentTypeBody);
@@ -118,7 +118,7 @@ const createPaymentType = async (req, res) => {
 		console.log('Error al crear el tipo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al crear el tipo de pago' });
+			.json({ error: 'Error al crear el tipo de pago' });
 	}
 }
 
@@ -136,7 +136,7 @@ const updatedPaymentType = async (req, res) => {
 		if (!payment) {
 			return res
 				.status(404)
-				.json({ message: 'No se encontro el tipo de pago' });
+				.json({ error: 'No se encontro el tipo de pago' });
 		}
 
 		const updatedPayment = await payment.update(paymentBody);
@@ -151,7 +151,7 @@ const updatedPaymentType = async (req, res) => {
 		console.log('Error al actualizar el tipo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al actualizar el tipo de pago' });
+			.json({ error: 'Error al actualizar el tipo de pago' });
 	}
 }
 
@@ -169,7 +169,7 @@ const deletePaymentType = async (req, res) => {
 		if (!payment) {
 			return res
 				.status(404)
-				.json({ message: 'No se encontro el tipo de pago' });
+				.json({ error: 'No se encontro el tipo de pago' });
 		}
 
 		payment.Activo = 0;
@@ -182,7 +182,7 @@ const deletePaymentType = async (req, res) => {
 		console.log('Error al eliminar el tipo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al eliminar el tipo de pago' });
+			.json({ error: 'Error al eliminar el tipo de pago' });
 	}
 };
 
@@ -204,7 +204,7 @@ const searchPaymentTypeByDescription = async (req, res) => {
 		console.log('Error al buscar el tipo de pago', error);
 		return res
 			.status(500)
-			.json({ message: 'Error al buscar el tipo de pago' });
+			.json({ error: 'Error al buscar el tipo de pago' });
 	}
 }
 
