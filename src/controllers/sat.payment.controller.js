@@ -1,12 +1,12 @@
-import { paymentMethods } from '../models/sat.payment.methods.model.js';
-import { paymentType } from '../models/sat.payment.type.model.js';
+import { FormaDePago } from '../models/sat.forma.de.pago.model.js';
+import { MetodoDePago } from '../models/sat.metodo.de.pago.model.js';
 import { Op } from 'sequelize';	
 
 const createPaymentMethods = async (req, res) => {
 	const paymentBody = req.body;
 
 	try {
-		const validatePaymenthMethod = await paymentMethods.findOne({
+		const validatePaymenthMethod = await FormaDePago.findOne({
 			where: {
 				ClaveFormaPago: paymentBody.ClaveFormaPago,
 				Activo: 1,
@@ -19,7 +19,7 @@ const createPaymentMethods = async (req, res) => {
 				.json({ message: 'Ya existe un metodo de pago con esa clave' });
 		}
 
-		await paymentMethods.create(paymentBody);
+		await FormaDePago.create(paymentBody);
 
 		return res.status(200).json({ message: 'Se ha creado el metodo de pago' });
 	} catch (error) {
@@ -34,7 +34,7 @@ const updatePaymentMethods = async (req, res) => {
 	const paymentBody = req.body;
 
 	try {
-		const payment = await paymentMethods.findOne({
+		const payment = await FormaDePago.findOne({
 			where: {
 				ClaveFormaPago: paymentBody.ClaveFormaPago,
 				Activo: 1,
@@ -67,7 +67,7 @@ const deletePaymentMethods = async (req, res) => {
 	const id = req.params.ClaveFormaPago;
 
 	try {
-		const payment = await paymentMethods.findOne({
+		const payment = await FormaDePago.findOne({
 			where: {
 				ClaveFormaPago: id,
 				Activo: 1,
@@ -98,7 +98,7 @@ const createPaymentType = async (req, res) => {
 	const paymentTypeBody = req.body;
 
 	try { 
-		const validatePaymentType = await paymentType.findOne({
+		const validatePaymentType = await MetodoDePago.findOne({
 			where: {
 				ClaveMetodoPago: paymentTypeBody.ClaveMetodoPago,
 				Activo: 1,
@@ -111,7 +111,7 @@ const createPaymentType = async (req, res) => {
 				.json({ message: 'Ya existe un tipo de pago con esa clave' });
 		}
 
-		await paymentType.create(paymentTypeBody);
+		await MetodoDePago.create(paymentTypeBody);
 
 		return res.status(200).json({ message: 'Se ha creado el tipo de pago' });
 	} catch (error) {
@@ -126,7 +126,7 @@ const updatedPaymentType = async (req, res) => {
 	const paymentBody =  req.body
 
 	try{
-		const payment = await paymentType.findOne({
+		const payment = await MetodoDePago.findOne({
 			where: {
 				ClaveMetodoPago: paymentBody.ClaveMetodoPago,
 				Activo: 1,
@@ -159,7 +159,7 @@ const deletePaymentType = async (req, res) => {
 	const id = req.params.ClaveMetodoPago;
 
 	try {
-		const payment = await paymentType.findOne({
+		const payment = await MetodoDePago.findOne({
 			where: {
 				ClaveMetodoPago: id,
 				Activo: 1,
@@ -190,7 +190,7 @@ const searchPaymentTypeByDescription = async (req, res) => {
 	const description = req.params.Descripcion;
 
 	try {
-		const payment = await paymentMethods.findAll({
+		const payment = await FormaDePago.findAll({
 			where: {
 				Descripcion: {
 					[Op.like]: `%${description}%`,

@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const TaxModel = Connection.define(
+export const Impuesto = Connection.define(
     'Impuesto',
     {
         ClaveImpuesto:

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from '../controllers/cat.ubicaciones.controller.js';
+import { methods } from '../controllers/catalogo.ubicaciones.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/ubicaciones.js';
 import { param } from 'express-validator';

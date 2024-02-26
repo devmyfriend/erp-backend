@@ -2,10 +2,10 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Op } from 'sequelize';
 import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
-import { Coin } from '../models/sat.type.coin.js';
+import { Moneda } from '../models/sat.moneda.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
-import { ProductsServices } from '../models/sat.product.services.model.js';
-import { UnitKey } from '../models/sat.clave.unidad.model.js';
+import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
+import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -115,7 +115,7 @@ const paymentMethods = async (req, res) => {
 
 const getTypeCoin = async (req, res) => {
 	try {
-		const data = await Coin.findAll({
+		const data = await Moneda.findAll({
 			where: {
 				Activo: 1,
 			},
@@ -130,7 +130,7 @@ const getTypeCoin = async (req, res) => {
 const findTypeCoin = async (req, res) => {
 	const name = req.params.id;
 	try {
-		const data = await Coin.findAll({
+		const data = await Moneda.findAll({
 			where: {
 				Descripcion: { [Op.like]: `%${name}%` },
 			},
@@ -146,7 +146,7 @@ const createTypeCoin = async (req, res) => {
 	const coinBody = req.body;
 
 	try {
-		const validateCoin = await Coin.findOne({
+		const validateCoin = await Moneda.findOne({
 			where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
 		});
 
@@ -156,7 +156,7 @@ const createTypeCoin = async (req, res) => {
 				.json({ error: 'La clave de la moneda ya esta en uso ' });
 		}
 
-		await Coin.create(coinBody);
+		await Moneda.create(coinBody);
 
 		return res.status(200).json({ success: true, message: 'Moneda creada' });
 	} catch (error) {
@@ -169,14 +169,14 @@ const updateTypeCoin = async (req, res) => {
 	const { ClaveMoneda, Descripcion } = req.body;
 
 	try {
-		const validateCoin = await Coin.findOne({
+		const validateCoin = await Moneda.findOne({
 			where: { ClaveMoneda, Activo: 1 },
 		});
 
 		if (!validateCoin)
 			return res.status(404).json({ error: 'Moneda no encontrada' });
 
-		const [updated] = await Coin.update(
+		const [updated] = await Moneda.update(
 			{ Descripcion },
 			{ where: { ClaveMoneda } },
 		);
@@ -198,7 +198,7 @@ const deleteTypeCoin = async (req, res) => {
 	const { ClaveMoneda } = req.body;
 
 	try {
-		const coin = await Coin.findOne({
+		const coin = await Moneda.findOne({
 			where: { ClaveMoneda, Activo: 1 },
 		});
 
@@ -206,7 +206,7 @@ const deleteTypeCoin = async (req, res) => {
 			return res.status(404).json({ error: 'Moneda no encontrada' });
 		}
 
-		await Coin.update({ Activo: false }, { where: { ClaveMoneda } });
+		await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
 
 		return res.status(200).json({ success: true, message: 'Moneda borrada' });
 	} catch (error) {
@@ -378,7 +378,7 @@ const findCFDI = async (req, res) => {
 const findProductServicesByCode = async (req, res) => {
 	const code = req.params.code;
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { ClaveProductsServices: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
@@ -396,7 +396,7 @@ const findProductServicesByDescription = async (req, res) => {
 	const descripcion = req.params.descripcion;
 
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
@@ -413,7 +413,7 @@ const findProductServicesByDescription = async (req, res) => {
 const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { PalabrasSimilares: { [Op.like]: palabra }, Activo: 1 },
 		});
 		if (!data) {
@@ -429,7 +429,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 const createProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductsServices.findOne({
+		const validateProductServices = await ProductosServicios.findOne({
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -442,7 +442,7 @@ const createProductServices = async (req, res) => {
 				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
 		}
 
-		await ProductsServices.create(productServicesBody);
+		await ProductosServicios.create(productServicesBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio creado' });
@@ -457,7 +457,7 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductsServices.findOne({
+		const validateProductServices = await ProductosServicios.findOne({
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -468,7 +468,7 @@ const updateProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		const [updated] = await ProductsServices.update(productServicesBody, {
+		const [updated] = await ProductosServicios.update(productServicesBody, {
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -494,7 +494,7 @@ const deleteProductServices = async (req, res) => {
 	const { ClaveProductsServices } = req.body;
 
 	try {
-		const product = await ProductsServices.findOne({
+		const product = await ProductosServicios.findOne({
 			where: { ClaveProductsServices, Activo: 1 },
 		});
 
@@ -502,7 +502,7 @@ const deleteProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductsServices.update(
+		await ProductosServicios.update(
 			{ Activo: false },
 			{ where: { ClaveProductsServices } },
 		);
@@ -524,7 +524,7 @@ const findAllUnitKeys = async (req, res) => {
 	const offset = (page - 1) * limit;
 
 	try {
-		const { count, rows } = await UnitKey.findAndCountAll({
+		const { count, rows } = await ClaveUnidad.findAndCountAll({
 			limit,
 			offset,
 		});
@@ -548,7 +548,7 @@ const findAllUnitKeys = async (req, res) => {
 const findUnitKeysByKey = async (req, res) => {
 	const { key } = req.params;
 	try {
-		const data = await UnitKey.findAll({
+		const data = await ClaveUnidad.findAll({
 			where: {
 				ClaveUnidadSat: key,
 			},
@@ -571,7 +571,7 @@ const findUnitKeysByKey = async (req, res) => {
 const createUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const validateUnitKey = await UnitKey.findOne({
+		const validateUnitKey = await ClaveUnidad.findOne({
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
 				Activo: 1,
@@ -584,7 +584,7 @@ const createUnitKey = async (req, res) => {
 				.json({ error: 'La clave de unidad ya esta en uso ' });
 		}
 
-		await UnitKey.create(unitKeyBody);
+		await ClaveUnidad.create(unitKeyBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad creada' });
@@ -597,7 +597,7 @@ const createUnitKey = async (req, res) => {
 const updateUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const [updated] = await UnitKey.update(unitKeyBody, {
+		const [updated] = await ClaveUnidad.update(unitKeyBody, {
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
 				Activo: 1,
@@ -623,7 +623,7 @@ const deleteUnitKey = async (req, res) => {
 	const { ClaveUnidadSat } = req.body;
 
 	try {
-		const unitKey = await UnitKey.findOne({
+		const unitKey = await ClaveUnidad.findOne({
 			where: { ClaveUnidadSat, Activo: 1 },
 		});
 
@@ -631,7 +631,7 @@ const deleteUnitKey = async (req, res) => {
 			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
 		}
 
-		await UnitKey.update({ Activo: false }, { where: { ClaveUnidadSat } });
+		await ClaveUnidad.update({ Activo: false }, { where: { ClaveUnidadSat } });
 
 		return res
 			.status(200)

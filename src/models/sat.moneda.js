@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const Coin = Connection.define(
+export const Moneda = Connection.define(
 	'Moneda',
 	{
 		ClaveMoneda : {

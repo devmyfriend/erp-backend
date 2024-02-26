@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from '../controllers/sat.type.of.receipt.controller.js';
+import { methods } from '../controllers/sat.tipo.de.comprobante.controller.js';
 import * as schemas from '../schemas/type.of.receipt.js';
 import * as middleware from '../middlewares/express-validator.js';
 import { param } from 'express-validator';

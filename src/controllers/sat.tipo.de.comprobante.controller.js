@@ -1,8 +1,8 @@
-import { typeOfReceipt } from '../models/sat.type.of.receipt.model.js';
+import { TipoDeComprobante } from '../models/sat.tipo.de.comprobante.model.js';
 
 const getTypeOfReceipt = async (req, res) => {
     try {
-        const validateTypeOfReceipt = await typeOfReceipt.findAll({
+        const validateTypeOfReceipt = await TipoDeComprobante.findAll({
             where: {
                 Borrado: 0,
             },
@@ -30,7 +30,7 @@ const createTypeOfReceipt = async (req, res) => {
 	const typeOfReceiptBody = req.body;
 
 	try {
-		const validateTypeOfReceipt = await typeOfReceipt.findOne({
+		const validateTypeOfReceipt = await TipoDeComprobante.findOne({
 			where: {
 				ClaveTipoDeComprobante: typeOfReceiptBody.ClaveTipoDeComprobante,
 				Borrado: 0,
@@ -44,7 +44,7 @@ const createTypeOfReceipt = async (req, res) => {
 			});
 		}
 
-		await typeOfReceipt.create(typeOfReceiptBody);
+		await TipoDeComprobante.create(typeOfReceiptBody);
 
 		return res.status(200).json({
 			message: 'Tipo de comprobante creado correctamente',
@@ -60,7 +60,7 @@ const updateTypeOfReceipt = async (req, res) => {
 	const typeOfReceiptBody = req.body;
 
 	try {
-		const validateTypeOfReceiptBody = await typeOfReceipt.findOne({
+		const validateTypeOfReceiptBody = await TipoDeComprobante.findOne({
 			where: {
 				ClaveTipoDeComprobante: typeOfReceiptBody.ClaveTipoDeComprobante,
 				Borrado: 0,
@@ -74,7 +74,7 @@ const updateTypeOfReceipt = async (req, res) => {
 			});
 		}
 
-		await typeOfReceipt.update(typeOfReceiptBody, {
+		await TipoDeComprobante.update(typeOfReceiptBody, {
 			where: {
 				ClaveTipoDeComprobante: typeOfReceiptBody.ClaveTipoDeComprobante,
 			},
@@ -95,7 +95,7 @@ const updateTypeOfReceipt = async (req, res) => {
 const deleteTypeOfReceipt = async (req, res) => {
 	const ClaveTipoDeComprobante = req.params.ClaveTipoDeComprobante;
 	try {
-		const validateTypeOfReceipt = await typeOfReceipt.findOne({
+		const validateTypeOfReceipt = await TipoDeComprobante.findOne({
 			where: { ClaveTipoDeComprobante: ClaveTipoDeComprobante, Borrado: 0 },
 		});
 

@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize'
 import { Connection } from '../database/mariadb.database.js'
 
-export const typeOfReceipt = Connection.define(
-    'TypeOfReceipt',
+export const TipoDeComprobante = Connection.define(
+    'TipoDeComprobante',
     {
         ClaveTipoDeComprobante: {
             type: DataTypes.STRING,
