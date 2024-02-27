@@ -2,10 +2,10 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Op } from 'sequelize';
 import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
-import { Coin } from '../models/sat.type.coin.js';
+import { Moneda } from '../models/sat.moneda.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
-import { ProductsServices } from '../models/sat.product.services.model.js';
-import { UnitKey }from '../models/sat.clave.unidad.model.js';
+import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
+import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -115,7 +115,11 @@ const paymentMethods = async (req, res) => {
 
 const getTypeCoin = async (req, res) => {
 	try {
-		const data = await Coin.findAll({ limit: 15 });
+		const data = await Moneda.findAll({
+			where: {
+				Activo: 1,
+			},
+		});
 		return res.status(200).json(data);
 	} catch (error) {
 		console.error('Error al obtener los datos de la moneda', error.message);
@@ -126,7 +130,7 @@ const getTypeCoin = async (req, res) => {
 const findTypeCoin = async (req, res) => {
 	const name = req.params.id;
 	try {
-		const data = await Coin.findAll({
+		const data = await Moneda.findAll({
 			where: {
 				Descripcion: { [Op.like]: `%${name}%` },
 			},
@@ -142,8 +146,7 @@ const createTypeCoin = async (req, res) => {
 	const coinBody = req.body;
 
 	try {
-
-		const validateCoin = await Coin.findOne({
+		const validateCoin = await Moneda.findOne({
 			where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
 		});
 
@@ -153,10 +156,9 @@ const createTypeCoin = async (req, res) => {
 				.json({ error: 'La clave de la moneda ya esta en uso ' });
 		}
 
-		await Coin.create(coinBody);
+		await Moneda.create(coinBody);
 
 		return res.status(200).json({ success: true, message: 'Moneda creada' });
-
 	} catch (error) {
 		console.error('Error al crear la moneda', error);
 		return res.status(500).json({ error: 'Error al crear la moneda' });
@@ -167,7 +169,14 @@ const updateTypeCoin = async (req, res) => {
 	const { ClaveMoneda, Descripcion } = req.body;
 
 	try {
-		const [updated] = await Coin.update(
+		const validateCoin = await Moneda.findOne({
+			where: { ClaveMoneda, Activo: 1 },
+		});
+
+		if (!validateCoin)
+			return res.status(404).json({ error: 'Moneda no encontrada' });
+
+		const [updated] = await Moneda.update(
 			{ Descripcion },
 			{ where: { ClaveMoneda } },
 		);
@@ -189,14 +198,15 @@ const deleteTypeCoin = async (req, res) => {
 	const { ClaveMoneda } = req.body;
 
 	try {
-		const [updated] = await Coin.update(
-			{ Activo: false },
-			{ where: { ClaveMoneda } },
-		);
+		const coin = await Moneda.findOne({
+			where: { ClaveMoneda, Activo: 1 },
+		});
 
-		if (!updated) {
+		if (!coin) {
 			return res.status(404).json({ error: 'Moneda no encontrada' });
 		}
+
+		await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
 
 		return res.status(200).json({ success: true, message: 'Moneda borrada' });
 	} catch (error) {
@@ -232,6 +242,16 @@ const updateRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 
 	try {
+
+		const validateRegimenFiscal = await regimenFiscal.findOne({
+			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
+		});
+
+		if (!validateRegimenFiscal) {
+			return res.status(404).json({ error: 'Regimen Fiscal no encontrado' });
+		}
+
+
 		const [updated] = await regimenFiscal.update(satFKBody, {
 			where: { ClaveRegimenFiscal: satFKBody.ClaveRegimenFiscal, Activo: 1 },
 		});
@@ -256,7 +276,7 @@ const deleteRegimenFiscal = async (req, res) => {
 
 	try {
 		const regimen = await regimenFiscal.findOne({
-			where: { ClaveRegimenFiscal, Activo: 0 },
+			where: { ClaveRegimenFiscal, Activo: 1 },
 		});
 
 		if (!regimen) {
@@ -281,6 +301,18 @@ const createUsoCFDI = async (req, res) => {
 	const cfdiBody = req.body;
 
 	try {
+
+		const validateCFDI = await UsoCFDI.findOne({
+			where: { ClaveUsoCFDI: cfdiBody.ClaveUsoCFDI },
+		});
+
+		if (validateCFDI) {
+			return res
+				.status(409)
+				.json({ error: 'La clave del CFDI ya esta en uso ' });
+		}
+		
+
 		await UsoCFDI.create(cfdiBody);
 
 		return res.status(200).json({ success: true, message: 'CFDI creado' });
@@ -344,9 +376,9 @@ const findCFDI = async (req, res) => {
 };
 
 const findProductServicesByCode = async (req, res) => {
-	const code  = req.params.code;
+	const code = req.params.code;
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { ClaveProductsServices: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
@@ -364,8 +396,8 @@ const findProductServicesByDescription = async (req, res) => {
 	const descripcion = req.params.descripcion;
 
 	try {
-		const data = await ProductsServices.findAll({
-			where: { Descripcion: { [Op.like]: `%${descripcion}%`  }, Activo: 1 },
+		const data = await ProductosServicios.findAll({
+			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
@@ -381,8 +413,8 @@ const findProductServicesByDescription = async (req, res) => {
 const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
-		const data = await ProductsServices.findAll({
-			where: { PalabrasSimilares: { [Op.like]: palabra  }, Activo: 1 },
+		const data = await ProductosServicios.findAll({
+			where: { PalabrasSimilares: { [Op.like]: palabra }, Activo: 1 },
 		});
 		if (!data) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
@@ -397,7 +429,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 const createProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductsServices.findOne({
+		const validateProductServices = await ProductosServicios.findOne({
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -410,7 +442,7 @@ const createProductServices = async (req, res) => {
 				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
 		}
 
-		await ProductsServices.create(productServicesBody);
+		await ProductosServicios.create(productServicesBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio creado' });
@@ -425,7 +457,18 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const [updated] = await ProductsServices.update(productServicesBody, {
+		const validateProductServices = await ProductosServicios.findOne({
+			where: {
+				ClaveProductsServices: productServicesBody.ClaveProductsServices,
+				Activo: 1,
+			},
+		});
+
+		if (!validateProductServices) {
+			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
+		}
+
+		const [updated] = await ProductosServicios.update(productServicesBody, {
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -451,7 +494,7 @@ const deleteProductServices = async (req, res) => {
 	const { ClaveProductsServices } = req.body;
 
 	try {
-		const product = await ProductsServices.findOne({
+		const product = await ProductosServicios.findOne({
 			where: { ClaveProductsServices, Activo: 1 },
 		});
 
@@ -459,7 +502,7 @@ const deleteProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductsServices.update(
+		await ProductosServicios.update(
 			{ Activo: false },
 			{ where: { ClaveProductsServices } },
 		);
@@ -476,60 +519,63 @@ const deleteProductServices = async (req, res) => {
 };
 
 const findAllUnitKeys = async (req, res) => {
-    const page = Number(req.params.page) || 1;
-    const limit = 10;
-    const offset = (page - 1) * limit;
+	const page = Number(req.params.page) || 1;
+	const limit = 10;
+	const offset = (page - 1) * limit;
 
-    try {
-        const { count, rows } = await UnitKey.findAndCountAll({
-            limit,
-            offset
-        });
+	try {
+		const { count, rows } = await ClaveUnidad.findAndCountAll({
+			limit,
+			offset,
+		});
 
-        const totalPages = Math.ceil(count / limit);
+		const totalPages = Math.ceil(count / limit);
 
-        return res.status(200).json({
-            totalPages,
-            currentPage: page,
-            totalItems: count,
-            items: rows
-        });
-    } catch (error) {
-        console.error('Error al obtener las claves de unidades', error.message);
-        return res
-            .status(500)
-            .json({ error: 'Error al obtener las claves de unidades' });
-    }
+		return res.status(200).json({
+			totalPages,
+			currentPage: page,
+			totalItems: count,
+			items: rows,
+		});
+	} catch (error) {
+		console.error('Error al obtener las claves de unidades', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al obtener las claves de unidades' });
+	}
 };
 
 const findUnitKeysByKey = async (req, res) => {
 	const { key } = req.params;
 	try {
-		const data = await UnitKey.findAll({
+		const data = await ClaveUnidad.findAll({
 			where: {
 				ClaveUnidadSat: key,
-			}
+			},
 		});
 
 		if (data.length < 1) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 
 		return res.status(200).json(data);
 	} catch (error) {
-		console.error('Error al obtener los datos de la clave de unidad', error.message);
+		console.error(
+			'Error al obtener los datos de la clave de unidad',
+			error.message,
+		);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
 	}
-}
+};
 
 const createUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const validateUnitKey = await UnitKey.findOne({
+		const validateUnitKey = await ClaveUnidad.findOne({
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
-				Activo: 1
-			}
+				Activo: 1,
+			},
 		});
 
 		if (validateUnitKey) {
@@ -538,27 +584,24 @@ const createUnitKey = async (req, res) => {
 				.json({ error: 'La clave de unidad ya esta en uso ' });
 		}
 
-		await UnitKey.create(unitKeyBody);
+		await ClaveUnidad.create(unitKeyBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad creada' });
+	} catch (error) {
+		console.error('Error al crear la clave de unidad', error);
+		return res.status(500).json({ error: 'Error al crear la clave de unidad' });
 	}
-	catch (error) {
-		console.error('Error al crear la clave de unidad', error.message);
-		return res
-			.status(500)
-			.json({ error: 'Error al crear la clave de unidad' });
-	}
-}
+};
 
 const updateUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const [updated] = await UnitKey.update(unitKeyBody, {
+		const [updated] = await ClaveUnidad.update(unitKeyBody, {
 			where: {
 				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
-				Activo: 1
-			}
+				Activo: 1,
+			},
 		});
 
 		if (!updated) {
@@ -568,45 +611,38 @@ const updateUnitKey = async (req, res) => {
 		return res
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad actualizada' });
-	}
-	catch (error) {
+	} catch (error) {
 		console.error('Error al actualizar la clave de unidad', error.message);
 		return res
 			.status(500)
 			.json({ error: 'Error al actualizar la clave de unidad' });
 	}
-}
+};
 
 const deleteUnitKey = async (req, res) => {
 	const { ClaveUnidadSat } = req.body;
 
 	try {
-		const unitKey = await
-			UnitKey.findOne({
-				where: { ClaveUnidadSat, Activo: 1 }
-			});
+		const unitKey = await ClaveUnidad.findOne({
+			where: { ClaveUnidadSat, Activo: 1 },
+		});
 
 		if (!unitKey) {
 			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
 		}
 
-		await UnitKey.update(
-			{ Activo: false },
-			{ where: { ClaveUnidadSat } }
-		);
+		await ClaveUnidad.update({ Activo: false }, { where: { ClaveUnidadSat } });
 
 		return res
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad borrada' });
-	}
-	catch (error) {
-		console.error('Error al borrar la clave de unidad', error.message);
+	} catch (error) {
+		console.error('Error al borrar la clave de unidad', error);
 		return res
 			.status(500)
 			.json({ error: 'Error al borrar la clave de unidad' });
 	}
-}
-
+};
 
 export const methods = {
 	getPostalCodes,
@@ -637,5 +673,5 @@ export const methods = {
 	findUnitKeysByKey,
 	createUnitKey,
 	updateUnitKey,
-	deleteUnitKey
+	deleteUnitKey,
 };

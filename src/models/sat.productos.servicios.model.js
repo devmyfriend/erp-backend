@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
 import { Connection } from "../database/mariadb.database.js";
 
-export const ProductsServices = Connection.define(
-    'ProductsServices',
+export const ProductosServicios = Connection.define(
+    'ProductosServicios',
     {
         ClaveProductoServicio: {
-            type: DataTypes.STRING,
+            type: DataTypes.NUMBER,
             primaryKey: true
         },
         Descripcion: {
@@ -19,11 +19,11 @@ export const ProductsServices = Connection.define(
         },
 },  {
             sequelize: Connection,
-            modelName: 'satProductServices',
+            modelName: 'ProductosServicios',
             tableName: 'SAT_ProductosServicios',       
             freezeTableName: true,
             timestamps: false
         }
 );
 
-export default ProductsServices;
+export default ProductosServicios;

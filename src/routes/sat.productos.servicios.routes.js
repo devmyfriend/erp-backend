@@ -1,5 +1,5 @@
 import { Router }  from 'express'
-import { methods } from '../controllers/sat.products.services.controller.js';
+import { methods } from '../controllers/sat.productos.servicios.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/products.services.js';
 import { param } from 'express-validator';

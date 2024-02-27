@@ -102,7 +102,7 @@ const agregarDetalleContacto = async (req, res) => {
 				});
 			}),
 		);
-		// Asignar correos
+	
 		await Promise.all(
 			correosCreados.map(async correo => {
 				await ContactoCorreo.create({
@@ -265,7 +265,7 @@ const desactivarCorreo = async (req, res) => {
 			.status(200)
 			.json({ message: 'Correo desactivado: ' + data.EmailId });
 	} catch (error) {
-		console.error('Error al desactivar el Correo:', error.message);
+		console.error('Error al desactivar el Correo:', error);
 		return res
 			.status(500)
 			.json({ success: false, error: 'Internal Server Error' });
@@ -289,7 +289,7 @@ const crearTelefono = async (req, res) => {
 		});
 		return res.status(200).json(telefonoCreado.toJSON());
 	} catch (error) {
-		console.error('Error al agregar el telefono:', error.message);
+		console.error('Error al agregar el telefono:', error);
 		return res
 			.status(500)
 			.json({ success: false, error: 'Internal Server Error' });

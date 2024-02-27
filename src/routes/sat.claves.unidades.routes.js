@@ -11,7 +11,7 @@ const router = Router();
  *   get:
  *     tags:
  *       - Claves Unidades
- *     summary: Obtiene todos los registros de la tabla SAT_UnidadesClave
+ *     summary: Obtiene todos los registros de la tabla SAT_ClavesUnidades
  *     parameters:
  *       - in: path
  *         name: page
@@ -21,7 +21,7 @@ const router = Router();
  *         description: Número de página
  *     responses:
  *       200:
- *         description: Lista de registros de SAT_UnidadesClave
+ *         description: Lista de registros de SAT_ClavesUnidades
  *         content:
  *           application/json:
  *             schema:
@@ -62,7 +62,7 @@ methods.findAllUnitKeys);
  *   get:
  *     tags:
  *       - Claves Unidades
- *     summary: Obtiene los registros de la tabla SAT_UnidadesClave por clave
+ *     summary: Obtiene los registros de la tabla SAT_ClavesUnidades por clave
  *     parameters:
  *       - in: path
  *         name: key
@@ -72,7 +72,7 @@ methods.findAllUnitKeys);
  *         description: La clave de la unidad
  *     responses:
  *       200:
- *         description: Lista de registros de SAT_UnidadesClave
+ *         description: Lista de registros de SAT_ClavesUnidades
  *         content:
  *           application/json:
  *             schema:
@@ -102,7 +102,7 @@ methods.findUnitKeysByKey);
  *   post:
  *     tags:
  *       - Claves Unidades
- *     summary: Crea un nuevo registro en la tabla SAT_UnidadesClave
+ *     summary: Crea un nuevo registro en la tabla SAT_ClavesUnidades
  *     requestBody:
  *       required: true
  *       content:
@@ -146,7 +146,7 @@ router.post(
  *   patch:
  *     tags:
  *       - Claves Unidades
- *     summary: Actualiza un registro en la tabla SAT_UnidadesClave
+ *     summary: Actualiza un registro en la tabla SAT_ClavesUnidades
  *     requestBody:
  *       required: true
  *       content:
@@ -193,7 +193,7 @@ methods.updateUnitKey);
  *   delete:
  *     tags:
  *       - Claves Unidades
- *     summary: Borra un registro en la tabla SAT_UnidadesClave
+ *     summary: Borra un registro en la tabla SAT_ClavesUnidades
  *     requestBody:
  *       required: true
  *       content:

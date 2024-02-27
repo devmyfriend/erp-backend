@@ -1,14 +1,14 @@
 import { Op, Sequelize } from 'sequelize';
-import { ProductsServices } from '../models/sat.product.services.model.js';
+import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
 
 const findProductServicesByCode = async (req, res) => {
 	const code = req.params.code;
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos isponibles' });
+			return res.status(404).json({ error: 'No hay datos isponibles' });
 		}
 
 		return res.status(200).json({ response: data });
@@ -22,11 +22,11 @@ const findProductServicesByDescription = async (req, res) => {
 	const descripcion = req.params.descripcion;
 
 	try {
-		const data = await ProductsServices.findAll({
+		const data = await ProductosServicios.findAll({
 			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 
 		return res.status(200).json({ response: data });
@@ -39,17 +39,17 @@ const findProductServicesByDescription = async (req, res) => {
 const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
-		const data = await ProductsServices.findAll({
-            where: Sequelize.where(
-                Sequelize.fn('lower', Sequelize.col('PalabrasSimilares')),
-                {
-                    [Op.like]: `%${palabra.toLowerCase()}%`,
-                }
-            ),
-            Activo: 1,
-        });
+		const data = await ProductosServicios.findAll({
+			where: Sequelize.where(
+				Sequelize.fn('lower', Sequelize.col('PalabrasSimilares')),
+				{
+					[Op.like]: `%${palabra.toLowerCase()}%`,
+				},
+			),
+			Activo: 1,
+		});
 		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+			return res.status(404).json({ error: 'No hay datos disponibles' });
 		}
 		return res.status(200).json({ response: data });
 	} catch (error) {
@@ -61,7 +61,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 const createProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductsServices.findOne({
+		const validateProductServices = await ProductosServicios.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
@@ -74,7 +74,7 @@ const createProductServices = async (req, res) => {
 				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
 		}
 
-		await ProductsServices.create(productServicesBody);
+		await ProductosServicios.create(productServicesBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio creado' });
@@ -89,7 +89,7 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductsServices.findOne({
+		const validateProductServices = await ProductosServicios.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
@@ -100,17 +100,17 @@ const updateProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductsServices.update(productServicesBody, {
+		await ProductosServicios.update(productServicesBody, {
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
-				Activo: 1,
 			},
 		});
+
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio actualizado' });
 	} catch (error) {
-		console.error('Error al actualizar el producto/servicio', error.message);
+		console.error('Error al actualizar el producto/servicio', error);
 		return res
 			.status(500)
 			.json({ error: 'Error al actualizar el producto/servicio' });
@@ -118,20 +118,20 @@ const updateProductServices = async (req, res) => {
 };
 
 const deleteProductServices = async (req, res) => {
-
 	try {
-		const product = await ProductsServices.findOne({
-			where: 
-			{ ClaveProductoServicio: req.body.ClaveProductoServicio,
-			 Activo: 1 },
+		const product = await ProductosServicios.findOne({
+			where: {
+				ClaveProductoServicio: req.body.ClaveProductoServicio,
+				Activo: 1,
+			},
 		});
 
 		if (!product) {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		product	.Activo = false;
-		await product.save()
+		product.Activo = false;
+		await product.save();
 
 		return res
 			.status(200)

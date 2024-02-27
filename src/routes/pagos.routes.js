@@ -151,6 +151,50 @@ router.post(
 
 /**
  * @swagger
+ * /api/v1/pagos/metodo/forma/{Descripcion}:
+ *   get:
+ *     tags:
+ *       - Metodo de pago
+ *     summary: Buscar tipo de pago por descripción
+ *     parameters:
+ *       - in: path
+ *         name: Descripcion
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Descripción del tipo de pago
+ *     responses:
+ *       200:
+ *         description: Tipo de pago obtenido correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     properties:
+ *                       Descripcion:
+ *                         type: string
+ *                       Activo:
+ *                         type: integer
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get(
+	'/metodo/forma/:Descripcion',
+	param('Descripcion')
+		.notEmpty()
+		.withMessage('La descripcion no puede estar vacia')
+		.isString()
+		.withMessage('El campo descripción tiene que ser una cadena de texto'),
+	methods.searchPaymentTypeByDescription,
+);
+
+/**
+ * @swagger
  * /api/v1/pagos/metodo/pago:
  *   patch:
  *     tags:

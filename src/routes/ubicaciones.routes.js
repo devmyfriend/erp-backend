@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from '../controllers/cat.ubicaciones.controller.js';
+import { methods } from '../controllers/catalogo.ubicaciones.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/ubicaciones.js';
 import { param } from 'express-validator';
@@ -40,9 +40,15 @@ const router = Router();
  *       500:
  *         description: Error al obtener las ubicaciones
  */
-router.get('/:page',
-param('page').notEmpty().withMessage('El assda').isInt().withMessage('La página tiene que ser un número entero'),
-methods.findAllUbications);
+router.get(
+	'/:page',
+	param('page')
+		.notEmpty()
+		.withMessage('El assda')
+		.isInt()
+		.withMessage('La página tiene que ser un número entero'),
+	methods.findAllUbications,
+);
 
 /**
  * @swagger
@@ -64,15 +70,20 @@ methods.findAllUbications);
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Ubicacion'
- *       400:
- *         description: La ubicación no existe
- *       500:
- *         description: Error al obtener la ubicación
+ *               type: object
+ *               properties:
+ *                 UbicacionId:
+ *                   type: integer
+ *                 Nombre:
+ *                   type: string
  */
-router.get('/:Nombre',
-param('Nombre').isString().withMessage('El nombre de la ubicación tiene que ser una cadena de texto'),
- methods.findUbicationByName);
+router.get(
+	'/:Nombre',
+	param('Nombre')
+		.isString()
+		.withMessage('El nombre de la ubicación tiene que ser una cadena de texto'),
+	methods.findUbicationByName,
+);
 
 /**
  * @swagger
