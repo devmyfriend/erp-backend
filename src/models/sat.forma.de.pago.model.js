@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
-export const paymentMethods = Connection.define(
-    'PaymentMethods',
+export const FormaDePago = Connection.define(
+    'FormaDePago',
     {
         ClaveFormaPago: {
             type: DataTypes.STRING,

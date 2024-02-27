@@ -9,11 +9,12 @@ import catRoutes from './src/routes/catalogos.busquedas.routes.js';
 import contactoSucursalRoutes from './src/routes/contacto.sucursal.routes.js';
 import datosEmpresa from './src/routes/datos.empresa.routes.js';
 import sucursalesRoutes from './src/routes/sucursal.routes.js';
-import taxRoutes from './src/routes/tax.routes.js'
-import paymentRoutes from './src/routes/payment.routes.js'
-import productsServices from './src/routes/sat.products.services.routes.js'
+import taxRoutes from './src/routes/impuestos.routes.js'
+import paymentRoutes from './src/routes/pagos.routes.js'
+import productsServices from './src/routes/sat.productos.servicios.routes.js'
 import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js'
 import ubicationsRoutes from './src/routes/ubicaciones.routes.js'
+import typeOfReceiptRoutes from './src/routes/sat.tipo.de.comprobante.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -52,6 +53,7 @@ const App = {
 		app.use('/api/v1/productos', productsServices);
 		app.use('/api/v1/unidades', unitKeyRoutes);
 		app.use('/api/v1/ubicaciones', ubicationsRoutes);
+		app.use('/api/v1/comprobante', typeOfReceiptRoutes);
 		app.use('/', (req, res) => {
 			res.status(404).json({message:'Request not found'})
 		});

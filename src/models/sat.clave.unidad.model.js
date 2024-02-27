@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize"
 import { Connection } from "../database/mariadb.database.js"
 
-export const UnitKey = Connection.define(
-    'satUnitKey',
+export const ClaveUnidad = Connection.define(
+    'ClaveUnidad',
     {
         ClaveUnidadSat: {
             type: DataTypes.STRING,
@@ -16,11 +16,11 @@ export const UnitKey = Connection.define(
         },
 },  {
             sequelize: Connection,
-            modelName: 'satUnitKey',
+            modelName: 'ClaveUnidad',
             tableName: 'SAT_ClavesUnidades',       
             freezeTableName: true,
             timestamps: false
         }
 )
 
-export default UnitKey;
+export default ClaveUnidad;

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from '../controllers/tax.controller.js';
+import { methods } from '../controllers/sat.impuesto.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import { body } from 'express-validator';
 

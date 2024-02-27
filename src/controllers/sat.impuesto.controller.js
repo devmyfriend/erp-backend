@@ -1,8 +1,8 @@
-import { TaxModel } from '../models/tax.model.js';
+import { Impuesto } from '../models/impuesto.model.js';
 
 const findTax = async (req, res) => {
     try {
-        const data = await TaxModel.findAll({
+        const data = await Impuesto.findAll({
             where: {
                 Activo: 1
             }
@@ -21,7 +21,7 @@ const findTax = async (req, res) => {
 const createTax = async (req, res) => {
     try {
         const data = req.body;
-        const newTax = await TaxModel.create(data);
+        const newTax = await Impuesto.create(data);
         return res.status(200).json(newTax);
     } catch (error) {
         console.error(error);
@@ -35,7 +35,7 @@ const createTax = async (req, res) => {
 const updateTax = async (req, res) => {
     try {
         const data = req.body;
-        const taxFound = await TaxModel.findOne({
+        const taxFound = await Impuesto.findOne({
             where: {
                 ClaveImpuesto: data.ClaveImpuesto,
                 Activo: 1
@@ -49,7 +49,7 @@ const updateTax = async (req, res) => {
             });
         }
 
-        await TaxModel.update(data, {
+        await Impuesto.update(data, {
             where: {
                 ClaveImpuesto: data.ClaveImpuesto
             }
@@ -68,7 +68,7 @@ const deleteTax = async (req, res) => {
 
     const id = req.params.id
 
-    const taxFound = await TaxModel.findOne({
+    const taxFound = await Impuesto.findOne({
         where: {
             ClaveImpuesto: id,
             Activo: 1
