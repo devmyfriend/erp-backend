@@ -183,7 +183,7 @@ export const desactivarSucursal = async (req, res) => {
 		if (!sucursal) {
 			return res
 				.status(404)
-				.json({ starus: 404, error: 'La sucursal no existe' });
+				.json({ status: 404, error: 'La sucursal no existe' });
 		}
 
 		sucursal.Borrado = true;

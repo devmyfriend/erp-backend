@@ -26,7 +26,9 @@ export const editarIdEmpresa = [
 		.optional()
 		.isString()
 		.withMessage('El campo ClavePais debe ser una cadena de texto'),
-	body('entidad.*.TaxId').optional().isString(),
+	body('entidad.*.TaxId')
+		.optional()
+		.isString(),
 	body('entidad.*.ClaveRegimenFiscal')
 		.optional()
 		.isInt()
@@ -39,10 +41,10 @@ export const editarIdEmpresa = [
 		.optional()
 		.isBoolean()
 		.withMessage('El campo PersonaMoral debe ser un booleano'),
-	body('entidad.*.Borrado')
+	body('entidad.*.logo')
 		.optional()
-		.isInt()
-		.withMessage('El campo Borrado debe ser un entero'),
+		.isString()
+		.withMessage('El campo logo debe ser una cadena de texto'),
 	body('domicilio.*.Calle')
 		.optional()
 		.isString()

@@ -350,6 +350,8 @@ router.post(
  *                       type: boolean
  *                     NombreOficial:
  *                       type: string
+ *                     logo:
+ *                       type: string
  *               ActualizadoPor:
  *                 type: integer
  *               domicilio:
@@ -388,6 +390,7 @@ router.post(
  *                     PersonaFisica: true
  *                     PersonaMoral: true
  *                     NombreOficial: "string"
+ *                     logo: "string"
  *                 ActualizadoPor: 2
  *                 domicilio:
  *                   - Calle: "string"
@@ -413,10 +416,10 @@ router.post(
  *                   $ref: '#/components/schemas/EntidadNegocio'
  */
 router.patch(
-	'/editar/',
-	schemas.editarIdEmpresa,
-	middleware.validateSchema,
-	methods.editarIdEmpresa,
+    '/editar/',
+    schemas.editarIdEmpresa,
+    middleware.validateSchema,
+    methods.editarIdEmpresa,
 );
 
 /**
