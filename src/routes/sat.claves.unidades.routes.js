@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { methods } from "../controllers/sat.claves.unidades.controller.js";
-import * as middleware from "../middlewares/express-validator.js";
-import * as schemas from "../schemas/claves.unidades.js";
-import { param } from "express-validator";
+import { Router } from 'express';
+import { methods } from '../controllers/sat.claves.unidades.controller.js';
+import * as middleware from '../middlewares/express-validator.js';
+import * as schemas from '../schemas/claves.unidades.js';
+import { param } from 'express-validator';
 const router = Router();
 
 /**
@@ -47,22 +47,24 @@ const router = Router();
  *       500:
  *         description: Error al obtener las unidades
  */
-router.get('/:page',
+router.get(
+	'/:page',
 	[
-        param('page')
-            .isInt({ gt: 0 })
-            .withMessage('El número de página debe ser un número entero mayor que 1')
-    ], 
+		param('page')
+			.isInt({ gt: 0 })
+			.withMessage('El número de página debe ser un número entero mayor que 1'),
+	],
 	middleware.validateSchema,
-methods.findAllUnitKeys);
+	methods.findAllUnitKeys,
+);
 
 /**
  * @swagger
- * /api/v1/unidades/buscar/{key}:
+ * /api/v1/unidades/buscar/{key}/{page}:
  *   get:
  *     tags:
  *       - Claves Unidades
- *     summary: Obtiene los registros de la tabla SAT_ClavesUnidades por clave
+ *     summary: Obtiene los registros de la tabla SAT_ClavesUnidades por clave y página
  *     parameters:
  *       - in: path
  *         name: key
@@ -70,6 +72,12 @@ methods.findAllUnitKeys);
  *         schema:
  *           type: string
  *         description: La clave de la unidad
+ *       - in: path
+ *         name: page
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Número de página para paginación
  *     responses:
  *       200:
  *         description: Lista de registros de SAT_ClavesUnidades
@@ -91,10 +99,20 @@ methods.findAllUnitKeys);
  *                 NombreUnidadSat: "Kilogramo"
  *                 Activo: true
  */
-router.get('/buscar/:key',
-param('key').isInt({ gt: -1}).withMessage('La clave de la unidad debe ser un número entero'),
-middleware.validateSchema,
-methods.findUnitKeysByKey);
+router.get(
+	'/buscar/:key/:page',
+	param('key')
+		.isString()
+		.withMessage('La clave de la unidad debe ser de tipo string')
+		.isLength({ min: 1, max: 3 })
+		.withMessage('La clave de la unidad debe tener entre 1 y 3 caracteres'),
+	param('page')
+		.isInt({ gt: 0 })
+		.withMessage('El número de página debe ser un número entero mayor que 1'),
+
+	middleware.validateSchema,
+	methods.findUnitKeysByKey,
+);
 
 /**
  * @swagger
@@ -181,11 +199,12 @@ router.post(
  *       500:
  *         description: Error al actualizar la clave de unidad
  */
-router.patch('/editar', 
-schemas.updateUnitKeySchema,
-middleware.validateSchema,
-methods.updateUnitKey);
-
+router.patch(
+	'/editar',
+	schemas.updateUnitKeySchema,
+	middleware.validateSchema,
+	methods.updateUnitKey,
+);
 
 /**
  * @swagger
