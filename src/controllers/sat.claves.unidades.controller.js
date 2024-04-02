@@ -45,12 +45,55 @@ const findAllUnitKeys = async (req, res) => {
 
 const findUnitKeysByKey = async (req, res) => {
 	const key = req.params.key;
+	const page = Number(req.params.page);
 
+	if (!Number.isInteger(page) || page <= 0) {
+		return res.status(400).json({
+			error: 'El número de página debe ser un número entero mayor que 1',
+		});
+	}
+
+	const limit = 2;
+	const offset = (page - 1) * limit;
+
+	if (offset < 0) {
+		return res.status(400).json({
+			error: 'El número de página debe ser un número entero mayor que 1',
+		});
+	}
+
+	 
 	try {
+		const { count, rows } = await UnitKey.findAndCountAll({
+			limit,
+			offset,
+			where: {
+				ClaveUnidadSat: { [Op.like]: `%${key}%` },
+			},
+		});
+
+		const totalPages = Math.ceil(count / limit);
+
+		return res.status(200).json({
+			info: {
+				totalPages,
+				currentPage: page,
+				totalItems: count,
+			},
+			items: rows,
+		});
+	}catch (error) {
+		console.error('Error al obtener las claves de unidades', error.message);
+		return res
+			.status(500)
+			.json({ error: 'Error al obtener las claves de unidades' });
+	}
+	
+
+/* 	try {
 		const data = await UnitKey.findAll({
 			where: {
 				ClaveUnidadSat: { [Op.like]: `%${key}%` },
-				Activo: 1,
 			},
 		});
 
@@ -65,7 +108,7 @@ const findUnitKeysByKey = async (req, res) => {
 			error.message,
 		);
 		return res.status(500).json({ error: 'Error al obtener los datos' });
-	}
+	} */
 };
 
 const createUnitKey = async (req, res) => {
