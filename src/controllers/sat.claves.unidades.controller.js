@@ -66,6 +66,29 @@ const findUnitKeysByKey = async (req, res) => {
 	}
 };
 
+const findUnitKeysByName = async (req, res) => {
+	const name = req.params.name;
+	try {
+		const data = await UnitKey.findAll({
+			where: {
+				NombreUnidadSat: { [Op.like]: `%${name}%` },
+			},
+		});
+
+		if (!data) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
+		return res.status(200).json({ response: data });
+	} catch (error) {
+		console.error(
+			'Error al obtener los datos de la clave de unidad',
+			error.message,
+		);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
 const createUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
@@ -151,6 +174,7 @@ const deleteUnitKey = async (req, res) => {
 export const methods = {
 	findAllUnitKeys,
 	findUnitKeysByKey,
+	findUnitKeysByName,
 	createUnitKey,
 	updateUnitKey,
 	deleteUnitKey,
