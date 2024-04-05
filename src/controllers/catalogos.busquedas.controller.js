@@ -215,6 +215,19 @@ const deleteTypeCoin = async (req, res) => {
 	}
 };
 
+const findRegimenFiscal = async (req, res) => {
+	try {
+		const data = await regimenFiscal.findAll({
+			where: { Activo: 1 }
+		});
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error('Error al obtener los datos de los regimenes fiscales', error.message);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
 const createRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 	try {
@@ -656,6 +669,7 @@ export const methods = {
 	createTypeCoin,
 	updateTypeCoin,
 	deleteTypeCoin,
+	findRegimenFiscal,
 	createRegimenFiscal,
 	updateRegimenFiscal,
 	deleteRegimenFiscal,

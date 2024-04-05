@@ -419,6 +419,29 @@ router.delete(
 
 /**
  * @swagger
+ * /api/v1/catalogo/sat/regimenfiscal/lista:
+ *   get:
+ *     summary: Listado de los regimenes fiscales
+ *     tags: [Régimen Fiscal y CFDI]
+ *     responses:
+ *       200:
+ *         description: Listado de los regimenes fiscales
+ *         content:
+ *           application/json:
+ *             example:
+ *                   - ClaveRegimenFiscal: "601"
+ *                     Descripcion: "General de Ley Personas Morales"
+ *                     Fisica: 0
+ *                     Moral: 1
+ *                   - ClaveUsoCFDI: "603"
+ *                     Descripcion: "Personas Morales con Fines no Lucrativos."
+ *                     Fisica: 0
+ *                     Moral: 1
+ */
+router.get('/sat/regimenfiscal/lista', methods.findRegimenFiscal);
+
+/**
+ * @swagger
  * /api/v1/catalogo/sat/regimenfiscal:
  *   post:
  *     tags: [Régimen Fiscal y CFDI]
@@ -894,9 +917,11 @@ router.patch(
  *       500:
  *         description: Error al borrar el uso de CFDI
  */
-router.delete('/sat/cfdi',
-schemas.deleteCFDISchema,
-middleware.validateSchema,
-methods.deleteCFDI);
+router.delete(
+	'/sat/cfdi',
+	schemas.deleteCFDISchema,
+	middleware.validateSchema,
+	methods.deleteCFDI,
+);
 
 export default router;
