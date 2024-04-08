@@ -14,14 +14,16 @@ const router = Router();
  *     description: Operaciones relacionadas con los impuestos propios
  *   - name: Impuestos compuestos
  *     description: Operaciones relacionadas con los impuestos compuestos
+ *   - name: Impuestos
+ *     description: Operaciones relacionadas con los impuestos crudos
  */
 
 /**
  * @swagger
- * /api/v1/impuestos/SAT:
+ * /api/v1/impuestos:
  *   get:
  *     summary: Obtener una lista de impuestos SAT
- *     tags: [Impuestos SAT]
+ *     tags: [Impuestos]
  *     responses:
  *       200:
  *         description: Lista de impuestos
@@ -42,14 +44,14 @@ const router = Router();
  *                     type: boolean
  *                     example: "true"
  */
-router.get('/SAT', methods.findTax);
+router.get('/', methods.findTax);
 
 /**
  * @swagger
- * /api/v1/impuestos/SAT:
+ * /api/v1/impuestos:
  *   post:
  *     summary: Crear un impuesto SAT
- *     tags: [Impuestos SAT]
+ *     tags: [Impuestos]
  *     requestBody:
  *       required: true
  *       content:
@@ -69,20 +71,22 @@ router.get('/SAT', methods.findTax);
  *         content:
  *           application/json:
  *             schema:
- *               type: object
- *               properties:
- *                 ClaveImpuesto:
- *                   type: string
- *                   example: "004"
- *                 Nombre:
- *                   type: string
- *                   example: "NEW NAME"
- *                 Activo:
- *                   type: boolean
- *                   example: true
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveImpuesto:
+ *                     type: string
+ *                     example: "004"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "NEW NAME"
+ *                   Activo:
+ *                     type: boolean
+ *                     example: true
  */
 router.post(
-	'/SAT',
+	'/',
 	body('ClaveImpuesto')
 		.isString()
 		.withMessage('El campo ClaveImpuesto debe ser un string')
@@ -101,10 +105,11 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/impuestos/SAT:
+ * /api/v1/impuestos/:
  *   put:
  *     summary: Actualizar un impuesto SAT existente
- *     tags: [Impuestos SAT]
+ *     tags: [Impuestos]
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -113,11 +118,11 @@ router.post(
  *             type: object
  *             properties:
  *               ClaveImpuesto:
- *                 type: string
- *                 example: "000"
+ *                 type: number
+ *                 example: 0
  *               Nombre:
  *                 type: string
- *                 example: "NEW NAME"
+ *                 example: "UPDATED NAME"
  *     responses:
  *       200:
  *         description: Impuesto actualizado con éxito
@@ -134,16 +139,13 @@ router.post(
  *                   properties:
  *                     ClaveImpuesto:
  *                       type: string
- *                       example: "004"
+ *                       example: "UPDATED"
  *                     Nombre:
  *                       type: string
- *                       example: "NEW NAME"
- *                     Activo:
- *                       type: boolean
- *                       example: true
+ *                       example: "UPDATED NAME"
  */
 router.put(
-	'/SAT',
+	'/',
 	body('ClaveImpuesto')
 		.isString()
 		.withMessage('El campo ClaveImpuesto debe ser un string')
@@ -162,18 +164,18 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/impuestos/SAT/{ClaveImpuesto}:
+ * /api/v1/impuestos/{ClaveImpuesto}:
  *   delete:
  *     summary: Eliminar un impuesto SAT existente
- *     tags: [Impuestos SAT]
+ *     tags: [Impuestos]
  *     parameters:
  *       - in: path
  *         name: ClaveImpuesto
  *         required: true
- *         description: Clave del impuesto SAT a eliminar
+ *         description: Clave del impuesto a eliminar
  *         schema:
- *           type: string
- *           example: "115"
+ *           type: number
+ *           example: 0
  *     responses:
  *       404:
  *         description: El impuesto no fue encontrado
@@ -189,18 +191,14 @@ router.put(
  *                   type: string
  *                   example: "Impuesto no encontrado"
  */
-router.delete(
-	'/SAT/:id',
-	middleware.validateSchema,
-	methods.deleteTax,
-);
+router.delete('/:id', middleware.validateSchema, methods.deleteTax);
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/custom:
  *   get:
  *     summary: Obtener una lista de impuestos propios
- *     tags: [Impuestos propios]
+ *     tags: [Impuestos]
  *     responses:
  *       200:
  *         description: Lista de impuestos propios
@@ -224,14 +222,14 @@ router.delete(
  *                     type: boolean
  *                     example: "true"
  */
-router.get('/propios', methods.findCustomTax);
+router.get('/custom', methods.findCustomTax);
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/custom:
  *   post:
  *     summary: Crear un impuesto propio
- *     tags: [Impuestos propios]
+ *     tags: [Impuestos]
  *     requestBody:
  *       required: true
  *       content:
@@ -266,7 +264,7 @@ router.get('/propios', methods.findCustomTax);
  *                   description: Mensaje de error detallado
  */
 router.post(
-	'/propios',
+	'/custom',
 	body('NombreImpuesto')
 		.isString()
 		.withMessage('El campo NombreImpuesto debe ser un string')
@@ -292,10 +290,11 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/custom:
  *   put:
  *     summary: Actualizar un impuesto propio existente
- *     tags: [Impuestos propios]
+ *     tags: [Impuestos]
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -337,10 +336,10 @@ router.post(
  *                       example: "Nombre Actualizado"
  *                     ActualizadoPor:
  *                       type: integer
- *                       example: 2
+ *                       example: 02
  */
 router.put(
-	'/propios',
+	'/custom',
 	body('cfgImpuestoId')
 		.isInt()
 		.withMessage('El campo cfgImpuestoId debe ser de tipo int')
@@ -373,10 +372,10 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/impuestos/propios/{cfgImpuestoId}:
+ * /api/v1/impuestos/custom/{cfgImpuestoId}:
  *   delete:
  *     summary: Eliminar un impuesto propio existente
- *     tags: [Impuestos propios]
+ *     tags: [Impuestos]
  *     parameters:
  *       - in: path
  *         name: cfgImpuestoId
@@ -401,17 +400,17 @@ router.put(
  *                   example: "Impuesto propio no encontrado"
  */
 router.delete(
-	'/propios/:id',
+	'/custom/:id',
 	middleware.validateSchema,
 	methods.deleteCustomTax,
 );
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuesto:
  *   get:
  *     summary: Obtener una lista de impuestos compuestos
- *     tags: [Impuestos compuestos]
+ *     tags: [Impuestos]
  *     responses:
  *       200:
  *         description: Lista de impuestos compuestos
@@ -435,14 +434,14 @@ router.delete(
  *                     type: integer
  *                     example: 0
  */
-router.get('/compuestos', methods.findCompoundTax);
+router.get('/compuesto', methods.findCompoundTax);
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuesto:
  *   post:
  *     summary: Crear un impuesto compuesto
- *     tags: [Impuestos compuestos]
+ *     tags: [Impuestos]
  *     requestBody:
  *       required: true
  *       content:
@@ -477,7 +476,7 @@ router.get('/compuestos', methods.findCompoundTax);
  *                   description: Mensaje de error detallado
  */
 router.post(
-	'/compuestos',
+	'/compuesto',
 	body('Nombre')
 		.isString()
 		.withMessage('El campo NombreImpuesto debe ser un string')
@@ -501,10 +500,11 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuesto:
  *   put:
  *     summary: Actualizar un impuesto compuesto existente
- *     tags: [Impuestos compuestos]
+ *     tags: [Impuestos]
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -523,10 +523,10 @@ router.post(
  *                 example: false
  *               ActualizadoPor:
  *                 type: integer
- *                 example: 2
+ *                 example: 02
  *     responses:
  *       200:
- *         description: Impuesto compuesto actualizado con éxito
+ *         description: Impuesto propio actualizado con éxito
  *         content:
  *           application/json:
  *             schema:
@@ -534,14 +534,14 @@ router.post(
  *               properties:
  *                 message:
  *                   type: string
- *                   example: "Impuesto compuesto actualizado correctamente"
+ *                   example: "Impuesto propio actualizado correctamente"
  *                 data:
  *                   type: object
  *                   properties:
- *                     ImpuestoCompuestoId:
+ *                     cfgImpuestoId:
  *                       type: string
  *                       example: "02"
- *                     Nombre:
+ *                     NombreImpuesto:
  *                       type: string
  *                       example: "Nombre Actualizado"
  *                     ActualizadoPor:
@@ -549,7 +549,7 @@ router.post(
  *                       example: 2
  */
 router.put(
-	'/compuestos',
+	'/compuesto',
 	body('ImpuestoCompuestoId')
 		.isInt()
 		.withMessage('El campo ImpuestoCompuestoId debe ser de tipo int')
@@ -582,10 +582,10 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos/{ImpuestoCompuestoId}:
+ * /api/v1/impuestos/compuesto/{ImpuestoCompuestoId}:
  *   delete:
  *     summary: Eliminar un impuesto compuesto existente
- *     tags: [Impuestos compuestos]
+ *     tags: [Impuestos]
  *     parameters:
  *       - in: path
  *         name: ImpuestoCompuestoId
@@ -610,7 +610,7 @@ router.put(
  *                   example: "Impuesto compuesto no encontrado"
  */
 router.delete(
-	'/compuestos/:id',
+	'/compuesto/:id',
 	middleware.validateSchema,
 	methods.deleteCompoundTax,
 );
