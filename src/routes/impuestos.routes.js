@@ -188,6 +188,20 @@ router.put(
  *                 message:
  *                   type: string
  *                   example: "Impuesto no encontrado"
+ *       202:
+ *         description: El impuesto no fue encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Impuesto eliminado"
+ * 
  */
 router.delete(
 	'/SAT/:id',
@@ -387,7 +401,7 @@ router.put(
  *           example: 9
  *     responses:
  *       404:
- *         description: El impuesto propio no fue encontrado
+ *         description: El impuesto no fue encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -398,7 +412,20 @@ router.put(
  *                   example: 404
  *                 message:
  *                   type: string
- *                   example: "Impuesto propio no encontrado"
+ *                   example: "Impuesto no encontrado"
+ *       202:
+ *         description: El impuesto no fue encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Impuesto eliminado"
  */
 router.delete(
 	'/propios/:id',
@@ -596,7 +623,7 @@ router.put(
  *           example: 4
  *     responses:
  *       404:
- *         description: El impuesto compuesto no fue encontrado
+ *         description: El impuesto no fue encontrado
  *         content:
  *           application/json:
  *             schema:
@@ -607,7 +634,20 @@ router.put(
  *                   example: 404
  *                 message:
  *                   type: string
- *                   example: "Impuesto compuesto no encontrado"
+ *                   example: "Impuesto no encontrado"
+ *       202:
+ *         description: El impuesto no fue encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 200
+ *                 message:
+ *                   type: string
+ *                   example: "Impuesto eliminado"
  */
 router.delete(
 	'/compuestos/:id',
