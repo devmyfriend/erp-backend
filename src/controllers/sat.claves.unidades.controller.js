@@ -2,16 +2,16 @@ import UnitKey from '../models/sat.clave.unidad.model.js';
 import { Op } from 'sequelize';
 
 const findAllUnitKeys = async (req, res) => {
-	let page = Number(req.params.page);
-	if (!Number.isInteger(page) || page <= 0) {
+	let pagina = Number(req.params.pagina);
+	if (!Number.isInteger(pagina) || pagina <= 0) {
 		return res.status(400).json({
 			error: 'El número de página debe ser un número entero mayor que 1',
 		});
 	}
 
-	page = page || 1;
+	pagina = pagina || 1;
 	const limit = 10;
-	const offset = (page - 1) * limit;
+	const offset = (pagina - 1) * limit;
 
 	if (offset < 0) {
 		return res.status(400).json({
@@ -27,10 +27,21 @@ const findAllUnitKeys = async (req, res) => {
 
 		const totalPages = Math.ceil(count / limit);
 
+		if (pagina > totalPages) {
+			return res.status(404).json({
+				error: 'La página solicitada no existe',
+				info: {
+					totalPages,
+					currentPage: pagina,
+				}
+			});
+		}
+
+
 		return res.status(200).json({
 			info: {
 				totalPages,
-				currentPage: page,
+				currentPage: pagina,
 				totalItems: count,
 			},
 			items: rows,
@@ -44,11 +55,11 @@ const findAllUnitKeys = async (req, res) => {
 };
 
 const findUnitKeysByKey = async (req, res) => {
-	const key = req.params.key;
+	const clave = req.params.clave;
 	try {
 		const data = await UnitKey.findAll({
 			where: {
-				ClaveUnidadSat: { [Op.like]: `%${key}%` },
+				ClaveUnidadSat: { [Op.like]: `%${clave}%` },
 			},
 		});
 
@@ -67,15 +78,15 @@ const findUnitKeysByKey = async (req, res) => {
 };
 
 const findUnitKeysByName = async (req, res) => {
-	const name = req.params.name;
+	const nombre = req.params.nombre;
 	try {
 		const data = await UnitKey.findAll({
 			where: {
-				NombreUnidadSat: { [Op.like]: `%${name}%` },
+				NombreUnidadSat: { [Op.like]: `%${nombre}%` },
 			},
 		});
 
-		if (!data) {
+		if (data.length === 0) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 

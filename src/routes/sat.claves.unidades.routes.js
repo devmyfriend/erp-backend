@@ -7,14 +7,14 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/unidades/{page}:
+ * /api/v1/unidades/{pagina}:
  *   get:
  *     tags:
  *       - Claves Unidades
  *     summary: Obtiene todos los registros de la tabla SAT_ClavesUnidades
  *     parameters:
  *       - in: path
- *         name: page
+ *         name: pagina
  *         schema:
  *           type: integer
  *         required: true
@@ -48,9 +48,9 @@ const router = Router();
  *         description: Error al obtener las unidades
  */
 router.get(
-	'/:page',
+	'/:pagina',
 	[
-		param('page')
+		param('pagina')
 			.isInt({ gt: 0 })
 			.withMessage('El número de página debe ser un número entero mayor que 1'),
 	],
@@ -60,14 +60,14 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/unidades/Clave/{key}:
+ * /api/v1/unidades/buscar/{clave}:
  *   get:
  *     tags:
  *       - Claves Unidades
  *     summary: Obtiene los registros de la tabla SAT_ClavesUnidades por clave
  *     parameters:
  *       - in: path
- *         name: key
+ *         name: clave
  *         required: true
  *         schema:
  *           type: string
@@ -94,8 +94,8 @@ router.get(
  *                 Activo: true
  */
 router.get(
-	'/Clave/:key',
-	param('key')
+	'/buscar/:clave',
+	param('clave')
 		.isString()
 		.withMessage('La clave de la unidad debe ser de tipo string')
 		.isLength({ min: 1, max: 3 })
@@ -106,14 +106,14 @@ router.get(
 
 /**
  * @swagger
- * /api/v1/unidades/Nombre/{name}:
+ * /api/v1/unidades/buscar/nombre/{nombre}:
  *   get:
  *     tags:
  *       - Claves Unidades
  *     summary: Obtiene los registros de la tabla SAT_ClavesUnidades por nombre
  *     parameters:
  *       - in: path
- *         name: name
+ *         name: nombre
  *         required: true
  *         schema:
  *           type: string
@@ -140,8 +140,8 @@ router.get(
  *                 Activo: true
  */
 router.get(
-	'/Nombre/:name',
-	param('name')
+	'/buscar/nombre/:nombre',
+	param('nombre')
 		.isString()
 		.withMessage('El nombre de la unidad debe ser de tipo string')
 		.isLength({ min: 1})
