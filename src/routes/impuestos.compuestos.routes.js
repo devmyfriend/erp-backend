@@ -14,7 +14,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestoscompuestos:
+ * /api/v1/impuestos/compuestos:
  *   get:
  *     summary: Obtener una lista de impuestos compuestos
  *     tags: [Impuestos compuestos]
@@ -45,7 +45,7 @@ router.get('/', methods.findCompoundTax);
 
 /**
  * @swagger
- * /api/v1/impuestoscompuestos:
+ * /api/v1/impuestos/compuestos:
  *   post:
  *     summary: Crear un impuesto compuesto
  *     tags: [Impuestos compuestos]
@@ -91,7 +91,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/impuestoscompuestos:
+ * /api/v1/impuestos/compuestos:
  *   put:
  *     summary: Actualizar un impuesto compuesto existente
  *     tags: [Impuestos compuestos]
@@ -145,9 +145,9 @@ router.put(
 	methods.updateCompoundTax,
 );
 
-/**
+/**	
  * @swagger
- * /api/v1/impuestoscompuestos:
+ * /api/v1/impuestos/compuestos:
  *   delete:
  *     summary: Eliminar un impuesto compuesto existente
  *     tags: [Impuestos compuestos]

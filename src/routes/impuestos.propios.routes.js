@@ -14,7 +14,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestospropios:
+ * /api/v1/impuestos/propios:
  *   get:
  *     summary: Obtener una lista de impuestos propios
  *     tags: [Impuestos propios]
@@ -45,7 +45,7 @@ router.get('/', methods.findOwnTax);
 
 /**
  * @swagger
- * /api/v1/impuestospropios:
+ * /api/v1/impuestos/propios:
  *   post:
  *     summary: Crear un impuesto propio
  *     tags: [Impuestos propios]
@@ -91,7 +91,7 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/impuestospropios:
+ * /api/v1/impuestos/propios:
  *   put:
  *     summary: Actualizar un impuesto propio existente
  *     tags: [Impuestos propios]
@@ -147,7 +147,7 @@ router.put(
 
 /**
  * @swagger
- * /api/v1/impuestospropios:
+ * /api/v1/impuestos/propios:
  *   delete:
  *     summary: Eliminar un impuesto propio existente
  *     tags: [Impuestos propios]

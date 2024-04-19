@@ -1,5 +1,7 @@
 import { Router } from 'express';
 import { methods } from '../controllers/sat.impuesto.controller.js';
+import impuestosPropiosRoutes from './impuestos.propios.routes.js';
+import impuestosCompuestosRoutes from './impuestos.compuestos.routes.js';
 import * as middleware from '../middlewares/express-validator.js';
 import { body } from 'express-validator';
 const router = Router();
@@ -184,4 +186,8 @@ router.put('/',
  *                   example: "Impuesto no encontrado"
  */
 router.delete('/:id', middleware.validateSchema, methods.deleteTax);
+
+router.use('/propios', impuestosPropiosRoutes);
+router.use('/compuestos', impuestosCompuestosRoutes);
+
 export default router;
