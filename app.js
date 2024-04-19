@@ -15,6 +15,8 @@ import productsServices from './src/routes/sat.productos.servicios.routes.js'
 import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js'
 import ubicationsRoutes from './src/routes/ubicaciones.routes.js'
 import typeOfReceiptRoutes from './src/routes/sat.tipo.de.comprobante.routes.js';
+import customTaxRoutes from './src/routes/impuestos.propios.routes.js';
+import compoundTaxRoutes from './src/routes/impuestos.compuestos.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -49,6 +51,8 @@ const App = {
 		app.use('/api/v1/sucursal', sucursalesRoutes);
 		app.use('/api/v1/catalogo', catRoutes);
 		app.use('/api/v1/impuestos', taxRoutes);
+		app.use('/api/v1/impuestosPropios', customTaxRoutes);
+		app.use('/api/v1/impuestosCompuestos', compoundTaxRoutes);
 		app.use('/api/v1/pagos', paymentRoutes);
 		app.use('/api/v1/productos', productsServices);
 		app.use('/api/v1/unidades', unitKeyRoutes);
