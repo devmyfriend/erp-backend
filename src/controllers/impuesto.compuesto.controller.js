@@ -119,7 +119,7 @@ const deleteById = async (req, res) => {
 
     await taxFound.save();
 
-    return res.status(200).json({ message: 'Impuesto compuesto eliminado' })
+    return res.status(200).json({ message: 'Impuesto compuesto eliminado', response: ImpuestoCompuestoId})
 };
 
 export const methods = {
