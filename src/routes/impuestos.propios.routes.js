@@ -14,10 +14,17 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/propios/{pagina}:
  *   get:
  *     summary: Obtener una lista de impuestos propios
  *     tags: [Impuestos propios]
+ *     parameters:
+ *       - in: path
+ *         name: pagina
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: pagina de la lista de impuestos propios
  *     responses:
  *       200:
  *         description: Lista de impuestos propios
@@ -41,7 +48,7 @@ const router = Router();
  *                     type: boolean
  *                     example: "true"
  */
-router.get('/', methods.findAll);
+router.get('/:pagina', methods.findAll);
 
 /**
  * @swagger

@@ -14,10 +14,17 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuestos/{pagina}:
  *   get:
  *     summary: Obtener una lista de impuestos compuestos
  *     tags: [Impuestos compuestos]
+ *     parameters:
+ *       - in: path
+ *         name: pagina
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: pagina de la lista de impuestos propios
  *     responses:
  *       200:
  *         description: Lista de impuestos compuestos
@@ -41,7 +48,7 @@ const router = Router();
  *                     type: integer
  *                     example: 0
  */
-router.get('/', methods.findAll);
+router.get('/:pagina', methods.findAll);
 
 /**
  * @swagger

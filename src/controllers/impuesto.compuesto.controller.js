@@ -1,7 +1,32 @@
 import { CompoundTax } from "../models/impuesto.compuesto.model.js";
 
 const findAll = async (req, res) => {
-    try{
+    const page = parseInt(req.params.pagina) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
+    try {
+        const { count, rows } = await CompoundTax.findAndCountAll({
+			limit,
+			offset,
+		});
+        const totalPages = Math.ceil(count / limit);
+
+
+        const newData = rows.map(item => ({
+            ImpuestoCompuestoId: item.ImpuestoCompuestoId,
+            Nombre: item.Nombre,
+            Predeterminado: item.Predeterminado
+        }));
+
+        return res.status(200).json({
+            totalPages,
+            currentPage: page,
+            totalItems: count,
+            items: newData,
+        });
+
+
+/*     try{
         const data = await CompoundTax.findAll({
             limit: 10,
             where: {
@@ -15,7 +40,7 @@ const findAll = async (req, res) => {
             Predeterminado: item.Predeterminado
         }));
         
-        return res.status(200).json(newData);
+        return res.status(200).json(newData); */
     } catch (error) {
         console.log(error);
         return res.status(500).json({

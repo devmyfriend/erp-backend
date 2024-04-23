@@ -1,21 +1,29 @@
 import { OwnTax } from '../models/impuesto.propio.model.js';
 
 const findAll = async (req, res) => {
+    const page = parseInt(req.params.pagina) || 1;
+    const limit = 10;
+    const offset = (page - 1) * limit;
     try {
-        const data = await OwnTax.findAll({
-            limit: 10,
-            where: {
-                Borrado: 0
-            },
-        });
+        const { count, rows } = await OwnTax.findAndCountAll({
+			limit,
+			offset,
+		});
+        const totalPages = Math.ceil(count / limit);
 
-        const newData = data.map(item => ({
+
+        const newData = rows.map(item => ({
             cfgImpuestoId: item.cfgImpuestoId,
             NombreImpuesto: item.NombreImpuesto,
             ClaveImpuesto: item.ClaveImpuesto
         }));
 
-        return res.status(200).json(newData);
+        return res.status(200).json({
+            totalPages,
+            currentPage: page,
+            totalItems: count,
+            items: newData,
+        });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
