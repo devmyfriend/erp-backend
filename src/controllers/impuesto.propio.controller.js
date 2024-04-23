@@ -83,19 +83,14 @@ const updateById = async (req, res) => {
             });
         }
 
-        await OwnTax.update(taxFound, 
-            Object.assign(taxFound,{
-                ActualizadoPor: taxFound.ActualizadoPor,
-                ActualizadoEn: new Date(),
-            }),
-            {
-                where: {
-                    cfgImpuestoId: data.cfgImpuestoId
-                },
-            },
-        );
+        data.ActualizadoEn = new Date();
+        await OwnTax.update(data, {
+            where: {
+                cfgImpuestoId: data.cfgImpuestoId
+            }
+        });
 
-        return res.status(200).json({ message: 'Impuesto propio actualizado correctamente', response: taxFound.cfgImpuestoId});
+        return res.status(200).json({ message: 'Impuesto propio actualizado correctamente', response: data.cfgImpuestoId});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -128,7 +123,7 @@ const deleteById = async (req, res) => {
 
         await taxFound.save();
 
-        return res.status(200).json(taxFound);
+        return res.status(200).json( {message: 'Impuesto propio eliminado correctamente', response: cfgImpuestoId});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
