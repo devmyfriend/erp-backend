@@ -1,14 +1,21 @@
 import { CompoundTax } from "../models/impuesto.compuesto.model.js";
 
-const findCompoundTax = async (req, res) => {
+const findAll = async (req, res) => {
     try{
         const data = await CompoundTax.findAll({
+            limit: 10,
             where: {
                 Borrado: 0
             }
         });
+     
+        const newData = data.map(item => ({
+            ImpuestoCompuestoId: item.ImpuestoCompuestoId,
+            Nombre: item.Nombre,
+            Predeterminado: item.Predeterminado
+        }));
         
-        return res.status(200).json(data);
+        return res.status(200).json(newData);
     } catch (error) {
         console.log(error);
         return res.status(500).json({
@@ -18,11 +25,25 @@ const findCompoundTax = async (req, res) => {
     }
 };
 
-const createCompoundTax = async (req, res) => {
+const create = async (req, res) => {
     try {
         const data = req.body;
+
+        const taxFound = await CompoundTax.findOne({
+            where: {
+                Nombre: data.Nombre,
+            }
+        });
+
+        if (taxFound) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El impuesto compuesto ya existe',
+            });
+        }
+
         const newCompoundTax = await CompoundTax.create(data);
-        return res.status(200).json(newCompoundTax);
+        return res.status(200).json({ message: 'Impuesto compuesto creado correctamente', response: newCompoundTax.ImpuestoCompuestoId });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -32,7 +53,7 @@ const createCompoundTax = async (req, res) => {
     }
 };
 
-const updateCompoundTax = async (req, res) => {
+const updateById = async (req, res) => {
     try {
         const data = req.body;
         
@@ -49,6 +70,18 @@ const updateCompoundTax = async (req, res) => {
             });
         }
 
+        const taxNameFound = await CompoundTax.findOne({
+            where: {
+                Nombre: data.Nombre,
+            }
+        });
+
+        if (taxNameFound && taxNameFound.ImpuestoCompuestoId !== data.ImpuestoCompuestoId) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El nombre del impuesto compuesto ya existe',
+            });
+        }
         
         data.ActualizadoEn = new Date();
         await CompoundTax.update(data, {
@@ -56,7 +89,7 @@ const updateCompoundTax = async (req, res) => {
                 ImpuestoCompuestoId: data.ImpuestoCompuestoId
             }
         });
-        return res.status(200).json({ message: 'Impuesto compuesto actualizado correctamente', data });
+        return res.status(200).json({ message: 'Impuesto compuesto actualizado correctamente', response: data.ImpuestoCompuestoId });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -66,7 +99,7 @@ const updateCompoundTax = async (req, res) => {
     }
 };
 
-const deleteCompoundTax = async (req, res) => {
+const deleteById = async (req, res) => {
     const { ImpuestoCompuestoId, BorradoPor } = req.body
 
     const taxFound = await CompoundTax.findOne({
@@ -77,8 +110,8 @@ const deleteCompoundTax = async (req, res) => {
     });
     if (!taxFound) {
         return res.status(404).json({
-            status: 502,
-            error: 'El impuesto compuesto no existe: ' + ImpuestoCompuestoId + ' id',
+            status: 404,
+            error: 'El impuesto compuesto de id ' + ImpuestoCompuestoId + ' no existe',
         });
     }
     taxFound.Borrado = 1;
@@ -90,8 +123,8 @@ const deleteCompoundTax = async (req, res) => {
 };
 
 export const methods = {
-    findCompoundTax,
-    createCompoundTax,
-    updateCompoundTax,
-    deleteCompoundTax
+    findAll,
+    create,
+    updateById,
+    deleteById
 }

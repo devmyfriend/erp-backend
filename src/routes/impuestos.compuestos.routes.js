@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { methods } from '../controllers/impuesto.compuesto.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
-import * as schema from '../schemas/impuesto.compueso.js';
+import * as schema from '../schemas/impuesto.compuesto.js';
 
 const router = Router();
 
@@ -41,11 +41,11 @@ const router = Router();
  *                     type: integer
  *                     example: 0
  */
-router.get('/', methods.findCompoundTax);
+router.get('/', methods.findAll);
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuestos/crear:
  *   post:
  *     summary: Crear un impuesto compuesto
  *     tags: [Impuestos compuestos]
@@ -83,15 +83,15 @@ router.get('/', methods.findCompoundTax);
  *                   description: Mensaje de error detallado
  */
 router.post(
-	'/',
+	'/crear',
 	schema.createCompoundTaxSchema,
 	middleware.validateSchema,
-	methods.createCompoundTax,
+	methods.create,
 );
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuestos/editar:
  *   put:
  *     summary: Actualizar un impuesto compuesto existente
  *     tags: [Impuestos compuestos]
@@ -139,15 +139,15 @@ router.post(
  *                       example: 2
  */
 router.put(
-	'/',
+	'/editar',
 	schema.updateCompoundTaxSchema,
 	middleware.validateSchema,
-	methods.updateCompoundTax,
+	methods.updateById,
 );
 
 /**	
  * @swagger
- * /api/v1/impuestos/compuestos:
+ * /api/v1/impuestos/compuestos/desactivar:
  *   delete:
  *     summary: Eliminar un impuesto compuesto existente
  *     tags: [Impuestos compuestos]
@@ -193,10 +193,10 @@ router.put(
  *                   example: "Impuesto eliminado"
  */
 router.delete(
-	'/',
+	'/desactivar',
 	schema.deleteCompoundTaxSchema,
 	middleware.validateSchema,
-	methods.deleteCompoundTax,
+	methods.deleteById,
 );
 
 export default router;

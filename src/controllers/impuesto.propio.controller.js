@@ -1,28 +1,49 @@
 import { OwnTax } from '../models/impuesto.propio.model.js';
 
-const findOwnTax = async (req, res) => {
+const findAll = async (req, res) => {
     try {
         const data = await OwnTax.findAll({
+            limit: 10,
             where: {
                 Borrado: 0
+            },
+        });
+
+        const newData = data.map(item => ({
+            cfgImpuestoId: item.cfgImpuestoId,
+            NombreImpuesto: item.NombreImpuesto,
+            ClaveImpuesto: item.ClaveImpuesto
+        }));
+
+        return res.status(200).json(newData);
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: 500,
+            error: 'Error interno del servidor',
+        });
+    }
+};
+
+const create = async (req, res) => {
+    try {
+        const data = req.body;
+
+        const taxFound = await OwnTax.findOne({
+            where: {
+                NombreImpuesto: data.NombreImpuesto,
             }
         });
 
-        return res.status(200).json(data);
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            status: 500,
-            error: 'Error interno del servidor',
-        });
-    }
-};
+        if (taxFound) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El impuesto propio ya existe',
+            });
+        }
 
-const createOwnTax = async (req, res) => {
-    try {
-        const data = req.body;
         const newOwnTax = await OwnTax.create(data);
-        return res.status(200).json(newOwnTax);
+        return res.status(200).json({message: 'Impuesto propio creado correctamente', response: newOwnTax.cfgImpuestoId});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -32,7 +53,7 @@ const createOwnTax = async (req, res) => {
     }
 };
 
-const updateOwnTax = async (req, res) => {
+const updateById = async (req, res) => {
     try {
         const data = req.body;
 
@@ -49,14 +70,32 @@ const updateOwnTax = async (req, res) => {
             });
         }
 
-        taxFound.NombreImpuesto = data.NombreImpuesto;
-        taxFound.ClaveImpuesto = data.ClaveImpuesto;
-        taxFound.ActualizadoPor = data.ActualizadoPor;
-        taxFound.ActualizadoEn = new Date();
+        const taxNameFound = await OwnTax.findOne({
+            where: {
+                NombreImpuesto: data.NombreImpuesto,
+            }
+        });
 
-        await taxFound.save();
+        if (taxNameFound && taxNameFound.cfgImpuestoId !== data.cfgImpuestoId) {
+            return res.status(400).json({
+                status: 400,
+                error: 'El nombre del impuesto propio ya existe',
+            });
+        }
 
-        return res.status(200).json(taxFound);
+        await OwnTax.update(taxFound, 
+            Object.assign(taxFound,{
+                ActualizadoPor: taxFound.ActualizadoPor,
+                ActualizadoEn: new Date(),
+            }),
+            {
+                where: {
+                    cfgImpuestoId: data.cfgImpuestoId
+                },
+            },
+        );
+
+        return res.status(200).json({ message: 'Impuesto propio actualizado correctamente', response: taxFound.cfgImpuestoId});
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -64,9 +103,9 @@ const updateOwnTax = async (req, res) => {
             error: 'Error interno del servidor',
         });
     }
-}
+};
 
-const deleteOwnTax = async (req, res) => {
+const deleteById = async (req, res) => {
     try {
         const { cfgImpuestoId, BorradoPor } = req.body;
 
@@ -97,11 +136,11 @@ const deleteOwnTax = async (req, res) => {
             error: 'Error interno del servidor',
         });
     }
-}
+};
 
 export const methods = {
-    findOwnTax,
-    createOwnTax,
-    updateOwnTax,
-    deleteOwnTax
+    findAll,
+    create,
+    updateById,
+    deleteById
 };

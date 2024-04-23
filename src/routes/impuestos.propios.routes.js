@@ -41,11 +41,11 @@ const router = Router();
  *                     type: boolean
  *                     example: "true"
  */
-router.get('/', methods.findOwnTax);
+router.get('/', methods.findAll);
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/propios/crear:
  *   post:
  *     summary: Crear un impuesto propio
  *     tags: [Impuestos propios]
@@ -83,15 +83,15 @@ router.get('/', methods.findOwnTax);
  *                   description: Mensaje de error detallado
  */
 router.post(
-	'/',
+	'/crear',
 	schemas.createOwnTaxSchema,
 	middleware.validateSchema,
-	methods.createOwnTax,
+	methods.create,
 );
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/propios/editar:
  *   put:
  *     summary: Actualizar un impuesto propio existente
  *     tags: [Impuestos propios]
@@ -139,15 +139,15 @@ router.post(
  *                       example: 2
  */
 router.put(
-	'/',
+	'/editar',
 	schemas.updateOwnTaxSchema,
 	middleware.validateSchema,
-	methods.updateOwnTax,
+	methods.updateById,
 );
 
 /**
  * @swagger
- * /api/v1/impuestos/propios:
+ * /api/v1/impuestos/propios/desactivar:
  *   delete:
  *     summary: Eliminar un impuesto propio existente
  *     tags: [Impuestos propios]
@@ -193,10 +193,10 @@ router.put(
  *                   example: "Impuesto eliminado"
  */
 router.delete(
-	'/borrar',
+	'/desactivar',
 	schemas.deleteOwnTaxSchema,
 	middleware.validateSchema,
-	methods.deleteOwnTax,
+	methods.deleteById,
 );
 
 export default router;
