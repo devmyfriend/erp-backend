@@ -84,7 +84,7 @@ router.get('/', methods.findOwnTax);
  */
 router.post(
 	'/',
-	schemas.createCompoundTaxSchema,
+	schemas.createOwnTaxSchema,
 	middleware.validateSchema,
 	methods.createOwnTax,
 );
@@ -140,7 +140,7 @@ router.post(
  */
 router.put(
 	'/',
-	schemas.updateCompoundTaxSchema,
+	schemas.updateOwnTaxSchema,
 	middleware.validateSchema,
 	methods.updateOwnTax,
 );
@@ -193,7 +193,8 @@ router.put(
  *                   example: "Impuesto eliminado"
  */
 router.delete(
-	'/',
+	'/borrar',
+	schemas.deleteOwnTaxSchema,
 	middleware.validateSchema,
 	methods.deleteOwnTax,
 );

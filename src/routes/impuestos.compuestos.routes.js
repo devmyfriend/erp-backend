@@ -194,6 +194,7 @@ router.put(
  */
 router.delete(
 	'/',
+	schema.deleteCompoundTaxSchema,
 	middleware.validateSchema,
 	methods.deleteCompoundTax,
 );

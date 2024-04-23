@@ -46,3 +46,13 @@ body('ActualizadoPor')
     .isLength({ min: 1, max: 11 })
     .withMessage('El campo ActualizadoPor debe tener entre 1 y 11 carácteres'),
 ]
+
+export const deleteCompoundTaxSchema = [
+    body('ImpuestoCompuestoId')
+        .isInt()
+        .withMessage('El campo ImpuestoCompuestoId debe ser de tipo int')
+        .notEmpty()
+        .withMessage('El campo ImpuestoCompuestoId es requerido')
+        .isLength({ min: 1, max: 11 })
+        .withMessage('El campo ImpuestoCompuestoId debe tener entre 1 y 11 carácateres'),
+];

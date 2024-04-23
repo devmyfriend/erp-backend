@@ -2,22 +2,9 @@ import UnitKey from '../models/sat.clave.unidad.model.js';
 import { Op } from 'sequelize';
 
 const findAllUnitKeys = async (req, res) => {
-	let page = Number(req.params.page);
-	if (!Number.isInteger(page) || page <= 0) {
-		return res.status(400).json({
-			error: 'El número de página debe ser un número entero mayor que 1',
-		});
-	}
-
-	page = page || 1;
+	const page = req.params.pagina ? parseInt(req.params.pagina) : 1;
 	const limit = 10;
 	const offset = (page - 1) * limit;
-
-	if (offset < 0) {
-		return res.status(400).json({
-			error: 'El número de página debe ser un número entero mayor que 1',
-		});
-	}
 
 	try {
 		const { count, rows } = await UnitKey.findAndCountAll({
@@ -26,6 +13,17 @@ const findAllUnitKeys = async (req, res) => {
 		});
 
 		const totalPages = Math.ceil(count / limit);
+
+		if (page > totalPages) {
+			return res.status(404).json({
+				error: 'La página solicitada no existe',
+				info: {
+					totalPages,
+					currentPage: page,
+				}
+			});
+		}
+
 
 		return res.status(200).json({
 			info: {
@@ -44,17 +42,38 @@ const findAllUnitKeys = async (req, res) => {
 };
 
 const findUnitKeysByKey = async (req, res) => {
-	const key = req.params.key;
-
+	const key = req.params.clave;
 	try {
 		const data = await UnitKey.findAll({
 			where: {
 				ClaveUnidadSat: { [Op.like]: `%${key}%` },
-				Activo: 1,
 			},
 		});
 
-		if (!data) {
+		if (data.length === 0) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
+
+		return res.status(200).json({ response: data });
+	} catch (error) {
+		console.error(
+			'Error al obtener los datos de la clave de unidad',
+			error.message,
+		);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
+};
+
+const findUnitKeysByName = async (req, res) => {
+	const name = req.params.nombre;
+	try {
+		const data = await UnitKey.findAll({
+			where: {
+				NombreUnidadSat: { [Op.like]: `%${name}%` },
+			},
+		});
+
+		if (data.length === 0) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 
@@ -126,18 +145,18 @@ const updateUnitKey = async (req, res) => {
 };
 
 const deleteUnitKey = async (req, res) => {
-	const { ClaveUnidadSat } = req.body;
+	const UnitSATKey = req.body.ClaveUnidadSat;
 
 	try {
 		const unitKey = await UnitKey.findOne({
-			where: { ClaveUnidadSat, Activo: 1 },
+			where: { ClaveUnidadSat: UnitSATKey, Activo: 1 },
 		});
 
 		if (!unitKey) {
 			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
 		}
 
-		await UnitKey.update({ Activo: false }, { where: { ClaveUnidadSat } });
+		await UnitKey.update({ Activo: false }, { where: { ClaveUnidadSat: UnitSATKey } });
 
 		return res
 			.status(200)
@@ -153,6 +172,7 @@ const deleteUnitKey = async (req, res) => {
 export const methods = {
 	findAllUnitKeys,
 	findUnitKeysByKey,
+	findUnitKeysByName,
 	createUnitKey,
 	updateUnitKey,
 	deleteUnitKey,

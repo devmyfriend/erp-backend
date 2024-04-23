@@ -1,7 +1,5 @@
 import { Router } from 'express';
 import { methods } from '../controllers/sat.impuesto.controller.js';
-import impuestosPropiosRoutes from './impuestos.propios.routes.js';
-import impuestosCompuestosRoutes from './impuestos.compuestos.routes.js';
 import * as middleware from '../middlewares/express-validator.js';
 import { body } from 'express-validator';
 const router = Router();
@@ -82,22 +80,23 @@ router.get('/', methods.findTax);
  *                     type: boolean
  *                     example: true
  */
-router.post('/',
+router.post(
+	'/',
 	body('ClaveImpuesto')
 		.isString()
 		.withMessage('El campo ClaveImpuesto debe ser un string')
 		.notEmpty()
 		.withMessage('El campo ClaveImpuesto es requerido')
 		.isLength({ min: 3, max: 3 })
-		.withMessage(
-			'El campo ClaveImpuesto debe tener 3 caracteres',
-		),
+		.withMessage('El campo ClaveImpuesto debe tener 3 caracteres'),
 	body('Nombre')
 		.isString()
 		.withMessage('El campo Nombre debe ser un string')
 		.notEmpty()
 		.withMessage('El campo Nombre es requerido'),
-	middleware.validateSchema, methods.createTax);
+	middleware.validateSchema,
+	methods.createTax,
+);
 
 /**
  * @swagger
@@ -105,7 +104,7 @@ router.post('/',
  *   put:
  *     summary: Actualizar un impuesto existente
  *     tags: [Impuestos]
- *  
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -140,21 +139,23 @@ router.post('/',
  *                       type: string
  *                       example: "UPDATED NAME"
  */
-router.put('/',
+router.put(
+	'/',
 	body('ClaveImpuesto')
 		.isString()
 		.withMessage('El campo ClaveImpuesto debe ser un string')
 		.notEmpty()
 		.withMessage('El campo ClaveImpuesto es requerido')
 		.isLength({ min: 3, max: 3 })
-		.withMessage(
-			'El campo ClaveImpuesto debe tener 3 caracteres',
-		),
+		.withMessage('El campo ClaveImpuesto debe tener 3 caracteres'),
 	body('Nombre')
 		.isString()
 		.withMessage('El campo Nombre debe ser un string')
 		.notEmpty()
-		.withMessage('El campo Nombre es requerido'), middleware.validateSchema, methods.updateTax)
+		.withMessage('El campo Nombre es requerido'),
+	middleware.validateSchema,
+	methods.updateTax,
+);
 
 /**
  * @swagger
@@ -186,8 +187,5 @@ router.put('/',
  *                   example: "Impuesto no encontrado"
  */
 router.delete('/:id', middleware.validateSchema, methods.deleteTax);
-
-router.use('/propios', impuestosPropiosRoutes);
-router.use('/compuestos', impuestosCompuestosRoutes);
 
 export default router;
