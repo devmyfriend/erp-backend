@@ -31,7 +31,7 @@ const findByName = async (req, res) => {
 	const name = req.body.Nombre;
 	try {
 		const data = await finders.findAllCompoundTaxByName(name);
-		if(!data.exist) {
+		if (!data.exist) {
 			return res.status(404).json({
 				status: 404,
 				error: 'No se encontraron valores',
@@ -77,8 +77,9 @@ const create = async (req, res) => {
 const updateById = async (req, res) => {
 	try {
 		const data = req.body;
-
-		const taxFound = await finders.findCompoundTaxById(data.ImpuestoCompuestoId);
+		const taxFound = await finders.findCompoundTaxById(
+			data.ImpuestoCompuestoId,
+		);
 		if (!taxFound.exist) {
 			return res.status(404).json({
 				status: 404,
@@ -87,7 +88,10 @@ const updateById = async (req, res) => {
 		}
 
 		const taxNameFound = await finders.findCompoundTaxByName(data.Nombre);
-		if (taxNameFound.exist && taxNameFound.data.ImpuestoCompuestoId !== data.ImpuestoCompuestoId) {
+		if (
+			taxNameFound.exist &&
+			taxNameFound.data.ImpuestoCompuestoId !== data.ImpuestoCompuestoId
+		) {
 			return res.status(404).json({
 				status: 404,
 				error: 'El nombre del impuesto compuesto ya existe',
@@ -97,12 +101,13 @@ const updateById = async (req, res) => {
 		await CompoundTax.update(
 			Object.assign(data, {
 				ActualizadoEn: new Date(),
-			})
-			, {
-			where: {
-				ImpuestoCompuestoId: data.ImpuestoCompuestoId,
+			}),
+			{
+				where: {
+					ImpuestoCompuestoId: data.ImpuestoCompuestoId,
+				},
 			},
-		});
+		);
 
 		return res.status(200).json({
 			message: 'Impuesto compuesto actualizado correctamente',
