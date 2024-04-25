@@ -23,7 +23,7 @@ const findAll = async (req, res) => {
 		}));
 		return res.status(200).json(newData);
 	} catch (error) {
-		console.log(error);
+		console.error(error);
 		return res.status(500).json({
 			status: 500,
 			error: 'Error interno del servidor',

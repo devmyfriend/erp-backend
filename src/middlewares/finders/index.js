@@ -12,7 +12,6 @@ const handleDatabaseError = error => {
 export const findItem = async (model, whereClause) => {
 	try {
 		const item = await model.findOne({ where: whereClause });
-		console.log( 'La validación es: ' + item ? { exist: true, data: item.dataValues } : { exist: false } );
 		return item ? { exist: true, data: item.dataValues } : { exist: false };
 	} catch (error) {
 		return handleDatabaseError(error);
