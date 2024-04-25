@@ -1,10 +1,10 @@
 import * as finders from '../middlewares/finders/index.js';
-import { Impuesto } from '../models/impuesto.model.js';
+import { Tax } from '../models/impuesto.model.js';
 
 const findAll = async (req, res) => {
 	const limit = 10;
 	try {
-		const data = await Impuesto.findAll({
+		const data = await Tax.findAll({
 			limit,
 			where: {
 				Activo: 1,
@@ -63,7 +63,7 @@ const create = async (req, res) => {
 			});
 		}
 
-		const newTax = await Impuesto.create(data);
+		const newTax = await Tax.create(data);
 		return res
 			.status(200)
 			.json({
@@ -102,7 +102,7 @@ const updateById = async (req, res) => {
 			});
 		}
 
-		await Impuesto.update(data, {
+		await Tax.update(data, {
 			where: {
 				ClaveImpuesto: data.ClaveImpuesto,
 			},
@@ -130,7 +130,7 @@ const deleteById = async (req, res) => {
 			});
 		}
 
-		await Impuesto.update(
+		await Tax.update(
 			{
 				Activo: 0,
 			},

@@ -1,9 +1,9 @@
 import { findItem, findAllItems } from './utilities.js';
-import { Impuesto, OwnTax, CompoundTax } from '../../models/index.js';
+import { Tax, OwnTax, CompoundTax } from '../../models/index.js';
 import { Op } from 'sequelize';
 
 export const findTaxByName = async name =>
-	findItem(Impuesto, { Activo: 1, Nombre: name });
+	findItem(Tax, { Activo: 1, Nombre: name });
 	
 export const findOwnTaxByName = async name =>
 	findItem(OwnTax, { Borrado: 0, NombreImpuesto: name });
@@ -12,7 +12,7 @@ export const findCompoundTaxByName = async name =>
 	findItem(CompoundTax, { Borrado: 0, Nombre: name });
 
 export const findAllTaxByName = async name =>	
-	findAllItems(Impuesto, { Activo: 1, Nombre: { [Op.like]: `%${name}%`,} });
+	findAllItems(Tax, { Activo: 1, Nombre: { [Op.like]: `%${name}%`,} });
 
 export const findAllOwnTaxByName = async name =>
 	findAllItems(OwnTax, { Borrado: 0, NombreImpuesto: { [Op.like]: `%${name}%`,} });
