@@ -1,10 +1,7 @@
-import {
-	Impuesto,
-	OwnTax,
-	CompoundTax,
-} from '../../models/index.js';
+export * from './fin.by.id.js';
+export * from './fin.by.name.js';
 
-const handleDatabaseError = error => {
+/* const handleDatabaseError = error => {
 	console.error(error);
 	return { message: 'Error interno del servidor' };
 };
@@ -16,23 +13,24 @@ export const findItem = async (model, whereClause) => {
 	} catch (error) {
 		return handleDatabaseError(error);
     }
-}
+} */
 
-export const findTaxById = async code =>
+/* export const findTaxById = async code =>
 	findItem(Impuesto, { Activo: 1, ClaveImpuesto: code });
 	
-export const findTaxByName = async name =>
+export const findOwnTaxById = async code =>
+	findItem(OwnTax, { Borrado: 0, cfgImpuestoId: code });	
 	
+export const findCompoundTaxById = async code =>
+	findItem(CompoundTax, { Borrado: 0, ImpuestoCompuestoId: code }); */
+
+
+
+/* export const findTaxByName = async name =>
 	findItem(Impuesto, { Activo: 1, Nombre: name });
 	
-export const findOwnTaxById = async code =>
-	findItem(OwnTax, { Borrado: 0, cfgImpuestoId: code });
-
 export const findOwnTaxByName = async name =>
 	findItem(OwnTax, { Borrado: 0, NombreImpuesto: name });
 
-export const findCompoundTaxById = async code =>
-	findItem(CompoundTax, { Borrado: 0, ImpuestoCompuestoId: code });
-
 export const findCompoundTaxByName = async name =>
-	findItem(CompoundTax, { Borrado: 0, Nombre: name });
+	findItem(CompoundTax, { Borrado: 0, Nombre: name }); */

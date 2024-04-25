@@ -1,9 +1,5 @@
-import {
-	findCompoundTaxById,
-	findCompoundTaxByName,
-} from '../middlewares/finders/index.js';
+import * as finders from '../middlewares/finders/index.js';
 import { CompoundTax } from '../models/impuesto.compuesto.model.js';
-import { Op } from 'sequelize';
 
 const findAll = async (req, res) => {
 	const limit = 10;
@@ -34,15 +30,12 @@ const findAll = async (req, res) => {
 const findByName = async (req, res) => {
 	const name = req.body.Nombre;
 	try {
-		const data = await CompoundTax.findAll({
-			where: {
-				Nombre: { [Op.like]: `%${name}%` },
-				Borrado: 0,
-			},
-		});
-
-		if (data.length === 0) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
+		const data = await finders.findAllCompoundTaxByName(name);
+		if(!data.exist) {
+			return res.status(404).json({
+				status: 404,
+				error: 'No se encontraron valores',
+			});
 		}
 
 		return res.status(200).json(data);
@@ -59,7 +52,7 @@ const create = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const taxNameFound = await findCompoundTaxByName(data.Nombre);
+		const taxNameFound = await finders.findCompoundTaxByName(data.Nombre);
 		if (taxNameFound.exist) {
 			return res.status(404).json({
 				status: 404,
@@ -85,7 +78,7 @@ const updateById = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const taxFound = await findCompoundTaxById(data.ImpuestoCompuestoId);
+		const taxFound = await finders.findCompoundTaxById(data.ImpuestoCompuestoId);
 		if (!taxFound.exist) {
 			return res.status(404).json({
 				status: 404,
@@ -93,7 +86,7 @@ const updateById = async (req, res) => {
 			});
 		}
 
-		const taxNameFound = await findCompoundTaxByName(data.Nombre);
+		const taxNameFound = await finders.findCompoundTaxByName(data.Nombre);
 		if (taxNameFound.exist && taxNameFound.data.ImpuestoCompuestoId !== data.ImpuestoCompuestoId) {
 			return res.status(404).json({
 				status: 404,
@@ -126,7 +119,7 @@ const updateById = async (req, res) => {
 const deleteById = async (req, res) => {
 	const { ImpuestoCompuestoId, BorradoPor } = req.body;
 
-	const taxFound = await findCompoundTaxById(ImpuestoCompuestoId);
+	const taxFound = await finders.findCompoundTaxById(ImpuestoCompuestoId);
 	if (!taxFound.exist) {
 		return res.status(404).json({
 			status: 404,

@@ -1,11 +1,5 @@
-import {
-    findOwnTaxById,
-    findOwnTaxByName,
-    findTaxById,
-} from '../middlewares/finders/index.js';
-
+import * as finders from '../middlewares/finders/index.js';
 import { OwnTax } from '../models/impuesto.propio.model.js';
-import { Op } from 'sequelize';
 
 const findAll = async (req, res) => {
     const limit = 10;
@@ -37,14 +31,12 @@ const findAll = async (req, res) => {
 const findByName = async (req, res) => {
     const name = req.body.NombreImpuesto;
     try {
-        const data = await OwnTax.findAll({
-            where: {
-                NombreImpuesto: { [Op.like]: `%${name}%` },
-            },
-        });
-
-        if (data.length === 0) {
-            return res.status(404).json({ message: 'No hay datos disponibles' });
+        const data = await finders.findAllOwnTaxByName(name);
+        if(!data.exist) {
+            return res.status(404).json({
+                status: 404,
+                error: 'No se encontraron valores',
+            });
         }
 
         return res.status(200).json({ message: 'Impuestos encontrados', response: data});
@@ -61,7 +53,7 @@ const create = async (req, res) => {
     try {
         const data = req.body;
 
-        const taxNameFound = await findOwnTaxByName(data.NombreImpuesto);
+        const taxNameFound = await finders.findOwnTaxByName(data.NombreImpuesto);
         if (taxNameFound.exist) {
             return res.status(404).json({
                 status: 404,
@@ -69,7 +61,7 @@ const create = async (req, res) => {
             });
         }
 
-        const taxSATFound = await findTaxById(data.ClaveImpuesto);
+        const taxSATFound = await finders.findTaxById(data.ClaveImpuesto);
         if (!taxSATFound.exist) {
             return res.status(404).json({
                 status: 404,
@@ -92,7 +84,7 @@ const updateById = async (req, res) => {
     try {
         const data = req.body;
 
-        const taxFound = await findOwnTaxById(data.cfgImpuestoId);
+        const taxFound = await finders.findOwnTaxById(data.cfgImpuestoId);
         if (!taxFound.exist) {
             return res.status(404).json({
                 status: 404,
@@ -100,7 +92,7 @@ const updateById = async (req, res) => {
             });
         }
 
-        const taxNameFound = await findOwnTaxByName(data.NombreImpuesto);
+        const taxNameFound = await finders.findOwnTaxByName(data.NombreImpuesto);
         if (taxNameFound.exist && taxNameFound.data.cfgImpuestoId !== data.cfgImpuestoId) {
             return res.status(404).json({
                 status: 404,
@@ -108,7 +100,7 @@ const updateById = async (req, res) => {
             });
         }
         
-        const taxSATFound = await findTaxById(data.ClaveImpuesto);
+        const taxSATFound = await finders.findTaxById(data.ClaveImpuesto);
         if (!taxSATFound.exist) {
             return res.status(404).json({
                 status: 404,
@@ -140,7 +132,7 @@ const deleteById = async (req, res) => {
     try {
         const { cfgImpuestoId, BorradoPor } = req.body;
 
-        const taxFound = await findOwnTaxById(cfgImpuestoId);
+        const taxFound = await finders.findOwnTaxById(cfgImpuestoId);
         if (!taxFound.exist) {
             return res.status(404).json({
                 status: 404,

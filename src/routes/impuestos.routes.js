@@ -45,7 +45,7 @@ router.get('/', methods.findAll);
  * @swagger
  * /api/v1/impuestos/buscar:
  *   post:
- *     summary: Crear un impuesto
+ *     summary: Buscar impuestos SAT por nombre
  *     tags: [Impuestos]
  *     requestBody:
  *       required: true
