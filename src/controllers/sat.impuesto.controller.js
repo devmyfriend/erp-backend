@@ -1,11 +1,19 @@
 import { Impuesto } from '../models/impuesto.model.js';
+import { Op } from 'sequelize';
+import {
+    findTaxById,
+    findTaxByName,
+} from '../middlewares/finders/index.js';
 
-const findTax = async (req, res) => {
+const findAll = async (req, res) => {
+    const limit = 10;
     try {
         const data = await Impuesto.findAll({
+            limit,
             where: {
                 Activo: 1
-            }
+            },
+            order: [['ClaveImpuesto', 'DESC']]
         });
 
         return res.status(200).json(data);
@@ -18,11 +26,52 @@ const findTax = async (req, res) => {
     }
 };
 
-const createTax = async (req, res) => {
+const findByName = async (req, res) => {
+    const name = req.body.Nombre;
+    try {
+        const data = await Impuesto.findAll({
+            where: {
+                Nombre: { [Op.like]: `%${name}%` },
+                Activo: 1
+            },
+        });
+
+        if (data.length === 0) {
+            return res.status(404).json({ message: 'No hay datos disponibles' });
+        }
+
+        return res.status(200).json(data);
+    } catch (error) {
+        console.error(
+            'Error al obtener los datos del impuesto',
+            error.message,
+        );
+        return res.status(500).json({ error: 'Error al obtener los datos' });
+    }
+};
+
+const create = async (req, res) => {
     try {
         const data = req.body;
+
+        const taxFound = await findTaxById(data.ClaveImpuesto);
+        if (taxFound.exist) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El impuesto SAT ya existe',
+            });
+        }
+
+        const taxNameFound = await findTaxByName(data.Nombre);
+        if (taxNameFound.exist) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El nombre del impuesto SAT ya existe',
+            });
+        }
+        
         const newTax = await Impuesto.create(data);
-        return res.status(200).json(newTax);
+        return res.status(200).json({message: 'El impuesto del SAT se ha creado correctamente', ClaveImpuesto: newTax.dataValues.ClaveImpuesto });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -32,20 +81,23 @@ const createTax = async (req, res) => {
     }
 };
 
-const updateTax = async (req, res) => {
+const updateById = async (req, res) => {
     try {
         const data = req.body;
-        const taxFound = await Impuesto.findOne({
-            where: {
-                ClaveImpuesto: data.ClaveImpuesto,
-                Activo: 1
-            }
-        });
 
-        if (!taxFound) {
+        const taxFound = await findTaxById(data.ClaveImpuesto);
+        if (!taxFound.exist) {
             return res.status(404).json({
                 status: 404,
                 error: 'El impuesto no existe',
+            });
+        }
+
+        const taxNameFound = await findTaxByName(data.Nombre);
+        if (taxNameFound.exist && taxNameFound.data.ClaveImpuesto !== data.ClaveImpuesto) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El nombre del impuesto ya existe',
             });
         }
 
@@ -54,7 +106,7 @@ const updateTax = async (req, res) => {
                 ClaveImpuesto: data.ClaveImpuesto
             }
         });
-        return res.status(200).json({ message: 'Impuesto actualizado correctamente', data });
+        return res.status(200).json({ message: 'Impuesto actualizado correctamente', });
     } catch (error) {
         console.error(error);
         return res.status(500).json({
@@ -64,32 +116,44 @@ const updateTax = async (req, res) => {
     }
 };
 
-const deleteTax = async (req, res) => {
+const deleteById = async (req, res) => {
     const id = req.params.id
-
-    const taxFound = await Impuesto.findOne({
-        where: {
-            ClaveImpuesto: id,
-            Activo: 1
+    try{
+        const taxFound = await findTaxById(id);
+        if (!taxFound.exist) {
+            return res.status(404).json({
+                status: 404,
+                error: 'El impuesto no existe',
+            });
         }
-    });
-    if (!taxFound) {
-        return res.status(404).json({
-            status: 404,
-            error: 'El impuesto no existe',
+    
+        await Impuesto.update(
+            {
+                Activo: 0,
+            },
+            {
+                where: {
+                    ClaveImpuesto: id,
+                },
+            },
+        );
+    
+        return res.status(200).json({
+            message: 'Impuesto eliminado correctamente',
+        });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({
+            status: 500,
+            error: 'Error interno del servidor',
         });
     }
-
-    taxFound.Activo = 0
-
-    await taxFound.save()
-
-    return res.status(200).json({ message: 'Impuesto eliminado' })
 };
 
 export const methods = {
-    findTax,
-    createTax,
-    updateTax,
-    deleteTax,
+    findAll,
+    findByName,
+    create,
+    updateById,
+    deleteById,
 };

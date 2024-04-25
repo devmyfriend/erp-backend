@@ -1,155 +1,161 @@
-import { CompoundTax } from "../models/impuesto.compuesto.model.js";
+import {
+	findCompoundTaxById,
+	findCompoundTaxByName,
+} from '../middlewares/finders/index.js';
+import { CompoundTax } from '../models/impuesto.compuesto.model.js';
+import { Op } from 'sequelize';
 
 const findAll = async (req, res) => {
-    const page = parseInt(req.params.pagina) || 1;
-    const limit = 10;
-    const offset = (page - 1) * limit;
-    try {
-        const { count, rows } = await CompoundTax.findAndCountAll({
+	const limit = 10;
+	try {
+		const data = await CompoundTax.findAll({
 			limit,
-			offset,
+			where: {
+				Borrado: 0,
+			},
+			order: [['ImpuestoCompuestoId', 'DESC']],
 		});
-        const totalPages = Math.ceil(count / limit);
 
+		const newData = data.map(item => ({
+			ImpuestoCompuestoId: item.ImpuestoCompuestoId,
+			Nombre: item.Nombre,
+			Predeterminado: item.Predeterminado,
+		}));
+		return res.status(200).json(newData);
+	} catch (error) {
+		console.log(error);
+		return res.status(500).json({
+			status: 500,
+			error: 'Error interno del servidor',
+		});
+	}
+};
 
-        const newData = rows.map(item => ({
-            ImpuestoCompuestoId: item.ImpuestoCompuestoId,
-            Nombre: item.Nombre,
-            Predeterminado: item.Predeterminado
-        }));
+const findByName = async (req, res) => {
+	const name = req.body.Nombre;
+	try {
+		const data = await CompoundTax.findAll({
+			where: {
+				Nombre: { [Op.like]: `%${name}%` },
+				Borrado: 0,
+			},
+		});
 
-        return res.status(200).json({
-            totalPages,
-            currentPage: page,
-            totalItems: count,
-            items: newData,
-        });
+		if (data.length === 0) {
+			return res.status(404).json({ message: 'No hay datos disponibles' });
+		}
 
-
-/*     try{
-        const data = await CompoundTax.findAll({
-            limit: 10,
-            where: {
-                Borrado: 0
-            }
-        });
-     
-        const newData = data.map(item => ({
-            ImpuestoCompuestoId: item.ImpuestoCompuestoId,
-            Nombre: item.Nombre,
-            Predeterminado: item.Predeterminado
-        }));
-        
-        return res.status(200).json(newData); */
-    } catch (error) {
-        console.log(error);
-        return res.status(500).json({
-            status: 500,
-            error: 'Error interno del servidor',
-        });
-    }
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error(
+			'Error al obtener los datos del impuesto compuesto',
+			error.message,
+		);
+		return res.status(500).json({ error: 'Error al obtener los datos' });
+	}
 };
 
 const create = async (req, res) => {
-    try {
-        const data = req.body;
+	try {
+		const data = req.body;
 
-        const taxFound = await CompoundTax.findOne({
-            where: {
-                Nombre: data.Nombre,
-            }
-        });
+		const taxNameFound = await findCompoundTaxByName(data.Nombre);
+		if (taxNameFound.exist) {
+			return res.status(404).json({
+				status: 404,
+				error: 'El nombre del impuesto compuesto ya existe',
+			});
+		}
 
-        if (taxFound) {
-            return res.status(404).json({
-                status: 404,
-                error: 'El impuesto compuesto ya existe',
-            });
-        }
-
-        const newCompoundTax = await CompoundTax.create(data);
-        return res.status(200).json({ message: 'Impuesto compuesto creado correctamente', response: newCompoundTax.ImpuestoCompuestoId });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            status: 500,
-            error: 'Error interno del servidor: ' + error,
-        });
-    }
+		const newCompoundTax = await CompoundTax.create(data);
+		return res.status(200).json({
+			message: 'Impuesto compuesto creado correctamente',
+			ImpuestoCompuestoId: newCompoundTax.ImpuestoCompuestoId,
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			status: 500,
+			error: 'Error interno del servidor: ' + error,
+		});
+	}
 };
 
 const updateById = async (req, res) => {
-    try {
-        const data = req.body;
-        
-        const taxFound = await CompoundTax.findOne({
-            where: {
-                ImpuestoCompuestoId: data.ImpuestoCompuestoId,
-            }
-        });
+	try {
+		const data = req.body;
 
-        if (!taxFound) {
-            return res.status(404).json({
-                status: 404,
-                error: 'El impuesto compuesto no existe',
-            });
-        }
+		const taxFound = await findCompoundTaxById(data.ImpuestoCompuestoId);
+		if (!taxFound.exist) {
+			return res.status(404).json({
+				status: 404,
+				error: 'El impuesto compuesto no existe',
+			});
+		}
 
-        const taxNameFound = await CompoundTax.findOne({
-            where: {
-                Nombre: data.Nombre,
-            }
-        });
+		const taxNameFound = await findCompoundTaxByName(data.Nombre);
+		if (taxNameFound.exist && taxNameFound.data.ImpuestoCompuestoId !== data.ImpuestoCompuestoId) {
+			return res.status(404).json({
+				status: 404,
+				error: 'El nombre del impuesto compuesto ya existe',
+			});
+		}
 
-        if (taxNameFound && taxNameFound.ImpuestoCompuestoId !== data.ImpuestoCompuestoId) {
-            return res.status(404).json({
-                status: 404,
-                error: 'El nombre del impuesto compuesto ya existe',
-            });
-        }
-        
-        data.ActualizadoEn = new Date();
-        await CompoundTax.update(data, {
-            where: {
-                ImpuestoCompuestoId: data.ImpuestoCompuestoId
-            }
-        });
-        return res.status(200).json({ message: 'Impuesto compuesto actualizado correctamente', response: data.ImpuestoCompuestoId });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({
-            status: 500,
-            error: 'Error interno del servidor',
-        });
-    }
+		await CompoundTax.update(
+			Object.assign(data, {
+				ActualizadoEn: new Date(),
+			})
+			, {
+			where: {
+				ImpuestoCompuestoId: data.ImpuestoCompuestoId,
+			},
+		});
+
+		return res.status(200).json({
+			message: 'Impuesto compuesto actualizado correctamente',
+		});
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			status: 500,
+			error: 'Error interno del servidor',
+		});
+	}
 };
 
 const deleteById = async (req, res) => {
-    const { ImpuestoCompuestoId, BorradoPor } = req.body
+	const { ImpuestoCompuestoId, BorradoPor } = req.body;
 
-    const taxFound = await CompoundTax.findOne({
-        where: {
-            ImpuestoCompuestoId,
-            Borrado: 0
-        }
-    });
-    if (!taxFound) {
-        return res.status(404).json({
-            status: 404,
-            error: 'El impuesto compuesto de id ' + ImpuestoCompuestoId + ' no existe',
-        });
-    }
-    taxFound.Borrado = 1;
-    taxFound.BorradoPor = BorradoPor;
+	const taxFound = await findCompoundTaxById(ImpuestoCompuestoId);
+	if (!taxFound.exist) {
+		return res.status(404).json({
+			status: 404,
+			error: 'El impuesto compuesto no existe',
+		});
+	}
 
-    await taxFound.save();
+	await CompoundTax.update(
+		{
+			Borrado: 1,
+			BorradoPor,
+			BorradoEn: new Date(),
+		},
+		{
+			where: {
+				ImpuestoCompuestoId,
+			},
+		},
+	);
 
-    return res.status(200).json({ message: 'Impuesto compuesto eliminado', response: ImpuestoCompuestoId})
+	return res.status(200).json({
+		message: 'Impuesto compuesto eliminado',
+	});
 };
 
 export const methods = {
-    findAll,
-    create,
-    updateById,
-    deleteById
-}
+	findAll,
+	findByName,
+	create,
+	updateById,
+	deleteById,
+};

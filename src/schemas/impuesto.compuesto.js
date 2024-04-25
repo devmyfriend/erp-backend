@@ -52,3 +52,11 @@ export const deleteCompoundTaxSchema = [
     .isLength({ min: 1, max: 11 })
     .withMessage('El campo ImpuestoCompuestoId debe tener entre 1 y 11 carácateres'),
 ];
+
+export const findByNameCompoundTaxSchema = [
+    body('Nombre')
+    .isString()
+    .withMessage('El campo Nombre debe ser un string')
+    .notEmpty()
+    .withMessage('El campo Nombre es requerido'),
+];

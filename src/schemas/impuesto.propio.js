@@ -15,6 +15,14 @@ export const OwnTaxSchema = [
     .withMessage('El campo ClaveImpuesto debe tener entre 1 y 3 carácteres'),  
 ];
 
+export const findByNameTaxSchema = [
+    body('NombreImpuesto')
+    .isString()
+    .withMessage('El campo NombreImpuesto debe ser un string')
+    .notEmpty()
+    .withMessage('El campo NombreImpuesto es requerido'),
+];
+
 export const createOwnTaxSchema = [
     ...OwnTaxSchema,
     body('CreadoPor')

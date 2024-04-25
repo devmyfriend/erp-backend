@@ -14,17 +14,10 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestos/compuestos/{pagina}:
+ * /api/v1/impuestos/compuestos:
  *   get:
  *     summary: Obtener una lista de impuestos compuestos
  *     tags: [Impuestos compuestos]
- *     parameters:
- *       - in: path
- *         name: pagina
- *         required: true
- *         schema:
- *           type: integer
- *         description: pagina de la lista de impuestos propios
  *     responses:
  *       200:
  *         description: Lista de impuestos compuestos
@@ -48,7 +41,60 @@ const router = Router();
  *                     type: integer
  *                     example: 0
  */
-router.get('/:pagina', methods.findAll);
+router.get('/', methods.findAll);
+
+/**
+ * @swagger
+ * /api/v1/impuestos/compuestos/buscar:
+ *   post:
+ *     summary: Buscar un impuesto compuesto por nombre
+ *     tags: [Impuestos compuestos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Nombre:
+ *                 type: string
+ *                 description: Nombre del impuesto compuesto
+ *                 example: "Impuesto Compuesto 1"
+ *     responses:
+ *       200:
+ *         description: Impuesto compuesto encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 ImpuestoCompuestoId:
+ *                   type: integer
+ *                   example: 1
+ *                 Nombre:
+ *                   type: string
+ *                   example: "Impuesto Compuesto 1"
+ *                 Predeterminado:
+ *                   type: boolean
+ *                   example: true
+ *                 Borrado:
+ *                   type: integer
+ *                   example: 0
+ *       404:
+ *         description: Impuesto compuesto no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: "Impuesto compuesto no encontrado"
+ */
+router.post('/buscar', schema.findByNameCompoundTaxSchema, middleware.validateSchema, methods.findByName);
 
 /**
  * @swagger

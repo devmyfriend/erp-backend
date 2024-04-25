@@ -14,17 +14,10 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/impuestos/propios/{pagina}:
+ * /api/v1/impuestos/propios:
  *   get:
  *     summary: Obtener una lista de impuestos propios
  *     tags: [Impuestos propios]
- *     parameters:
- *       - in: path
- *         name: pagina
- *         required: true
- *         schema:
- *           type: integer
- *         description: pagina de la lista de impuestos propios
  *     responses:
  *       200:
  *         description: Lista de impuestos propios
@@ -48,7 +41,60 @@ const router = Router();
  *                     type: boolean
  *                     example: "true"
  */
-router.get('/:pagina', methods.findAll);
+router.get('/', methods.findAll);
+
+/**
+ * @swagger
+ * /api/v1/impuestos/propios/buscar:
+ *   post:
+ *     summary: Buscar un impuesto propio por nombre
+ *     tags: [Impuestos propios]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               NombreImpuesto:
+ *                 type: string
+ *                 description: Nombre del impuesto
+ *                 example: "IVA 16%"
+ *     responses:
+ *       200:
+ *         description: Impuesto encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 cfgImpuestoId:
+ *                   type: integer
+ *                   example: "1"
+ *                 NombreImpuesto:
+ *                   type: string
+ *                   example: "IVA 16%"
+ *                 ClaveImpuesto:
+ *                   type: string
+ *                   example: "007"
+ *                 Activo:
+ *                   type: boolean
+ *                   example: "true"
+ *       404:
+ *         description: Impuesto no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: number
+ *                   example: 404
+ *                 message:
+ *                   type: string
+ *                   example: "Impuesto no encontrado"
+ */
+router.post('/buscar', schemas.findByNameTaxSchema, middleware.validateSchema, methods.findByName);
 
 /**
  * @swagger
