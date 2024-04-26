@@ -1,15 +1,19 @@
-import { findItem, findAllItems } from './utilities.js';
 import { Tax, OwnTax, CompoundTax } from '../../models/index.js';
 import { Op } from 'sequelize';
 
-export const findTaxByName = async name =>
-	findItem(Tax, { Activo: 1, Nombre: name });
-	
-export const findOwnTaxByName = async name =>
-	findItem(OwnTax, { Borrado: 0, NombreImpuesto: name });
+const handleDatabaseError = error => {
+	console.error(error);
+	return { message: 'Error interno del servidor' };
+};
 
-export const findCompoundTaxByName = async name =>
-	findItem(CompoundTax, { Borrado: 0, Nombre: name });
+const findAllItems = async (model, whereClause) => {
+	try {
+		const item = await model.findAll({ where: whereClause });
+		return item.length > 0 ? { exist: true, data: item } : { exist: false };
+	} catch (error) {
+		return handleDatabaseError(error);
+    }
+}
 
 export const findAllTaxByName = async name =>	
 	findAllItems(Tax, { Activo: 1, Nombre: { [Op.like]: `%${name}%`,} });

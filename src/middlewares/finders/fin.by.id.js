@@ -1,5 +1,18 @@
-import { findItem } from './utilities.js';
 import { Tax, OwnTax, CompoundTax } from '../../models/index.js';
+
+const handleDatabaseError = error => {
+	console.error(error);
+	return { message: 'Error interno del servidor' };
+};
+
+const findItem = async (model, whereClause) => {
+	try {
+		const item = await model.findOne({ where: whereClause });
+		return item ? { exist: true, data: item.dataValues } : { exist: false };
+	} catch (error) {
+		return handleDatabaseError(error);
+    }
+}
 
 export const findTaxById = async code =>
 	findItem(Tax, { Activo: 1, ClaveImpuesto: code });
