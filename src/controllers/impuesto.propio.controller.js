@@ -41,7 +41,7 @@ const findByName = async (req, res) => {
 
 		return res
 			.status(200)
-			.json({ message: 'Impuestos encontrados', response: data });
+			.json({ message: 'Impuestos encontrados', response: data.data });
 	} catch (error) {
 		console.error(
 			'Error al obtener los datos del impuesto propio',
