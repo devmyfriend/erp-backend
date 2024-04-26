@@ -55,7 +55,7 @@ const create = async (req, res) => {
 			});
 		}
 
-		const taxNameFound = await finders.findTaxByName(data.Nombre);
+		const taxNameFound = await finders.findAllTaxByName(data.Nombre);
 		if (taxNameFound.exist) {
 			return res.status(404).json({
 				status: 404,
@@ -91,7 +91,7 @@ const updateById = async (req, res) => {
 			});
 		}
 
-		const taxNameFound = await finders.findTaxByName(data.Nombre);
+		const taxNameFound = await finders.findAllTaxByName(data.Nombre);
 		if (
 			taxNameFound.exist &&
 			taxNameFound.data.ClaveImpuesto !== data.ClaveImpuesto
