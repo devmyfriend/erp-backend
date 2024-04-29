@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { methods } from '../controllers/sat.impuesto.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
-import { body } from 'express-validator';
-
+import * as schemas from '../schemas/sat.impuestos.js';
 const router = Router();
 
 /**
@@ -40,9 +39,74 @@ const router = Router();
  *                     type: boolean
  *                     example: "true"
  */
+router.get('/', methods.findAll);
 
+/**
+ * @swagger
+ * /api/v1/impuestos/buscar:
+ *   post:
+ *     summary: Buscar impuestos SAT por nombre
+ *     tags: [Impuestos]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Nombre:
+ *                 type: string
+ *                 example: "NEW NAME"
+ *     responses:
+ *       200:
+ *         description: Lista de impuestos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveImpuesto:
+ *                     type: string
+ *                     example: "ABW"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "ISR"
+ *                   Activo:
+ *                     type: boolean
+ *                     example: "true"
+ */
+router.post('/buscar', schemas.findTaxByNameSchema, middleware.validateSchema, methods.findByName);
 
-router.get('/', methods.findTax);
+/**
+ * @swagger
+ * /api/v1/impuestos/all:
+ *   get:
+ *     summary: Obtener una lista de impuestos SAT vinculados a impuestos propios
+ *     tags: [Impuestos]
+ *     responses:
+ *       200:
+ *         description: Lista de impuestos SAT vinculados a impuestos propios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveImpuesto:
+ *                     type: string
+ *                     example: "ABW"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "ISR"
+ *                   Activo:
+ *                     type: boolean
+ *                     example: true
+ */
+
+router.get('/all', methods.findAllComplete);
 
 /**
  * @swagger
@@ -83,24 +147,12 @@ router.get('/', methods.findTax);
  *                     type: boolean
  *                     example: true
  */
-router.post('/',
-	body('ClaveImpuesto')
-		.isString()
-		.withMessage('El campo ClaveImpuesto debe ser un string')
-		.notEmpty()
-		.withMessage('El campo ClaveImpuesto es requerido')
-		.isLength({ min: 3, max: 3 })
-		.withMessage(
-			'El campo ClaveImpuesto debe tener 3 caracteres',
-		),
-	body('Nombre')
-		.isString()
-		.withMessage('El campo Nombre debe ser un string')
-		.notEmpty()
-		.withMessage('El campo Nombre es requerido'),
-	middleware.validateSchema, methods.createTax)
-
-
+router.post(
+	'/',
+	schemas.TaxSchema,
+	middleware.validateSchema,
+	methods.create,
+);
 
 /**
  * @swagger
@@ -108,7 +160,7 @@ router.post('/',
  *   put:
  *     summary: Actualizar un impuesto existente
  *     tags: [Impuestos]
- *  
+ *
  *     requestBody:
  *       required: true
  *       content:
@@ -117,8 +169,8 @@ router.post('/',
  *             type: object
  *             properties:
  *               ClaveImpuesto:
- *                 type: number
- *                 example: 0
+ *                 type: string
+ *                 example: "000"
  *               Nombre:
  *                 type: string
  *                 example: "UPDATED NAME"
@@ -143,24 +195,12 @@ router.post('/',
  *                       type: string
  *                       example: "UPDATED NAME"
  */
-router.put('/',
-	body('ClaveImpuesto')
-		.isString()
-		.withMessage('El campo ClaveImpuesto debe ser un string')
-		.notEmpty()
-		.withMessage('El campo ClaveImpuesto es requerido')
-		.isLength({ min: 3, max: 3 })
-		.withMessage(
-			'El campo ClaveImpuesto debe tener 3 caracteres',
-		),
-	body('Nombre')
-		.isString()
-		.withMessage('El campo Nombre debe ser un string')
-		.notEmpty()
-		.withMessage('El campo Nombre es requerido'), middleware.validateSchema, methods.updateTax)
-
-
-
+router.put(
+	'/',
+	schemas.TaxSchema,
+	middleware.validateSchema,
+	methods.updateById,
+);
 
 /**
  * @swagger
@@ -191,8 +231,6 @@ router.put('/',
  *                   type: string
  *                   example: "Impuesto no encontrado"
  */
-
-router.delete('/:id', middleware.validateSchema, methods.deleteTax);
-
+router.delete('/:id', schemas.deleteTaxSchema ,middleware.validateSchema, methods.deleteById);
 
 export default router;

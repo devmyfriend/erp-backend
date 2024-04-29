@@ -1,8 +1,8 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const Impuesto = Connection.define(
-    'Impuesto',
+export const Tax = Connection.define(
+    'Tax',
     {
         ClaveImpuesto:
         {
@@ -27,4 +27,3 @@ export const Impuesto = Connection.define(
         freezeTableName: true,
     },
 )
-

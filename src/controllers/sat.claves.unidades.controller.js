@@ -2,7 +2,7 @@ import UnitKey from '../models/sat.clave.unidad.model.js';
 import { Op } from 'sequelize';
 
 const findAllUnitKeys = async (req, res) => {
-	const page = req.params.pagina ? Number(req.params.pagina) : 1;
+	const page = req.params.pagina ? parseInt(req.params.pagina) : 1;
 	const limit = 10;
 	const offset = (page - 1) * limit;
 
@@ -50,7 +50,7 @@ const findUnitKeysByKey = async (req, res) => {
 			},
 		});
 
-		if (!data) {
+		if (data.length === 0) {
 			return res.status(404).json({ message: 'No hay datos disponibles' });
 		}
 
@@ -145,7 +145,6 @@ const updateUnitKey = async (req, res) => {
 };
 
 const deleteUnitKey = async (req, res) => {
-	/* const { ClaveUnidadSat } = req.body; */
 	const UnitSATKey = req.body.ClaveUnidadSat;
 
 	try {
