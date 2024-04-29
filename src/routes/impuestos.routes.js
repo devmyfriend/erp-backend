@@ -81,6 +81,35 @@ router.post('/buscar', schemas.findTaxByNameSchema, middleware.validateSchema, m
 
 /**
  * @swagger
+ * /api/v1/impuestos/all:
+ *   get:
+ *     summary: Obtener una lista de impuestos SAT vinculados a impuestos propios
+ *     tags: [Impuestos]
+ *     responses:
+ *       200:
+ *         description: Lista de impuestos SAT vinculados a impuestos propios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveImpuesto:
+ *                     type: string
+ *                     example: "ABW"
+ *                   Nombre:
+ *                     type: string
+ *                     example: "ISR"
+ *                   Activo:
+ *                     type: boolean
+ *                     example: true
+ */
+
+router.get('/all', methods.findAllComplete);
+
+/**
+ * @swagger
  * /api/v1/impuestos:
  *   post:
  *     summary: Crear un impuesto

@@ -43,6 +43,25 @@ const findByName = async (req, res) => {
 	}
 };
 
+const findAllComplete = async (req, res) => {
+	try {
+		const data = await Tax.findAll({
+			where: {
+				Activo: 1,
+			},
+			order: [['ClaveImpuesto', 'DESC']],
+		});
+
+		return res.status(200).json(data);
+	} catch (error) {
+		console.error(error);
+		return res.status(500).json({
+			status: 500,
+			error: 'Error interno del servidor',
+		});
+	}
+};
+
 const create = async (req, res) => {
 	try {
 		const data = req.body;
@@ -156,6 +175,7 @@ const deleteById = async (req, res) => {
 export const methods = {
 	findAll,
 	findByName,
+	findAllComplete,
 	create,
 	updateById,
 	deleteById,
