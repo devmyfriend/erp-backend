@@ -90,7 +90,7 @@ const updateById = async (req, res) => {
 		const taxNameFound = await finders.findAllCompoundTaxByName(data.Nombre);
 		if (
 			taxNameFound.exist &&
-			taxNameFound.data.ImpuestoCompuestoId !== data.ImpuestoCompuestoId
+			taxNameFound.data[0].ImpuestoCompuestoId !== data.ImpuestoCompuestoId
 		) {
 			return res.status(404).json({
 				status: 404,
