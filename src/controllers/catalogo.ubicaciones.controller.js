@@ -1,5 +1,6 @@
 import { Op } from 'sequelize';
 import { Ubicaciones } from '../models/cat.ubicaciones.model.js';
+import { buscarUbicacionPorId } from '../middlewares/finders/index.js';
 
 const findAllUbications = async (req, res) => {
 	const page = Number(req.params.page) || 1;
@@ -129,25 +130,44 @@ const updateUbication = async (req, res) => {
 	}
 };
 
+//ejemplo de codigo
+
 const deleteUbication = async (req, res) => {
 	const { UbicacionId, BorradoPor } = req.body;
 
 	try {
-		const ubicacion = await Ubicaciones.findOne({
-			where: {
-				UbicacionId: UbicacionId,
-				Borrado: 0,
-			},
-		});
+		// const ubicacion = await Ubicaciones.findOne({
+		// 	where: {
+		// 		UbicacionId: UbicacionId,
+		// 		Borrado: 0,
+		// 	},
+		// });
 
-		if (!ubicacion) {
+		// if (!ubicacion) {
+		// 	return res.status(400).json({ error: 'La ubicación no existe' });
+		// }
+
+		const ubicacion = await buscarUbicacionPorId(UbicacionId)
+		if(!ubicacion.existe){
 			return res.status(400).json({ error: 'La ubicación no existe' });
 		}
 
-		ubicacion.Borrado = 1;
-		ubicacion.BorradoPor = BorradoPor;
-		ubicacion.BorradoEn = new Date();
-		await ubicacion.save();
+		const borrarUbicacion = await Ubicaciones.update(
+			{
+				Borrado:1,
+				BorradoPor,
+				BorradoEn: new Date()
+			},
+			{
+				where:{
+					UbicacionId
+				}
+			}
+		)
+		// ubicacion.Borrado = 1;
+		// ubicacion.BorradoPor = BorradoPor;
+		// ubicacion.BorradoEn = new Date();
+		// await ubicacion.save();
 
 		return res
 			.status(200)
