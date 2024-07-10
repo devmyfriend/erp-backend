@@ -1,7 +1,6 @@
 
 import{ vwSatMetodoPagoModel } from '../../models/index.js'
 import { Ubicaciones } from '../../models/index.js'
-import { MetodoDePago } from '../../models/sat.metodo.de.pago.model.js'
 
 const manejadorDBError = error =>{
     console.error(error)
@@ -14,6 +13,7 @@ const buscarItem = async ( modelo, condiciones )=>{
     try{
 
         const item = await modelo.findOne( {where: condiciones } )
+        console.log(item)
         return item ? { existe: true, data: item.dataValues }: { existe: false }
 
     }catch( error ){
@@ -24,13 +24,11 @@ const buscarItem = async ( modelo, condiciones )=>{
 /*
     METODOS PAGO SAT
 */
-
 export const buscarMetodoPagoSatPorClave = async clave =>{
-    buscarItem(MetodoDePago,{ClaveMetodoPago: clave})
+    buscarItem(vwSatMetodoPagoModel,{ClaveMetodoPago: clave})
 }
 
 //Busquedas de Ubicion
-
 export const buscarUbicacionPorId = async id => {
     buscarItem(Ubicaciones,{UbicacionId: id, Borrado: 0 } )
 }
