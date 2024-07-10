@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection} from '../database/mariadb.database.js';
 
-export const vwSatMetodoPagoModel = Connection.define(
+export const SatMetodoPagoModel = Connection.define(
     'SatMetodoPago',
     {
         ClaveMetodoPago: {

@@ -11,11 +11,18 @@ router.get(
     methods.ObtenerSatMetodoPago
 );
 
+router.post(
+    '/crear',
+    schemas.CrarMetodoPago,
+    middleware.validateSchema,
+    methods.CrearSatMetodoPago
+);
+
 router.patch(
-    '/Editar',
+    '/editar',
     schemas.EditarMetodoPago,
     middleware.validateSchema,
     methods.EditarSatMetodoPago
-)
+);
 
 export default router;

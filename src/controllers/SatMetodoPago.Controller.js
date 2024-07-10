@@ -1,4 +1,4 @@
-import { vwSatMetodoPagoModel } from "../models/vwsatmetodopago.model.js";
+import { SatMetodoPagoModel } from "../models/satmetodopago.model.js";
 import { buscarMetodoPagoSatPorClave } from "../middlewares/finders/index.js"; 
 import { Op } from "sequelize";
 
@@ -21,10 +21,41 @@ const ObtenerSatMetodoPago = async( req, res) => {
     }
 }
 
-const EditarSatMetodoPago = async( req, res) => {
+const CrearSatMetodoPago = async(req, res)=>{
     try{
         const data = req.body;
-        console.log (data);
+        const Existe = await buscarMetodoPagoSatPorClave(data.ClaveMetodoPago)
+
+        if (Existe.existe){
+            return res.status(404).send({
+                status: 'Error',
+                message: 'La clave del método de pago ya está en uso'
+            });
+        }
+
+        const Crear = await SatMetodoPagoModel.create({
+            ClaveMetodoPago: data.ClaveMetodoPago,
+            Descripcion: data.Descripcion,
+            Activo: data.Activo
+        });
+        
+        return res.status(200).send({
+            status: 'Ok',
+            message: 'Se creo método de pago', Crear
+        })
+
+    }
+    catch(error){
+        return res.status(500).send({
+            errors: 'Error al obtener los datos'
+        });
+    }
+
+}
+
+const EditarSatMetodoPago = async(req, res) => {
+    try{
+        const data = req.body;
         const NoExiste = await buscarMetodoPagoSatPorClave(data.ClaveMetodoPago)
 
         if (NoExiste){
@@ -40,10 +71,10 @@ const EditarSatMetodoPago = async( req, res) => {
         
         return res.status(200).send({
             Message: 'OK', Editar
-        });
+        })
     }
     catch(error){
-		return res.status(500).json({
+		return res.status(500).send({
             errors: 'Error al obtener los datos'
         });
     }
@@ -51,5 +82,6 @@ const EditarSatMetodoPago = async( req, res) => {
 
 export const methods = {
     ObtenerSatMetodoPago,
+    CrearSatMetodoPago,
     EditarSatMetodoPago
 };
