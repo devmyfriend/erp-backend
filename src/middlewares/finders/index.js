@@ -1,7 +1,7 @@
 
-import {
-    Ubicaciones
-} from '../../models/index.js'
+import{ vwSatMetodoPagoModel } from '../../models/index.js'
+import { Ubicaciones } from '../../models/index.js'
+import { MetodoDePago } from '../../models/sat.metodo.de.pago.model.js'
 
 const manejadorDBError = error =>{
     console.error(error)
@@ -9,23 +9,6 @@ const manejadorDBError = error =>{
         mensaje: 'Error interno en el servidor'
     }
 }
-
-// const ejecutarSP = async ( res, sp, parametros )=>{
-
-
-//     if(!sp || !parametros ){
-//         return res.status(500).send({
-//             error: 'No se llamo de forma correcta el sp'
-        
-//         })
-//     }
-
-//     const datos = await conn.query(`CALL ${ sp }(?,?)`,{
-//         replacements:[{ ...parametros }] 
-//     })
-
-// }
-
 
 const buscarItem = async ( modelo, condiciones )=>{
     try{
@@ -38,9 +21,18 @@ const buscarItem = async ( modelo, condiciones )=>{
     }
 }
 
+/*
+    METODOS PAGO SAT
+*/
+
+export const buscarMetodoPagoSatPorClave = async clave =>{
+    buscarItem(MetodoDePago,{ClaveMetodoPago: clave})
+}
 
 //Busquedas de Ubicion
 
-export const buscarUbicacionPorId = async id => 
-    buscarItem( Ubicaciones,{ UbicacionId: id, Borrado: 0 } )
+export const buscarUbicacionPorId = async id => {
+    buscarItem(Ubicaciones,{UbicacionId: id, Borrado: 0 } )
+}
+    
 
