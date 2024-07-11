@@ -26,7 +26,7 @@ const CrearSatMetodoPago = async(req, res)=>{
         const data = req.body;
         const Existe = await buscarMetodoPagoSatPorClave(data.ClaveMetodoPago)
 
-        if (Existe.existe){
+        if (Existe.existe === true){
             return res.status(404).send({
                 status: 'Error',
                 message: 'La clave del método de pago ya está en uso'
@@ -53,28 +53,33 @@ const CrearSatMetodoPago = async(req, res)=>{
 
 }
 
-const EditarSatMetodoPago = async(req, res) => {
+const EditarSatMetodoPago = async (req, res) => {
     try{
         const data = req.body;
-        const NoExiste = await buscarMetodoPagoSatPorClave(data.ClaveMetodoPago)
-
-        if (NoExiste){
+        const Existe = await buscarMetodoPagoSatPorClave(data.ClaveMetodoPago);
+        // console.log(`valor de existe ${ Existe.existe}`)
+        if (Existe.existe === false){
             return res.status(404).send({
-                error: 'Error no se encontro el elemento'
+                status: 'Error',
+                message: 'La clave del método de pago no existe'
             });
         }
-        
-        const Editar = await vwSatMetodoPagoModel.findOne({where: {ClaveMetodoPago: data.ClaveMetodoPago}})
-        Editar.Descripcion = data.Descripcion
-        Editar.Activo = data.Activo
-        await Editar.save();
+
+        const Editar = await SatMetodoPagoModel.update({
+            Descripcion: data.Descripcion,
+            Activo:  data.Activo,
+        },
+        {where: {ClaveMetodoPago: data.ClaveMetodoPago}}
+        );
         
         return res.status(200).send({
-            Message: 'OK', Editar
+            status: 'OK',
+            Message: 'Se actualizó correctamente'
         })
     }
     catch(error){
-		return res.status(500).send({
+		console.log(error)
+        return res.status(500).send({
             errors: 'Error al obtener los datos'
         });
     }
