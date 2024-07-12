@@ -16,8 +16,12 @@ export const MetodoDePago = Connection.define(
         }
     },
         {
+            sequelize: Connection,
+            modelName: 'SAT_MetodoPago',
             tableName: 'SAT_MetodoPago',
             timestamps: false,
             freezeTableName: true,
         },
 );
+
+export default MetodoDePago;

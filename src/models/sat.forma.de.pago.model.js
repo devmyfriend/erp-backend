@@ -18,6 +18,8 @@ export const FormaDePago = Connection.define(
       },
     },
     {
+      sequelize: Connection,
+      modelName: 'SAT_FormaPago',
       tableName: 'SAT_FormaPago',
       timestamps: false,
       freezeTableName: true,
