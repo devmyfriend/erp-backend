@@ -4,14 +4,14 @@ import { Op } from "sequelize";
 
 const ObtenerSatMetodoPago = async( req, res) => {
     try{
-        const Lista = await vwSatMetodoPagoModel.findAll({
+        const data = await SatMetodoPagoModel.findAll({
             where:{
                 Activo: true
             }
         });
 
         return res.status(200).send({
-            Message: 'OK', Lista
+            Message: 'OK', data
         });
     }
     catch(error){
@@ -36,12 +36,13 @@ const CrearSatMetodoPago = async(req, res)=>{
         const Crear = await SatMetodoPagoModel.create({
             ClaveMetodoPago: data.ClaveMetodoPago,
             Descripcion: data.Descripcion,
-            Activo: data.Activo
+            Activo: true
         });
         
         return res.status(200).send({
             status: 'Ok',
-            message: 'Se creo método de pago', Crear
+            message: 'Se creo método de pago', 
+            data: Crear
         })
 
     }
@@ -85,8 +86,72 @@ const EditarSatMetodoPago = async (req, res) => {
     }
 }
 
+const HabilitarSatMetodoPago = async (req, res) => {
+    try{
+        const { ClaveMetodoPago } = req.body;
+        const Existe = await buscarMetodoPagoSatPorClave(ClaveMetodoPago);
+        // console.log(`valor de existe ${ Existe.existe}`)
+        if (Existe.existe === false){
+            return res.status(404).send({
+                status: 'Error',
+                message: 'La clave del método de pago no existe'
+            });
+        }
+
+        const Editar = await SatMetodoPagoModel.update({
+            Activo: true,
+        },
+        {where: {ClaveMetodoPago: ClaveMetodoPago}}
+        );
+        
+        return res.status(200).send({
+            status: 'OK',
+            Message: 'Método de pago habilitado correctamente'
+        })
+    }
+    catch(error){
+		console.log(error)
+        return res.status(500).send({
+            errors: 'Error al obtener los datos'
+        });
+    }
+}
+
+const DesHabilitarSatMetodoPago = async (req, res) => {
+    try{
+        const { ClaveMetodoPago } = req.body;
+        const Existe = await buscarMetodoPagoSatPorClave(ClaveMetodoPago);
+        // console.log(`valor de existe ${ Existe.existe}`)
+        if (Existe.existe === false){
+            return res.status(404).send({
+                status: 'Error',
+                message: 'La clave del método de pago no existe'
+            });
+        }
+
+        const Editar = await SatMetodoPagoModel.update({
+            Activo: false,
+        },
+        {where: {ClaveMetodoPago: ClaveMetodoPago}}
+        );
+        
+        return res.status(200).send({
+            status: 'OK',
+            Message: 'Método de pago deshabilitado correctamente'
+        })
+    }
+    catch(error){
+		console.log(error)
+        return res.status(500).send({
+            errors: 'Error al obtener los datos'
+        });
+    }
+}
+
 export const methods = {
     ObtenerSatMetodoPago,
     CrearSatMetodoPago,
-    EditarSatMetodoPago
+    EditarSatMetodoPago,
+    HabilitarSatMetodoPago,
+    DesHabilitarSatMetodoPago
 };
