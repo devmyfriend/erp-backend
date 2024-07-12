@@ -1,4 +1,4 @@
-import { body } from 'express-validator'
+import { body } from 'express-validator';
 
 export const createPaymentMethodsSchema = [
     body('ClaveFormaPago')
@@ -18,7 +18,7 @@ export const createPaymentMethodsSchema = [
         .withMessage('El campo bancarizado es requerido')
         .isBoolean()
         .withMessage('El campo bancarizado debe ser un booleano'),
-]
+];
 
 export const updatePaymentMethodsSchema = [
     body('ClaveFormaPago')
@@ -36,7 +36,7 @@ export const updatePaymentMethodsSchema = [
         .optional()
         .isBoolean()
         .withMessage('El campo bancarizado debe ser un booleano'),
-]
+];
 
 export const createPaymentTypeSchema = [
     body('ClaveMetodoPago')
@@ -51,7 +51,7 @@ export const createPaymentTypeSchema = [
         .withMessage('La descripción del método de pago es requerida')
         .isString()
         .withMessage('La descripción del método de pago debe ser una cadena de texto'),
-]
+];
 
 export const updatePaymentTypeSchema = [
     body('ClaveMetodoPago')
@@ -65,6 +65,4 @@ export const updatePaymentTypeSchema = [
         .optional()
         .isString()
         .withMessage('La descripción del método de pago debe ser una cadena de texto'),
-]
-
-
+];

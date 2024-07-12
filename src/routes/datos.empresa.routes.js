@@ -3,6 +3,8 @@ import { methods } from '../controllers/datos.empresa.controller.js';
 import { param } from 'express-validator';
 import * as schemas from '../schemas/empresa.js';
 import * as middleware from '../middlewares/express-validator.js';
+
+import { findEmpresaEmail, findEmail } from '../middlewares/finders/index.js';
 const router = Router();
 
 /**
@@ -925,7 +927,8 @@ router.patch(
  *   delete:
  *     tags:
  *       - EmpresaEmail
- *     summary: Eliminar una relación EmpresaEmail
+ *     summary: Desactivar una relación EmpresaEmail
+ *     description: Este endpoint desactiva una relación entre una empresa y un email, marcando el email como borrado.
  *     requestBody:
  *       required: true
  *       content:
@@ -935,17 +938,22 @@ router.patch(
  *             properties:
  *               EmailId:
  *                 type: integer
+ *                 description: ID del email a desactivar
  *               BorradoPor:
  *                 type: integer
+ *                 description: ID del usuario que realiza la acción
+ *             required:
+ *               - EmailId
+ *               - BorradoPor
  *     responses:
  *       200:
- *         description: Se ha eliminado el email
+ *         description: Se ha desactivado el email correctamente
  *       404:
  *         description: La empresa o el email no existe
  *       500:
- *         description: Error al eliminar el email
+ *         description: Error al desactivar el email
  */
-router.delete('/emails/desactivar', methods.desactivarEmpresaEmails);
+	router.delete('/api/v1/empresa/emails/desactivar', findEmpresaEmail, findEmail, methods.desactivarEmpresaEmails);
 
 /**
  * @swagger

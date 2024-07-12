@@ -2,20 +2,20 @@ import { Op, Sequelize } from 'sequelize';
 import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
 
 const findProductServicesByCode = async (req, res) => {
-	const code = req.params.code;
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ error: 'No hay datos isponibles' });
-		}
+    const code = req.params.code;
+    try {
+        const data = await ProductosServicios.findAll({
+            where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
+        });
+        if (!data) {
+            return res.status(404).json({ error: 'No hay datos disponibles' });
+        }
 
-		return res.status(200).json({ response: data });
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
-	}
+        return res.status(200).json({ response: data });
+    } catch (error) {
+        console.error('Error al obtener los datos del producto', error.message);
+        return res.status(500).json({ error: 'Error al obtener los datos' });
+    }
 };
 
 const findProductServicesByDescription = async (req, res) => {

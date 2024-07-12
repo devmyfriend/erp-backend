@@ -709,43 +709,25 @@ const editarEmpresaEmails = async (req, res) => {
 
 const desactivarEmpresaEmails = async (req, res) => {
 	try {
-		const empresaEmail = await EmpresaEmails.findOne({
-			where: {
-				EmailId: req.body.EmailId,
-			},
-		});
-
-		if (!empresaEmail) {
-			return res
-				.status(404)
-				.json({ status: 404, message: 'El email no existe' });
-		}
-
-		await empresaEmail.update({
-			Borrado: true,
-			BorradoPor: req.body.BorradoPor,
-		});
-
-		await Email.update(
-			{
-				Borrado: true,
-				BorradoPor: req.body.BorradoPor,
-				BorradoEn: new Date(),
-			},
-			{
-				where: {
-					EmailId: req.body.EmailId,
-				},
-			},
-		);
-
-		return res.status(200).json({
-			message: 'Se ha descativado el correo: ' + empresaEmail.EmailId,
-		});
+	  await req.empresaEmail.update({
+		Borrado: true,
+		BorradoPor: req.body.BorradoPor,
+	  });
+  
+	  await req.email.update({
+		Borrado: true,
+		BorradoPor: req.body.BorradoPor,
+		BorradoEn: new Date(),
+	  });
+  
+	  return res.status(200).json({
+		message: 'Se ha desactivado el correo: ' + req.empresaEmail.EmailId,
+	  });
 	} catch (error) {
-		return res.status(500).json(error.message);
+	  return res.status(500).json(error.message);
 	}
-};
+  };
+  
 
 const buscarContactosPorNombreYEntidad = async (req, res) => {
     const { Nombre, EntidadNegocioId } = req.body;

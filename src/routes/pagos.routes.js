@@ -3,6 +3,7 @@ import { methods } from '../controllers/sat.payment.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/payment.methods.js';
 import router from './sucursal.routes.js';
+import { findFormaDePago, findMetodoDePago } from '../middlewares/finders/index.js';
 
 /**
  * @swagger
@@ -39,6 +40,7 @@ router.post(
 	'/forma/pago',
 	schemas.createPaymentMethodsSchema,
 	middleware.validateSchema,
+    findFormaDePago,
 	methods.createPaymentMethods,
 );
 
@@ -146,6 +148,7 @@ router.post(
 	'/metodo/pago',
 	schemas.createPaymentTypeSchema,
 	middleware.validateSchema,
+    findMetodoDePago,
 	methods.createPaymentType,
 );
 

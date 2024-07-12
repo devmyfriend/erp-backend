@@ -39,16 +39,16 @@ const router = Router()
  *               PalabrasSimilares: "Palabra 1"
  */
 router.get(
-	'/servicio/buscar/:code',
-	param('code')
-	.notEmpty()
-	.withMessage('El código del producto o servicio no puede estar vacio')
+    '/servicio/buscar/:code',
+    param('code')
+    .notEmpty()
+    .withMessage('El código del producto o servicio no puede estar vacio')
     .isInt()
     .withMessage('El código del producto o servicio tiene que ser un numero entero')
     .matches(/^\S*$/)
-    .withMessage('El código del producto o servicio no puede contener espacios'),	
-	middleware.validateSchema,
-	methods.findProductServicesByCode,
+    .withMessage('El código del producto o servicio no puede contener espacios'),   
+    middleware.validateSchema,
+    methods.findProductServicesByCode,
 );
 
 /**

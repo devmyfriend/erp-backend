@@ -3,6 +3,7 @@ import { methods } from '../controllers/sat.claves.unidades.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/claves.unidades.js';
 import { param } from 'express-validator';
+import { findClaveUnidad } from '../middlewares/finders/index.js';
 const router = Router();
 
 /**
@@ -191,6 +192,7 @@ router.post(
 	'/clave',
 	schemas.createUnitKeySchema,
 	middleware.validateSchema,
+	findClaveUnidad,
 	methods.createUnitKey,
 );
 
