@@ -1,5 +1,5 @@
 
-import{ SatMetodoPagoModel } from '../../models/index.js'
+import{ SatMetodoPagoModel, SatMonedaModel } from '../../models/index.js'
 import { Ubicaciones } from '../../models/index.js'
 
 const manejadorDBError = error =>{
@@ -20,11 +20,14 @@ const buscarItem = async ( modelo, condiciones )=>{
     }
 }
 
-/*
-    METODOS PAGO SAT
-*/
+//METODOS PAGO SAT
 export const buscarMetodoPagoSatPorClave = async clave =>
     buscarItem(SatMetodoPagoModel,{ClaveMetodoPago: clave})
+
+//MONEDAS SAT
+export const buscarMonedaSatPorClave = async clave =>
+    buscarItem(SatMonedaModel,{ClaveMoneda: clave})
+
 
 
 //Busquedas de Ubicion

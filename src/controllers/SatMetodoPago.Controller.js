@@ -1,6 +1,5 @@
 import { SatMetodoPagoModel } from "../models/satmetodopago.model.js";
 import { buscarMetodoPagoSatPorClave } from "../middlewares/finders/index.js"; 
-import { Op } from "sequelize";
 
 const ObtenerSatMetodoPago = async( req, res) => {
     try{
