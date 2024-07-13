@@ -55,7 +55,7 @@ const router = Router();
  *                     Descripcion: "Afghani"
  *      responses:
  *         200:
- *            description: Moneda SAT registrado
+ *            description: Moneda SAT registrado correctamente
  *            content:
  *               application/json:
  *                  example:
@@ -65,7 +65,7 @@ const router = Router();
  *                        - ClaveMoneda: "AFN"
  *                          Descripcion: "Afghani"
  *         404:
- *            description: La clave de moneda SAT ya existe.
+ *            description: La clave de moneda SAT que se está agregando ya existe.
  *            content:
  *               application/json:
  *                  example:
@@ -81,7 +81,59 @@ const router = Router();
  
 router. post(
     '/crear',
-    schemas.crea,
+    schemas.CrarMoneda,
     middleware.validateSchema,
-    methods.CrearSatMetodoPago
+    methods.CrarMoneda
+);
+
+/**
+ * @swagger
+ * /api/v1/satmetodopago/editar:
+ *   patch:
+ *      summary: Actualizar moneda SAT
+ *      tags: [Monedas SAT]
+ *      requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                     ClaveMoneda:
+ *                        type: string
+ *                        description: Clave moneda SAT (Requerido)
+ *                     Descripcion:
+ *                        type: integer
+ *                        description: nombre/ descripción de moneda sat (requerido)
+ *                  example:
+ *                     ClaveMoneda: "AFN"
+ *                     Descripcion: "Afghani"
+ *      responses:
+ *         200:
+ *            description: Moneda SAT actualizado
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Ok"
+ *                     message: "Se actualizó moneda SAT correctamente"
+ *         404:
+ *            description: La clave de moneda SAT que se esta editando no existe.
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Error"
+ *                     message: "La clave de moneda SAT no esta dado de alta"
+ *         500:
+ *            description: Error del servidor
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     error: "Error al obtener los datos"
+ */ 
+
+router.patch(
+    '/editar',
+    schemas.EditarMoneda,
+    middleware.validateSchema,
+    methods.EditarMoneda
 );

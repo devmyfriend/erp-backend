@@ -33,3 +33,43 @@ const CrearSatMoneda = async(req, res)=>{
     }
 
 }
+
+const EditarSatMoneda = async (req, res) => {
+    try{
+        const data = req.body;
+        const Existe = await buscarMonedaSatPorClave(data.ClaveMoneda);
+        // console.log(`valor de existe ${ Existe.existe}`)
+        if (Existe.existe === false){
+            return res.status(404).send({
+                status: 'Error',
+                message: 'La clave de moneda SAT no esta dado de alta'
+            });
+        }
+
+        const Editar = await SatMonedaModel.update({
+            Descripcion: data.Descripcion,
+            Activo:  data.Activo,
+        },
+        {where: {ClaveMoneda: data.ClaveMoneda}}
+        );
+        
+        return res.status(200).send({
+            status: 'OK',
+            Message: 'Se actualizó moneda SAT correctamente'
+        })
+    }
+    catch(error){
+		console.log(error)
+        return res.status(500).send({
+            errors: 'Error al obtener los datos'
+        });
+    }
+}
+
+export const methods = {
+    ObtenerSatMoneda,
+    CrearSatMoneda,
+    EditarSatMoneda,
+    HabilitarSatMoneda,
+    DesHabilitarSatMoneda
+};
