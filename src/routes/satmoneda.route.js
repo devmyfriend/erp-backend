@@ -9,15 +9,15 @@ const router = Router();
 /**
  * @swagger
  * tags:
- *    - name: Monedas SAT
- *      description: Módulos Monedas SAT.
+ *    - name: MONEDAS SAT
+ *      description: Módulo Monedas SAT.
  */
 
 /**
  * @swagger
  * components:
  *    schemas:
- *       SatMetodoPagoModel:
+ *       SatMonedaModel:
  *          type: object
  *          properties:
  *             ClaveMoneda:
@@ -33,10 +33,10 @@ const router = Router();
 
 /**
  * @swagger
- * /api/v1/satmetodopago/crear:
+ * /api/v1/satmoneda/crear:
  *   post:
  *      summary: Crear monedas SAT
- *      tags: [Monedas SAT]
+ *      tags: [MONEDAS SAT]
  *      requestBody:
  *         required: true
  *         content:
@@ -83,15 +83,15 @@ router. post(
     '/crear',
     schemas.CrarMoneda,
     middleware.validateSchema,
-    methods.CrarMoneda
+    methods.CrearSatMoneda
 );
 
 /**
  * @swagger
- * /api/v1/satmetodopago/editar:
+ * /api/v1/satmoneda/editar:
  *   patch:
  *      summary: Actualizar moneda SAT
- *      tags: [Monedas SAT]
+ *      tags: [MONEDAS SAT]
  *      requestBody:
  *         required: true
  *         content:
@@ -122,7 +122,7 @@ router. post(
  *               application/json:
  *                  example:
  *                     status: "Error"
- *                     message: "La clave de moneda SAT no esta dado de alta"
+ *                     message: "La clave de moneda SAT no existe"
  *         500:
  *            description: Error del servidor
  *            content:
@@ -135,5 +135,57 @@ router.patch(
     '/editar',
     schemas.EditarMoneda,
     middleware.validateSchema,
-    methods.EditarMoneda
+    methods.EditarSatMoneda
 );
+
+/**
+ * @swagger
+ * /api/v1/satmoneda/habilitar:
+ *   patch:
+ *      summary: Habilitar moneda SAT
+ *      tags: [MONEDAS SAT]
+ *      requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                     ClaveMoneda:
+ *                        type: string
+ *                        description: Clave moneda SAT (Requerido)
+ *                  example:
+ *                     ClaveMoneda: "AFN"
+ *      responses:
+ *         200:
+ *            description: Moneda SAT habilitado
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Ok"
+ *                     message: "Moneda SAT habilitado correctamente"
+ *         404:
+ *            description: La clave de moneda SAT que se esta habilitando no existe.
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Error"
+ *                     message: "La clave moneda SAT no existe"
+ *         500:
+ *            description: Error del servidor
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     error: "Error al obtener los datos"
+ */ 
+
+router.patch(
+    '/habilitar',
+    schemas.Des_HabilitaMoneda,
+    middleware.validateSchema,
+    methods.HabilitarSatMoneda
+);
+
+
+
+export default router;

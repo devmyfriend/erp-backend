@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { methods } from "../controllers/satmetodopago.controller.js";
+import { methods } from "../controllers/satmetodopago.Controller.js";
 import * as schemas from '../schemas/satmetodopago.schema.js';
 import * as middleware from '../middlewares/express-validator.js';
 import { param } from 'express-validator';

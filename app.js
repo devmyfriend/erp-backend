@@ -16,7 +16,8 @@ import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js'
 import ubicationsRoutes from './src/routes/ubicaciones.routes.js'
 import typeOfReceiptRoutes from './src/routes/sat.tipo.de.comprobante.routes.js';
 
-import satmetodopago from './src/routes/satmetodopago.routes.js'
+import satmetodopago from './src/routes/satmetodopago.routes.js';
+import satmoneda from './src/routes/satmoneda.route.js'
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -57,6 +58,7 @@ const App = {
 		app.use('/api/v1/ubicaciones', ubicationsRoutes);
 		app.use('/api/v1/comprobante', typeOfReceiptRoutes);
 		app.use('/api/v1/satmetodopago', satmetodopago);
+		app.use('/api/v1/satmoneda', satmoneda);
 		app.use('/', (req, res) => {
 			res.status(404).json({message:'Request not found'})
 		});
