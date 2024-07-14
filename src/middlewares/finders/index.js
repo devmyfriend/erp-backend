@@ -28,6 +28,12 @@ export const buscarMetodoPagoSatPorClave = async clave =>
 export const buscarMonedaSatPorClave = async clave =>
     buscarItem(SatMonedaModel,{ClaveMoneda: clave})
 
+export const buscarMonedaSatPorClaveActivo = async clave =>
+    buscarItem(SatMonedaModel,{ClaveMoneda: clave, Activo: 1})
+
+export const buscarMonedaSatPorActivo = async Activo =>
+    buscarItem(SatMonedaModel,{Activo: Activo})
+
 
 
 //Busquedas de Ubicion

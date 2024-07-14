@@ -1,5 +1,5 @@
 import { SatMonedaModel } from "../models/satmoneda.model.js";
-import { buscarMonedaSatPorClave } from "../middlewares/finders/index.js"; 
+import { buscarMonedaSatPorClave, buscarMonedaSatPorClaveActivo } from "../middlewares/finders/index.js"; 
 
 const CrearSatMoneda = async(req, res)=>{
     try{
@@ -134,9 +134,43 @@ const DesHabilitarSatMoneda = async (req, res) => {
     }
 }
 
+const EliminarSatMoneda = async (req, res) => {
+	try {
+        const { ClaveMoneda } = req.body;
+        const Existe = await buscarMonedaSatPorClaveActivo(ClaveMoneda);
+        
+        if (Existe.existe === false){
+            return res.status(404).send({
+                status: 'Error',
+                message: 'Clave moneda SAT no encontrado'
+            });
+        }
+
+		await SatMonedaModel.update(
+            {
+                Activo: false,
+            },
+            {
+                where: {ClaveMoneda: ClaveMoneda}
+            }
+        );
+
+        return res.status(200).send({
+            status: 'OK',
+            Message: 'Moneda SAT borrado'
+        })
+
+	} catch (error) {
+        return res.status(500).send({
+            errors: 'Error al obtener los datos'
+        });
+	}
+};
+
 export const methods = {
     CrearSatMoneda,
     EditarSatMoneda,
     HabilitarSatMoneda,
-    DesHabilitarSatMoneda
+    DesHabilitarSatMoneda,
+    EliminarSatMoneda
 };

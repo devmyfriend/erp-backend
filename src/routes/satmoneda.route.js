@@ -76,7 +76,7 @@ const router = Router();
  *            content:
  *               application/json:
  *                  example:
- *                     error: "Error al obtener los datos"
+ *                     errors: "Error al obtener los datos"
  */ 
  
 router. post(
@@ -128,7 +128,7 @@ router. post(
  *            content:
  *               application/json:
  *                  example:
- *                     error: "Error al obtener los datos"
+ *                     errors: "Error al obtener los datos"
  */ 
 
 router.patch(
@@ -176,7 +176,7 @@ router.patch(
  *            content:
  *               application/json:
  *                  example:
- *                     error: "Error al obtener los datos"
+ *                     errors: "Error al obtener los datos"
  */ 
 
 router.patch(
@@ -224,7 +224,7 @@ router.patch(
  *            content:
  *               application/json:
  *                  example:
- *                     error: "Error al obtener los datos"
+ *                     errors: "Error al obtener los datos"
  */ 
 
 router.patch(
@@ -232,6 +232,53 @@ router.patch(
     schemas.Des_HabilitaMoneda,
     middleware.validateSchema,
     methods.DesHabilitarSatMoneda
+);
+
+/**
+ * @swagger
+ * /api/v1/satmoneda/deshabilitar:
+ *   delete:
+ *      summary: Eliminar moneda SAT
+ *      tags: [MONEDAS SAT]
+ *      requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                     ClaveMoneda:
+ *                        type: string
+ *                        description: Clave moneda SAT (Requerido)
+ *                  example:
+ *                     ClaveMoneda: "AFN"
+ *      responses:
+ *         200:
+ *            description: Moneda SAT deshabilitado
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Ok"
+ *                     message: "Moneda SAT borrado"
+ *         404:
+ *            description: La clave de moneda SAT que se esta deshabilitando/eliminando no existe.
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Error"
+ *                     message: "Clave moneda SAT no encontrado"
+ *         500:
+ *            description: Error del servidor
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     errors: "Error al obtener los datos"
+ */ 
+router.delete(
+	'/Eliminar',
+	schemas.Des_HabilitaMoneda,
+	middleware.validateSchema,
+	methods.EliminarSatMoneda,
 );
 
 export default router;
