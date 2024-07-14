@@ -186,6 +186,52 @@ router.patch(
     methods.HabilitarSatMoneda
 );
 
+/**
+ * @swagger
+ * /api/v1/satmoneda/deshabilitar:
+ *   patch:
+ *      summary: Deshabilitar moneda SAT
+ *      tags: [MONEDAS SAT]
+ *      requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                     ClaveMoneda:
+ *                        type: string
+ *                        description: Clave moneda SAT (Requerido)
+ *                  example:
+ *                     ClaveMoneda: "AFN"
+ *      responses:
+ *         200:
+ *            description: Moneda SAT deshabilitado
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Ok"
+ *                     message: "Moneda SAT deshabilitado correctamente"
+ *         404:
+ *            description: La clave de moneda SAT que se esta deshabilitando no existe.
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Error"
+ *                     message: "La clave moneda SAT no existe"
+ *         500:
+ *            description: Error del servidor
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     error: "Error al obtener los datos"
+ */ 
 
+router.patch(
+    '/deshabilitar',
+    schemas.Des_HabilitaMoneda,
+    middleware.validateSchema,
+    methods.DesHabilitarSatMoneda
+);
 
 export default router;
