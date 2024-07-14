@@ -105,9 +105,13 @@ router. post(
  *                     Descripcion:
  *                        type: integer
  *                        description: nombre/ descripción de moneda sat (requerido)
+ *                     Activo:
+ *                        type: bit
+ *                        description: Estatus de moneda sat (requerido)
  *                  example:
  *                     ClaveMoneda: "AFN"
  *                     Descripcion: "Afghani"
+ *                     Activo: 1
  *      responses:
  *         200:
  *            description: Moneda SAT actualizado
@@ -136,6 +140,53 @@ router.patch(
     schemas.EditarMoneda,
     middleware.validateSchema,
     methods.EditarSatMoneda
+);
+
+/**
+ * @swagger
+ * /api/v1/satmoneda/Eliminar:
+ *   delete:
+ *      summary: Eliminar moneda SAT
+ *      tags: [MONEDAS SAT]
+ *      requestBody:
+ *         required: true
+ *         content:
+ *            application/json:
+ *               schema:
+ *                  type: object
+ *                  properties:
+ *                     ClaveMoneda:
+ *                        type: string
+ *                        description: Clave moneda SAT (Requerido)
+ *                  example:
+ *                     ClaveMoneda: "AFN"
+ *      responses:
+ *         200:
+ *            description: Moneda SAT eliminado
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Ok"
+ *                     message: "Moneda SAT borrado"
+ *         404:
+ *            description: La clave de moneda SAT que se está eliminando no existe.
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     status: "Error"
+ *                     message: "Clave moneda SAT no encontrado"
+ *         500:
+ *            description: Error del servidor
+ *            content:
+ *               application/json:
+ *                  example:
+ *                     errors: "Error al obtener los datos"
+ */ 
+router.delete(
+	'/Eliminar',
+	schemas.Des_HabilitaMoneda,
+	middleware.validateSchema,
+	methods.EliminarSatMoneda,
 );
 
 /**
@@ -232,53 +283,6 @@ router.patch(
     schemas.Des_HabilitaMoneda,
     middleware.validateSchema,
     methods.DesHabilitarSatMoneda
-);
-
-/**
- * @swagger
- * /api/v1/satmoneda/deshabilitar:
- *   delete:
- *      summary: Eliminar moneda SAT
- *      tags: [MONEDAS SAT]
- *      requestBody:
- *         required: true
- *         content:
- *            application/json:
- *               schema:
- *                  type: object
- *                  properties:
- *                     ClaveMoneda:
- *                        type: string
- *                        description: Clave moneda SAT (Requerido)
- *                  example:
- *                     ClaveMoneda: "AFN"
- *      responses:
- *         200:
- *            description: Moneda SAT deshabilitado
- *            content:
- *               application/json:
- *                  example:
- *                     status: "Ok"
- *                     message: "Moneda SAT borrado"
- *         404:
- *            description: La clave de moneda SAT que se esta deshabilitando/eliminando no existe.
- *            content:
- *               application/json:
- *                  example:
- *                     status: "Error"
- *                     message: "Clave moneda SAT no encontrado"
- *         500:
- *            description: Error del servidor
- *            content:
- *               application/json:
- *                  example:
- *                     errors: "Error al obtener los datos"
- */ 
-router.delete(
-	'/Eliminar',
-	schemas.Des_HabilitaMoneda,
-	middleware.validateSchema,
-	methods.EliminarSatMoneda,
 );
 
 export default router;
