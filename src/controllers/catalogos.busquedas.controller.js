@@ -2,10 +2,12 @@ import { Connection as sequelize } from '../database/mariadb.database.js';
 import { Op } from 'sequelize';
 import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
+import { CFDIRegimen } from '../models/sat.uso.cfdi.regimen.fiscal.model.js';
 import { Moneda } from '../models/sat.moneda.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
 import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
 import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
+import { validarMoneda } from '../middlewares/finders/index.js'
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -97,6 +99,162 @@ const findSatRF = async (req, res) => {
 	}
 };
 
+const createSatRegimenCfdi = async (req, res) => {
+	const { regimen, cfdi } = req.body;
+	const { ClaveRegimenFiscal } = regimen;
+  
+	try {
+	  const regimenEncontrado = await regimenFiscal.findOne({
+		where: { ClaveRegimenFiscal, Activo: 1 },
+	  });
+  
+	  if (!regimenEncontrado) {
+		return res.status(404).json({ error: 'Régimen Fiscal no encontrado' });
+	  }
+  
+	  for (const cfdiItem of cfdi) {
+		const { ClaveUsoCFDI } = cfdiItem;
+		const cfdiEncontrado = await UsoCFDI.findOne({
+		  where: { ClaveUsoCFDI }
+		});
+  
+		if (!cfdiEncontrado) {
+		  return res.status(400).json({ error: `CFDI ${ClaveUsoCFDI} no encontrado` });
+		}
+  
+		const [result] = await sequelize.query(
+		  'CALL sp_sat_cfdi_regimen(:claveRegimen, :claveUsoCFDI)',
+		  {
+			replacements: {
+			  claveRegimen: ClaveRegimenFiscal,
+			  claveUsoCFDI: ClaveUsoCFDI
+			},
+			type: sequelize.QueryTypes.SELECT
+		  }
+		);
+  
+		if (result[0].status === 'exists') {
+		  return res.status(200).json({ success: false, message: result[0].message });
+		}
+	  }
+  
+	  return res.status(200).json({ success: true, message: 'CFDIs enlazados correctamente' });
+	} catch (error) {
+	  console.error('Error al enlazar Régimen Fiscal y CFDI', error);
+	  return res.status(500).json({ error: 'Error al enlazar Régimen Fiscal y CFDI' });
+	}
+  };
+  
+  const deleteSatRegimenCfdi = async (req, res) => {
+	const { regimen, cfdi } = req.body;
+	const { ClaveRegimenFiscal } = regimen;
+  
+	try {
+	  const regimenEncontrado = await regimenFiscal.findOne({
+		where: { ClaveRegimenFiscal, Activo: 1 },
+	  });
+  
+	  if (!regimenEncontrado) {
+		return res.status(404).json({ error: 'Régimen Fiscal no encontrado' });
+	  }
+  
+	  for (const cfdiItem of cfdi) {
+		const { ClaveUsoCFDI } = cfdiItem;
+		const cfdiEncontrado = await UsoCFDI.findOne({
+		  where: { ClaveUsoCFDI }
+		});
+  
+		if (!cfdiEncontrado) {
+		  return res.status(400).json({ error: `CFDI ${ClaveUsoCFDI} no encontrado` });
+		}
+  
+		await CFDIRegimen.destroy({
+		  where: {
+			ClaveRegimenFiscal,
+			ClaveUsoCFDI
+		  }
+		});
+	  }
+  
+	  return res.status(200).json({ success: true, message: 'Régimen Fiscal y CFDIs desvinculados con éxito' });
+	} catch (error) {
+	  console.error('Error al desvincular Régimen Fiscal y CFDI', error);
+	  return res.status(500).json({ error: 'Error al desvincular Régimen Fiscal y CFDI' });
+	}
+  };
+  
+
+  const getRegimenByCfdi = async (req, res) => {
+    const { claveUsoCFDI } = req.params;
+
+    try {
+        const results = await sequelize.query(
+            'CALL sp_sat_get_cfdi_to_regimen(:claveUsoCFDI)',
+            {
+                replacements: { claveUsoCFDI },
+                type: sequelize.QueryTypes.RAW
+            }
+        );
+
+        const regimenesSeleccionados = Array.isArray(results[0]) ? results[0] : [];
+        const regimenesDisponibles = Array.isArray(results[1]) ? results[1] : [];
+
+        return res.status(200).json({
+            regimenesSeleccionados,
+            regimenesDisponibles
+        });
+    } catch (error) {
+        console.error('Error al obtener los regímenes por CFDI', error);
+        return res.status(500).json({ error: 'Error al obtener los regímenes por CFDI' });
+    }
+};
+
+
+const linkCfdiToRegimen = async (req, res) => {
+    const { claveUsoCFDI, regimenes } = req.body;
+
+    try {
+        const responses = [];
+        for (const claveRegimenFiscal of regimenes) {
+            const [result] = await sequelize.query(
+                'CALL sp_sat_post_cfdi_to_regimen(:claveUsoCFDI, :claveRegimenFiscal)',
+                {
+                    replacements: { 
+                        claveUsoCFDI,
+                        claveRegimenFiscal 
+                    },
+                    type: sequelize.QueryTypes.SELECT
+                }
+            );
+            console.log(`Result for regimen ${claveRegimenFiscal}:`, result);  // Agregar registro para depurar
+            responses.push(result[0]);
+        }
+        return res.status(200).json({ success: true, message: 'CFDI relacionado con los regímenes exitosamente', results: responses });
+    } catch (error) {
+        console.error('Error al relacionar el CFDI con los regímenes', error);
+        return res.status(500).json({ error: 'Error al relacionar el CFDI con los regímenes' });
+    }
+};
+
+const unlinkCfdiFromRegimen = async (req, res) => {
+	const { claveUsoCFDI, regimenes } = req.body;
+  
+	try {
+	  for (const claveRegimenFiscal of regimenes) {
+		await CFDIRegimen.destroy({
+		  where: {
+			ClaveUsoCFDI: claveUsoCFDI,
+			ClaveRegimenFiscal: claveRegimenFiscal
+		  }
+		});
+	  }
+	  return res.status(200).json({ success: true, message: 'CFDI desvinculado de los regímenes exitosamente' });
+	} catch (error) {
+	  console.error('Error al desvincular el CFDI de los regímenes', error);
+	  return res.status(500).json({ error: 'Error al desvincular el CFDI de los regímenes' });
+	}
+  };
+
 const paymentMethods = async (req, res) => {
 	try {
 		const data0 = await sequelize.query('CALL sp_formas_metodo_pago(1)', {
@@ -143,77 +301,65 @@ const findTypeCoin = async (req, res) => {
 };
 
 const createTypeCoin = async (req, res) => {
-	const coinBody = req.body;
+    const coinBody = req.body;
 
-	try {
-		const validateCoin = await Moneda.findOne({
-			where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
-		});
+    try {
+        const validateCoin = await Moneda.findOne({
+            where: { ClaveMoneda: coinBody.ClaveMoneda, Activo: 1 },
+        });
 
-		if (validateCoin) {
-			return res
-				.status(409)
-				.json({ error: 'La clave de la moneda ya esta en uso ' });
-		}
+        if (validateCoin) {
+            return res.status(409).json({ error: 'La clave de la moneda ya esta en uso' });
+        }
 
-		await Moneda.create(coinBody);
+        await Moneda.create(coinBody);
 
-		return res.status(200).json({ success: true, message: 'Moneda creada' });
-	} catch (error) {
-		console.error('Error al crear la moneda', error);
-		return res.status(500).json({ error: 'Error al crear la moneda' });
-	}
+        return res.status(200).json({ success: true, message: 'Moneda creada' });
+    } catch (error) {
+        console.error('Error al crear la moneda', error);
+        return res.status(500).json({ error: 'Error al crear la moneda' });
+    }
 };
 
 const updateTypeCoin = async (req, res) => {
-	const { ClaveMoneda, Descripcion } = req.body;
+    const { ClaveMoneda, Descripcion } = req.body;
 
-	try {
-		const validateCoin = await Moneda.findOne({
-			where: { ClaveMoneda, Activo: 1 },
-		});
+    try {
+        const validateCoin = await validarMoneda(ClaveMoneda, 1, res);
+        if (!validateCoin) return;
 
-		if (!validateCoin)
-			return res.status(404).json({ error: 'Moneda no encontrada' });
+        const [updated] = await Moneda.update(
+            { Descripcion },
+            { where: { ClaveMoneda } },
+        );
 
-		const [updated] = await Moneda.update(
-			{ Descripcion },
-			{ where: { ClaveMoneda } },
-		);
+        if (!updated) {
+            return res.status(404).json({ error: 'Moneda no encontrada' });
+        }
 
-		if (!updated) {
-			return res.status(404).json({ error: 'Moneda no encontrada' });
-		}
-
-		return res
-			.status(200)
-			.json({ success: true, message: 'Moneda actualizada' });
-	} catch (error) {
-		console.error('Error al actualizar la moneda', error.message);
-		return res.status(500).json({ error: 'Error al actualizar la moneda' });
-	}
+        return res.status(200).json({ success: true, message: 'Moneda actualizada' });
+    } catch (error) {
+        console.error('Error al actualizar la moneda', error.message);
+        return res.status(500).json({ error: 'Error al actualizar la moneda' });
+    }
 };
 
 const deleteTypeCoin = async (req, res) => {
-	const { ClaveMoneda } = req.body;
+    const { ClaveMoneda } = req.body;
 
-	try {
-		const coin = await Moneda.findOne({
-			where: { ClaveMoneda, Activo: 1 },
-		});
+    try {
+        const coin = await validarMoneda(ClaveMoneda, 1, res);
+        if (!coin) return;
 
-		if (!coin) {
-			return res.status(404).json({ error: 'Moneda no encontrada' });
-		}
+        await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
 
-		await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
-
-		return res.status(200).json({ success: true, message: 'Moneda borrada' });
-	} catch (error) {
-		console.error('Error al desactivar la moneda', error.message);
-		return res.status(500).json({ error: 'Error al desactivar la moneda' });
-	}
+        return res.status(200).json({ success: true, message: 'Moneda borrada' });
+    } catch (error) {
+        console.error('Error al desactivar la moneda', error.message);
+        return res.status(500).json({ error: 'Error al desactivar la moneda' });
+    }
 };
+
 
 const createRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
@@ -663,6 +809,11 @@ export const methods = {
 	updateUsoCFDI,
 	deleteCFDI,
 	findCFDI,
+	createSatRegimenCfdi, 
+	deleteSatRegimenCfdi,
+	getRegimenByCfdi,
+	linkCfdiToRegimen,
+	unlinkCfdiFromRegimen,
 	findProductServicesByCode,
 	findProductServicesByDescription,
 	findProductServicesByMatchWord,

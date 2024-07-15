@@ -1,6 +1,15 @@
 
-import{ SatMetodoPagoModel } from '../../models/index.js'
-import { Ubicaciones } from '../../models/index.js'
+import{ 
+    SatMetodoPagoModel, 
+    Ubicaciones, 
+    Moneda,
+    EntidadNegocio,
+    Telefono,
+    EmpresaTelefono,
+    EmpresaContacto,
+    Contacto,
+    EmpresaEmails 
+} from '../../models/index.js'
 
 const manejadorDBError = error =>{
     console.error(error)
@@ -12,7 +21,6 @@ const manejadorDBError = error =>{
 const buscarItem = async ( modelo, condiciones )=>{
     try{
         const item = await modelo.findOne( {where: condiciones } )
-        //console.log(item)
         return item ? { existe: true, data: item.dataValues }: { existe: false }
 
     }catch( error ){
@@ -27,8 +35,48 @@ export const buscarMetodoPagoSatPorClave = async clave =>
     buscarItem(SatMetodoPagoModel,{ClaveMetodoPago: clave})
 
 
-//Busquedas de Ubicion
+/*
+Busquedas de Ubicion
+*/
 export const buscarUbicacionPorId = async id => 
     buscarItem(Ubicaciones,{UbicacionId: id, Borrado: 0 } )
     
 
+/*
+VALIDAR MONEDA
+*/
+
+export const validarMoneda = async id => 
+    buscarItem(Moneda,{ClaveMoneda: id, Activo: 1 } )
+
+/*
+VALIDAR EMPRESA-TELEFONO
+*/
+export const validarEntidad = async id => 
+    buscarItem(EntidadNegocio,{EntidadNegocioId: id, Borrado: 0 } )
+
+
+export const validarTelefono = async id => 
+    buscarItem(Telefono,{TelefonoId: id,} )
+
+export const validarRelacionEmpresaTelefono = async id => 
+    buscarItem(EmpresaTelefono,{EntidadNegocioId: id,TelefonoId: id,} )
+
+
+/*
+VALIDAR EMPRESA-CONTACTO
+*/
+export const validarContacto = async id => 
+    buscarItem(Contacto,{ContactoId: id} )
+
+export const validarRelacionEmpresaContacto = async id => 
+    buscarItem(EmpresaContacto,{EntidadNegocioId: id,ContactoId: id} )
+
+/*
+VALIDAR EMPRESA-EMAIL
+*/
+
+export const validarEmail = async id => 
+    buscarItem(EmpresaEmails,{EmailId: id} )
+export const validarRelacionEmpresaEmail = async (EntidadNegocioId, EmailId) => 
+    buscarItem(EmpresaEmails, { EntidadNegocioId, EmailId });

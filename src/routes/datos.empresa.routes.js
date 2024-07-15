@@ -213,12 +213,10 @@ router.get(
  *         description: Error interno del servidor
  */
 router.get(
-	'/telefono/:id',
-	param('id', 'El parametro debe ser un entero')
-		.isNumeric()
-		.withMessage('El parametro debe ser un entero'),
-	middleware.validateSchema,
-	methods.obtenerEmpresaTelefono,
+    '/telefono/:id',
+    schemas.ObtenerEmpresaTelefonoSchema,
+    middleware.validateSchema,
+    methods.obtenerEmpresaTelefono
 );
 
 /**
@@ -308,10 +306,10 @@ router.get(
  *         description: Internal Server Error
  */
 router.post(
-	'/crear',
-	schemas.crearEmpresaSchema,
-	middleware.validateSchema,
-	methods.crearIdEmpresa,
+    '/crear',
+    schemas.crearEmpresaSchema,
+    middleware.validateSchema,
+    methods.crearIdEmpresa,
 );
 
 /**
@@ -483,6 +481,8 @@ router.patch(
  */
 router.delete('/desactivar', methods.desactivarIdEmpresa);
 
+
+
 /**
  * @swagger
  * /api/v1/empresa/contactos/{id}:
@@ -543,10 +543,12 @@ router.delete('/desactivar', methods.desactivarIdEmpresa);
  *               error: "Error interno del servidor"
  */
 router.get(
-	'/contactos/:id',
-	param('id', 'El parametro debe ser un entero').isNumeric(),
-	methods.buscarContactosPorEntidadNegocioId,
+    '/contactos/:id',
+    schemas.ObtenerEmpresaContactosSchema,
+    middleware.validateSchema,
+    methods.buscarContactosPorEntidadNegocioId
 );
+  
 
 /**
  * @swagger
@@ -796,7 +798,7 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/empresa/emails/:id:
+ * /api/v1/empresa/emails/{id}:
  *   get:
  *     tags:
  *       - EmpresaEmail
@@ -820,6 +822,8 @@ router.delete(
  *                 properties:
  *                   EntidadNegocioId:
  *                     type: integer
+ *                   EmailId:
+ *                     type: integer
  *                   Email:
  *                     type: string
  *       404:
@@ -828,9 +832,10 @@ router.delete(
  *         description: Error al obtener los emails
  */
 router.get(
-	'/emails/:id',
-	param('id', 'El parametro debe ser un entero').isNumeric(),
-	methods.buscarEmailsPorEmpresa,
+    '/emails/:id',
+    schemas.ObtenerEmpresaEmailsSchema,
+    middleware.validateSchema,
+    methods.buscarEmailsPorEmpresa
 );
 
 /**
@@ -1022,7 +1027,7 @@ router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
  *         description: Error interno del servidor
  */
 router.post('/contacto/nombre',
-schemas.buscarContactoNombreSchema,
+schemas.BuscarContactosPorNombreYEntidadSchema,
 middleware.validateSchema,
 methods.buscarContactosPorNombreYEntidad);
 

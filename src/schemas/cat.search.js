@@ -125,7 +125,7 @@ export const createCFDISchema = [
 		.withMessage('La clave del uso del CFDI no puede estar vacia')
 		.isString()
 		.withMessage('La clave del uso del CFDI tiene que ser una cadena de texto')
-		.isLength({ min: 4, max: 4 })
+		.isLength({ min: 3, max: 4 })
 		.withMessage('La clave CFDI tiene que ser de 4 caracteres'),
 	body('Descripcion')
 		.notEmpty()
@@ -179,3 +179,66 @@ export const deleteCFDISchema = [
 		.isString()
 		.withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
 ];
+
+
+export const createCFDIRegimenSchema = [
+	body('regimen.ClaveRegimenFiscal')
+	  .notEmpty()
+	  .withMessage('La clave del regimen fiscal no puede estar vacia')
+	  .isString()
+	  .withMessage('La clave del regimen fiscal tiene que ser una cadena de texto'),
+	body('cfdi')
+	  .isArray({ min: 1 })
+	  .withMessage('Debe proporcionar al menos un CFDI'),
+	body('cfdi.*.ClaveUsoCFDI')
+	  .notEmpty()
+	  .withMessage('La clave del uso del CFDI no puede estar vacia')
+	  .isString()
+	  .withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+  ];
+  
+export const deleteCFDIRegimenSchema = [
+	body('regimen.ClaveRegimenFiscal')
+	  .notEmpty()
+	  .withMessage('La clave del regimen fiscal no puede estar vacia')
+	  .isString()
+	  .withMessage('La clave del regimen fiscal tiene que ser una cadena de texto'),
+	body('cfdi.ClaveUsoCFDI')
+	  .notEmpty()
+	  .withMessage('La clave del uso del CFDI no puede estar vacia')
+	  .isString()
+	  .withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+  ];
+  
+
+  export const linkCfdiToRegimenSchema = [
+    body('claveUsoCFDI')
+        .notEmpty()
+        .withMessage('La clave del uso del CFDI no puede estar vacía')
+        .isString()
+        .withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+    body('regimenes')
+        .isArray({ min: 1 })
+        .withMessage('Debe proporcionar al menos un régimen fiscal'),
+    body('regimenes.*')
+        .notEmpty()
+        .withMessage('La clave del régimen fiscal no puede estar vacía')
+        .isString()
+        .withMessage('La clave del régimen fiscal tiene que ser una cadena de texto')
+];
+
+export const deleteCFDIToRegimenSchema = [
+	body('claveUsoCFDI')
+	  .notEmpty()
+	  .withMessage('La clave del uso del CFDI no puede estar vacía')
+	  .isString()
+	  .withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+	body('regimenes')
+	  .isArray({ min: 1 })
+	  .withMessage('Debe proporcionar al menos un régimen para desvincular')
+	  .custom((value) => {
+		return value.every(item => typeof item === 'string');
+	  })
+	  .withMessage('Las claves de los regímenes deben ser cadenas de texto')
+  ];
+

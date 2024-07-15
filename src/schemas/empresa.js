@@ -1,4 +1,4 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 
 export const editarIdEmpresa = [
 	body('entidad.*.EntidadNegocioId')
@@ -367,4 +367,31 @@ export const buscarContactoNombreSchema = [
 		.withMessage('El campo EntidadNegocioId no puede estar vacío')
 		.isInt()
 		.withMessage('El campo EntidadNegocioId debe ser un número entero'),
+];
+
+export const ObtenerEmpresaTelefonoSchema = [
+    param('id')
+        .isInt().withMessage('El parámetro debe ser un entero')
+        .notEmpty().withMessage('El parámetro no puede estar vacío'),
+]
+
+  export const ObtenerEmpresaContactosSchema = [
+	param('id')
+	  .isInt().withMessage('El parámetro debe ser un entero')
+	  .notEmpty().withMessage('El parámetro no puede estar vacío'),
+  ];
+
+  export const ObtenerEmpresaEmailsSchema = [
+    param('id')
+        .isInt().withMessage('El parámetro debe ser un entero')
+        .notEmpty().withMessage('El parámetro no puede estar vacío'),
+];
+
+export const BuscarContactosPorNombreYEntidadSchema = [
+    body('Nombre')
+        .notEmpty().withMessage('El nombre no puede estar vacío')
+        .isString().withMessage('El nombre debe ser una cadena de texto'),
+    body('EntidadNegocioId')
+        .isInt().withMessage('El ID de la entidad de negocio debe ser un entero')
+        .notEmpty().withMessage('El ID de la entidad de negocio no puede estar vacío'),
 ];

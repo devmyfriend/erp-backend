@@ -40,7 +40,7 @@ const router = Router();
  * @swagger
  * /api/v1/contacto/{id}:
  *   get:
- *     summary: Obtener contactos por ID de sucursal
+ *     summary: Obtener contactos por ID de sucursalito
  *     tags: [Contactos Por sucursal]
  *     parameters:
  *       - in: path
