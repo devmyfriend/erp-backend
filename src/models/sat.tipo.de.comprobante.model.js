@@ -22,4 +22,4 @@ export const TipoDeComprobante = Connection.define(
         timestamps: false,
         freezeTableName: true,
     },
-)
+);

@@ -25,5 +25,3 @@ export const ProductosServicios = Connection.define(
             timestamps: false
         }
 );
-
-export default ProductosServicios;

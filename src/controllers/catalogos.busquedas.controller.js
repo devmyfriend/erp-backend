@@ -4,7 +4,7 @@ import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 import { Moneda } from '../models/sat.moneda.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
-import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
+/* import { ProductosServicios } from '../models/sat.productos.servicios.model.js'; */
 import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
 
 const getPostalCodes = async (req, res) => {
@@ -375,149 +375,6 @@ const findCFDI = async (req, res) => {
 	return res.status(200).json(result);
 };
 
-const findProductServicesByCode = async (req, res) => {
-	const code = req.params.code;
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { ClaveProductsServices: { [Op.like]: code }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
-		}
-
-		return res.status(200).json(data);
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
-	}
-};
-
-const findProductServicesByDescription = async (req, res) => {
-	const descripcion = req.params.descripcion;
-
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
-		}
-
-		return res.status(200).json(data);
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
-	}
-};
-
-const findProductServicesByMatchWord = async (req, res) => {
-	const { palabra } = req.params;
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { PalabrasSimilares: { [Op.like]: palabra }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ message: 'No hay datos disponibles' });
-		}
-		return res.status(200).json(data);
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
-	}
-};
-
-const createProductServices = async (req, res) => {
-	const productServicesBody = req.body;
-	try {
-		const validateProductServices = await ProductosServicios.findOne({
-			where: {
-				ClaveProductsServices: productServicesBody.ClaveProductsServices,
-				Activo: 1,
-			},
-		});
-
-		if (validateProductServices) {
-			return res
-				.status(409)
-				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
-		}
-
-		await ProductosServicios.create(productServicesBody);
-		return res
-			.status(200)
-			.json({ success: true, message: 'Producto/Servicio creado' });
-	} catch (error) {
-		console.error('Error al crear el producto/servicio', error.message);
-		return res
-			.status(500)
-			.json({ error: 'Error al crear el producto/servicio' });
-	}
-};
-
-const updateProductServices = async (req, res) => {
-	const productServicesBody = req.body;
-	try {
-		const validateProductServices = await ProductosServicios.findOne({
-			where: {
-				ClaveProductsServices: productServicesBody.ClaveProductsServices,
-				Activo: 1,
-			},
-		});
-
-		if (!validateProductServices) {
-			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
-		}
-
-		const [updated] = await ProductosServicios.update(productServicesBody, {
-			where: {
-				ClaveProductsServices: productServicesBody.ClaveProductsServices,
-				Activo: 1,
-			},
-		});
-
-		if (!updated) {
-			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
-		}
-
-		return res
-			.status(200)
-			.json({ success: true, message: 'Producto/Servicio actualizado' });
-	} catch (error) {
-		console.error('Error al actualizar el producto/servicio', error.message);
-		return res
-			.status(500)
-			.json({ error: 'Error al actualizar el producto/servicio' });
-	}
-};
-
-const deleteProductServices = async (req, res) => {
-	const { ClaveProductsServices } = req.body;
-
-	try {
-		const product = await ProductosServicios.findOne({
-			where: { ClaveProductsServices, Activo: 1 },
-		});
-
-		if (!product) {
-			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
-		}
-
-		await ProductosServicios.update(
-			{ Activo: false },
-			{ where: { ClaveProductsServices } },
-		);
-
-		return res
-			.status(200)
-			.json({ success: true, message: 'Producto/Servicio borrado' });
-	} catch (error) {
-		console.error('Error al borrar el producto/servicio', error.message);
-		return res
-			.status(500)
-			.json({ error: 'Error al borrar el producto/servicio' });
-	}
-};
-
 const findAllUnitKeys = async (req, res) => {
 	const page = Number(req.params.page) || 1;
 	const limit = 10;
@@ -663,12 +520,12 @@ export const methods = {
 	updateUsoCFDI,
 	deleteCFDI,
 	findCFDI,
-	findProductServicesByCode,
+/* 	findProductServicesByCode,
 	findProductServicesByDescription,
 	findProductServicesByMatchWord,
 	createProductServices,
 	updateProductServices,
-	deleteProductServices,
+	deleteProductServices, */
 	findAllUnitKeys,
 	findUnitKeysByKey,
 	createUnitKey,

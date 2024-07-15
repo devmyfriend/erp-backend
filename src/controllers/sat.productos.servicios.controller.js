@@ -1,64 +1,45 @@
-import { Op, Sequelize } from 'sequelize';
 import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
+import { ProductosServiciosPorClave, ProductosServiciosPorDescripcion, ProductosServiciosPorPalabra } from './buscadores.controller.js';
 
-const findProductServicesByCode = async (req, res) => {
-	const code = req.params.code;
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ error: 'No hay datos isponibles' });
-		}
+const buscarProductosServiciosPorClave = async (req, res) => {
+	const { ClaveProductoServicio } = req.body;
+	const Pagina = req.body.Pagina || 1;
 
-		return res.status(200).json({ response: data });
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
+	console.log('ClaveProductoServicio', ClaveProductoServicio);
+	const resultado = await ProductosServiciosPorClave( ClaveProductoServicio, Pagina);
+
+	if (resultado.existe) {
+		return res.status(200).json({ response: resultado.data });
+	} else {
+		return res.status(404).json({ error: 'No hay datos disponibles' });
 	}
 };
 
-const findProductServicesByDescription = async (req, res) => {
-	const descripcion = req.params.descripcion;
+const buscarProductosServiciosPorDescripcion= async (req, res) => {
+	const { Descripcion } = req.body;
+	const Pagina = req.body.Pagina || 1;
+	const resultado = await ProductosServiciosPorDescripcion(Descripcion, Pagina);
 
-	try {
-		const data = await ProductosServicios.findAll({
-			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
-		});
-		if (!data) {
-			return res.status(404).json({ error: 'No hay datos disponibles' });
-		}
-
-		return res.status(200).json({ response: data });
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error.message);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
+	if (resultado.existe) {
+		return res.status(200).json({ response: resultado.data });
+	}	else {
+		return res.status(404).json({ error: 'No hay datos disponibles' });
 	}
 };
 
-const findProductServicesByMatchWord = async (req, res) => {
-	const { palabra } = req.params;
-	try {
-		const data = await ProductosServicios.findAll({
-			where: Sequelize.where(
-				Sequelize.fn('lower', Sequelize.col('PalabrasSimilares')),
-				{
-					[Op.like]: `%${palabra.toLowerCase()}%`,
-				},
-			),
-			Activo: 1,
-		});
-		if (!data) {
-			return res.status(404).json({ error: 'No hay datos disponibles' });
-		}
-		return res.status(200).json({ response: data });
-	} catch (error) {
-		console.error('Error al obtener los datos del producto', error);
-		return res.status(500).json({ error: 'Error al obtener los datos' });
+const buscarProductosServiciosPorPalabra = async (req, res) => {
+	const { Palabra } = req.body;
+	const Pagina = req.body.Pagina || 1;
+	const resultado = await ProductosServiciosPorPalabra(Palabra, Pagina);
+
+	if (resultado.existe) {
+		return res.status(200).json({ response: resultado.data });
+	} else {
+		return res.status(404).json({ error: 'No hay datos disponibles' });
 	}
 };
 
-const createProductServices = async (req, res) => {
+const crearProductosServicios = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
 		const validateProductServices = await ProductosServicios.findOne({
@@ -86,7 +67,7 @@ const createProductServices = async (req, res) => {
 	}
 };
 
-const updateProductServices = async (req, res) => {
+const actualizarProductosServicios = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
 		const validateProductServices = await ProductosServicios.findOne({
@@ -117,7 +98,7 @@ const updateProductServices = async (req, res) => {
 	}
 };
 
-const deleteProductServices = async (req, res) => {
+const borrarProductosServicios = async (req, res) => {
 	try {
 		const product = await ProductosServicios.findOne({
 			where: {
@@ -145,10 +126,10 @@ const deleteProductServices = async (req, res) => {
 };
 
 export const methods = {
-	findProductServicesByCode,
-	findProductServicesByDescription,
-	findProductServicesByMatchWord,
-	createProductServices,
-	updateProductServices,
-	deleteProductServices,
+	buscarProductosServiciosPorClave,
+	buscarProductosServiciosPorDescripcion,
+	buscarProductosServiciosPorPalabra,
+	crearProductosServicios,
+	actualizarProductosServicios,
+	borrarProductosServicios,
 };

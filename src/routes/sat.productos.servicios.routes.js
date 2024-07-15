@@ -2,69 +2,73 @@ import { Router }  from 'express'
 import { methods } from '../controllers/sat.productos.servicios.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/products.services.js';
-import { param } from 'express-validator';
 const router = Router()
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/{code}:
- *   get:
+ * /api/v1/productos/servicio/buscar/clave:
+ *   post:
  *     tags:
  *       - Productos Servicios
- *     summary: Busca un producto o servicio por su código
- *     parameters:
- *       - in: path
- *         name: code
- *         required: true
- *         schema:
- *           type: string
- *         description: El código del producto o servicio
+ *     summary: Busca un producto o servicio por su clave
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ClaveProductoServicio:
+ *                 type: integer
+ *               Pagina:
+ *                 type: integer
+ *           example:
+ *             ClaveProductoServicio: 101
+ *             Pagina: 1
  *     responses:
  *       200:
- *         description: Datos del producto o servicio
+ *         description: Datos del producto o servicio encontrado
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 ClaveProductoServicio:
- *                   type: string
- *                 Descripcion:
- *                   type: string
- *                 PalabrasSimilares:
- *                   type: string
+ *                   type: integer
+ *                 Pagina:
+ *                   type: integer
  *             example:
- *               ClaveProductoServicio: "101"
- *               Descripcion: "Producto Servicio"
- *               PalabrasSimilares: "Palabra 1"
+ *               ClaveProductoServicio: 101
+ *               Pagina: 1
  */
-router.get(
-	'/servicio/buscar/:code',
-	param('code')
-	.notEmpty()
-	.withMessage('El código del producto o servicio no puede estar vacio')
-    .isInt()
-    .withMessage('El código del producto o servicio tiene que ser un numero entero')
-    .matches(/^\S*$/)
-    .withMessage('El código del producto o servicio no puede contener espacios'),	
+router.post(
+	'/servicio/buscar/clave',
+	/* schemas.buscarProductosServiciosPorClaveSchema, */
 	middleware.validateSchema,
-	methods.findProductServicesByCode,
+	methods.buscarProductosServiciosPorClave,
 );
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/descripcion/{descripcion}:
- *   get:
+ * /api/v1/productos/servicio/buscar/descripcion:
+ *   post:
  *     tags:
  *       - Productos Servicios
  *     summary: Busca un producto o servicio por su descripción
- *     parameters:
- *       - in: path
- *         name: descripcion
- *         required: true
- *         schema:
- *           type: string
- *         description: La descripción del producto o servicio
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Descripcion:
+ *                 type: string
+ *               Pagina:
+ *                 type: integer
+ *           example:
+ *             Descripcion: "Producto Servicio"
+ *             Pagina: 1
  *     responses:
  *       200:
  *         description: Datos del producto o servicio
@@ -73,42 +77,42 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
- *                 ClaveProductoServicio:
- *                   type: string
  *                 Descripcion:
  *                   type: string
- *                 PalabrasSimilares:
- *                   type: string
+ *                 Pagina:
+ *                   type: integer
  *             example:
- *               ClaveProductoServicio: "101"
  *               Descripcion: "Producto Servicio"
- *               PalabrasSimilares: "Palabra 1"
+ *               Pagina: 1
  */
-router.get(
-	'/servicio/buscar/descripcion/:descripcion',
-	param('descripcion')
-	.notEmpty()
-	.withMessage('La descripción del producto o servicio no puede estar vacia')
-	.isString()
-	.withMessage('La descripción del producto o servicio tiene que ser una cadena de texto'),
+router.post(
+	'/servicio/buscar/descripcion',
+	/* schemas.buscarProductosServiciosPorDescripcionSchema, */
 	middleware.validateSchema,
-	methods.findProductServicesByDescription,
+	methods.buscarProductosServiciosPorDescripcion,
 );
 
 /**
  * @swagger
- * /api/v1/productos/servicio/palabra/{palabra}:
- *   get:
+ * /api/v1/productos/servicio/buscar/palabra:
+ *   post:
  *     tags:
  *       - Productos Servicios
  *     summary: Busca un producto o servicio por palabra similar
- *     parameters:
- *       - in: path
- *         name: palabra
- *         required: true
- *         schema:
- *           type: string
- *         description: La palabra similar al producto o servicio
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               Palabra:
+ *                 type: string
+ *               Pagina:
+ *                 type: integer
+ *           example:
+ *             Palabra: "Producto Servicio"
+ *             Pagina: 1
  *     responses:
  *       200:
  *         description: Datos del producto o servicio
@@ -117,26 +121,28 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
- *                 ClaveProductoServicio:
- *                   type: string
- *                 Descripcion:
- *                   type: string
  *                 PalabrasSimilares:
  *                   type: string
+ *                   example: "Palabra 1"
+ *                 Pagina:
+ *                   type: integer
+ *                   example: 1
  *             example:
- *               ClaveProductoServicio: "101"
- *               Descripcion: "Producto Servicio"
  *               PalabrasSimilares: "Palabra 1"
+ *               Pagina: 1
  */
-router.get(
-	'/servicio/palabra/:palabra',
-	param('palabra')
-	.notEmpty()
-	.withMessage('La palabra similar del producto o servicio no puede estar vacia')
-	.isString()
-	.withMessage('La palabra similar del producto o servicio tiene que ser una cadena de texto'),
+router.post(
+	'/servicio/buscar/palabra',
+	schemas.buscarProductosServiciosPorPalabraSchema,
 	middleware.validateSchema,
-	methods.findProductServicesByMatchWord,
+	methods.buscarProductosServiciosPorPalabra,
+);
+
+router.get(
+	'/servicio/palabra/:palabra/:pagina?',
+	schemas.buscarProductosServiciosPorPalabraSchema,
+	middleware.validateSchema,
+	methods.buscarProductosServiciosPorPalabra,
 );
 
 /**
@@ -181,9 +187,9 @@ router.get(
  */
 router.post(
 	'/servicio',
-	schemas.createProductServicesSchema,
+	schemas.crearProductosServiciosSchema,
 	middleware.validateSchema,
-	methods.createProductServices,
+	methods.crearProductosServicios,
 );
 
 /**
@@ -192,7 +198,7 @@ router.post(
  *   patch:
  *     tags:
  *       - Productos Servicios
- *     summary: Crea un nuevo producto o servicio
+ *     summary: Editar un producto o servicio
  *     requestBody:
  *       required: true
  *       content:
@@ -228,9 +234,9 @@ router.post(
  */
 router.patch(
 	'/servicio',
-	schemas.updateProductServicesSchema,
+	schemas.actualizarProductosServiciosSchema,
 	middleware.validateSchema,
-	methods.updateProductServices,
+	methods.actualizarProductosServicios,
 );
 
 /**
@@ -269,9 +275,9 @@ router.patch(
  */
 router.delete(
 	'/servicio',
-	schemas.deleteProductServicesSchema,
+	schemas.borrarProductosServiciosSchema,
 	middleware.validateSchema,
-	methods.deleteProductServices,
+	methods.borrarProductosServicios,
 );
 
 export default router;
