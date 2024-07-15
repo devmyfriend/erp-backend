@@ -10,4 +10,6 @@ export { Telefono } from './telefono.model.js'
 export { Contacto } from './contacto.model.js'
 export { EmpresaContacto } from './empresa.contacto.model.js'
 export { EmpresaEmails } from './empresa.emails.model.js'
-
+export { Sucursal } from './sucursal.model.js'
+export { SucursalDomicilio } from './sucursal.domicilio.model.js'
+export { Domicilio } from './domicilios.model.js'

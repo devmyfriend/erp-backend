@@ -8,7 +8,10 @@ import{
     EmpresaTelefono,
     EmpresaContacto,
     Contacto,
-    EmpresaEmails 
+    EmpresaEmails,
+    Sucursal,
+    SucursalDomicilio,
+    Domicilio 
 } from '../../models/index.js'
 
 const manejadorDBError = error =>{
@@ -80,3 +83,13 @@ export const validarEmail = async id =>
     buscarItem(EmpresaEmails,{EmailId: id} )
 export const validarRelacionEmpresaEmail = async (EntidadNegocioId, EmailId) => 
     buscarItem(EmpresaEmails, { EntidadNegocioId, EmailId });
+
+
+export const validarSucursal = async (SucursalId) => 
+    buscarItem(Sucursal, { SucursalId, Borrado: 0 });
+export const validarNombreSucursal = async (Nombre) => 
+    buscarItem(Sucursal, { Nombre: Nombre || 'null' });
+export const buscarDomicilioSucursal = async (SucursalId) => 
+    buscarItem(SucursalDomicilio, { SucursalId });
+export const buscarDomicilioPorId = async (DomicilioId) => 
+    buscarItem(Domicilio, { DomicilioId });

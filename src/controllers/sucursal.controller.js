@@ -4,7 +4,7 @@ import { SucursalDomicilio } from '../models/sucursal.domicilio.model.js';
 import { Domicilio } from '../models/domicilios.model.js';
 import { EntidadNegocio } from '../models/empresa.model.js';
 import { EmpresaSucursal } from '../models/empresa.sucursalmodel.js';
-
+import { validationResult, validarSucursal, validarNombreSucursal, buscarDomicilioSucursal} from '../middlewares/finders/index.js'
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
 	// TODO ->  VALIDAR SI LA EXPRESA EXISTE
@@ -89,86 +89,52 @@ const crearSucursal = async (req, res) => {
 };
 
 const editarSucursal = async (req, res) => {
-	const { sucursal, datos } = req.body;
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
 
-	try {
-		const validarsucursal = await Sucursal.findOne({
-			where: {
-				SucursalId: sucursal[0].SucursalId,
-				Borrado: 0,
-			},
-		});
+    const { sucursal, datos } = req.body;
 
-		if (!validarsucursal) {
-			return res.status(404).json({
-				status: 404,
-				error: 'No se ha encontrado la sucursal solicitada',
-			});
-		}
+    try {
+        const { existe: sucursalExiste, data: sucursalData } = await validarSucursal(sucursal[0].SucursalId);
 
-		const validarNombre = await Sucursal.findOne({
-			where: {
-				Nombre: sucursal[0].Nombre ? sucursal[0].Nombre : 'nill',
-			},
-		});
+        if (!sucursalExiste) return;
 
-		if (validarNombre) {
-			return res.status(409).json({
-				status: 409,
-				error: 'El nombre de la sucursal ya esta en uso',
-			});
-		}
+        const { existe: nombreExiste } = await validarNombreSucursal(sucursal[0].Nombre);
 
-		const sucursalActual = await Sucursal.findByPk(sucursal[0].SucursalId);
+        if (nombreExiste) return;
+        
 
-		const actualizacionSucursal = {
-			...sucursalActual.dataValues,
-			...sucursal[0],
-			...{ ActualizadoPor: sucursal[0].ActualizadoPor },
-		};
+        const { existe: domicilioExiste, data: domicilioData } = await buscarDomicilioSucursal(sucursal[0].SucursalId);
 
-		const buscarDomicilio = await SucursalDomicilio.findOne({
-			where: {
-				SucursalId: sucursal[0].SucursalId,
-			},
-		});
+        if (!domicilioExiste) return;     
 
-		if (!buscarDomicilio) {
-			return res.status(400).json({
-				status: 400,
-				error:
-					'El domicilio nos fue asignado correctamete, contacta al administrador',
-			});
-		}
+        const actualizacionSucursal = {
+            ...sucursalData,
+            ...sucursal[0],
+            ActualizadoPor: sucursal[0].ActualizadoPor,
+        };
 
-		await Sucursal.update(actualizacionSucursal, {
-			where: {
-				SucursalId: actualizacionSucursal.SucursalId,
-			},
-		});
+        await Sucursal.update(actualizacionSucursal, {
+            where: { SucursalId: actualizacionSucursal.SucursalId },
+        });
 
-		const domicilioActual = await Domicilio.findByPk(
-			buscarDomicilio.dataValues.DomicilioId,
-		);
+        const actualizacionDomicilio = {
+            ...domicilioData,
+            ...datos[0],
+            ActualizadoPor: sucursal[0].ActualizadoPor,
+        };
 
-		const actualizacionDomicilio = {
-			...domicilioActual.dataValues,
-			...datos[0],
-			...{ ActaulizadoPor: sucursal[0].ActualizadoPor },
-		};
+        await Domicilio.update(actualizacionDomicilio, {
+            where: { DomicilioId: actualizacionDomicilio.DomicilioId },
+        });
 
-		await Domicilio.update(actualizacionDomicilio, {
-			where: {
-				DomicilioId: actualizacionDomicilio.DomicilioId,
-			},
-		});
-		return res.status(200).json({
-			message: 'Sucursal actualizada',
-		});
-	} catch (error) {
-		console.error('Error al crear la sucursal:', error);
-		res.status(500).json({ error: 'Error al actualizar la sucursal' });
-	}
+        return res.status(200).json({ message: 'Sucursal actualizada' });
+    } catch (error) {
+        console.error('Error al actualizar la sucursal:', error);
+        return res.status(500).json({ error: 'Error al actualizar la sucursal' });
+    }
 };
 
 export const desactivarSucursal = async (req, res) => {
