@@ -3,7 +3,7 @@ import { methods } from '../controllers/sat.claves.unidades.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/claves.unidades.js';
 import { param } from 'express-validator';
-import { findClaveUnidad } from '../middlewares/finders/index.js';
+import { buscarClaveUnidadPorClave } from '../middlewares/finders/index.js';
 const router = Router();
 
 /**
@@ -39,7 +39,7 @@ const router = Router();
  *                   items:
  *                     type: object
  *                     properties:
- *                       ClaveUnidadSat:
+ *                       VwClaveUnidadSat:
  *                         type: string
  *                       NombreUnidadSat:
  *                         type: string
@@ -83,14 +83,14 @@ router.get(
  *               items:
  *                 type: object
  *                 properties:
- *                   ClaveUnidadSat:
+ *                   VwClaveUnidadSat:
  *                     type: string
  *                   NombreUnidadSat:
  *                     type: string
  *                   Activo:
  *                     type: boolean
  *             example:
- *               - ClaveUnidadSat: "05"
+ *               - VwClaveUnidadSat: "05"
  *                 NombreUnidadSat: "Ascensor"
  *                 Activo: true
  */
@@ -129,14 +129,14 @@ router.get(
  *               items:
  *                 type: object
  *                 properties:
- *                   ClaveUnidadSat:
+ *                   VwClaveUnidadSat:
  *                     type: string
  *                   NombreUnidadSat:
  *                     type: string
  *                   Activo:
  *                     type: boolean
  *             example:
- *               - ClaveUnidadSat: "05"
+ *               - VwClaveUnidadSat: "05"
  *                 NombreUnidadSat: "Ascensor"
  *                 Activo: true
  */
@@ -165,12 +165,12 @@ router.get(
  *           schema:
  *             type: object
  *             properties:
- *               ClaveUnidadSat:
+ *               VwClaveUnidadSat:
  *                 type: string
  *               NombreUnidadSat:
  *                 type: string
  *           example:
- *             ClaveUnidadSat: "KGM"
+ *             VwClaveUnidadSat: "KGM"
  *             NombreUnidadSat: "Kilogramo"
  *     responses:
  *       200:
@@ -192,7 +192,7 @@ router.post(
 	'/clave',
 	schemas.createUnitKeySchema,
 	middleware.validateSchema,
-	findClaveUnidad,
+	buscarClaveUnidadPorClave,
 	methods.createUnitKey,
 );
 
@@ -210,12 +210,12 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               ClaveUnidadSat:
+ *               VwClaveUnidadSat:
  *                 type: string
  *               NombreUnidadSat:
  *                 type: string
  *           example:
- *             ClaveUnidadSat: "KGM"
+ *             VwClaveUnidadSat: "KGM"
  *             NombreUnidadSat: "Kilogramo"
  *     responses:
  *       200:
@@ -258,10 +258,10 @@ router.patch(
  *           schema:
  *             type: object
  *             properties:
- *               ClaveUnidadSat:
+ *               VwClaveUnidadSat:
  *                 type: string
  *           example:
- *             ClaveUnidadSat: "KGM"
+ *             VwClaveUnidadSat: "KGM"
  *     responses:
  *       200:
  *         description: Clave de unidad borrada

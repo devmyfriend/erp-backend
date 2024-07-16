@@ -1,10 +1,10 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const EmpresaEmails = Connection.define(
-  'EmpresaEmails',
+export const VwEmpresaEmails = Connection.define(
+  'VwEmpresaEmails',
   {
-    EmailId: {
+    VwEmailId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true,
@@ -16,8 +16,10 @@ export const EmpresaEmails = Connection.define(
     },
   },
   {
-    tableName: 'empresa_emails',
+    tableName: 'Vw_Empresa_VwEmails',
     timestamps: false,
     freezeTableName: true,
   },
 );
+
+export default VwEmpresaEmails;

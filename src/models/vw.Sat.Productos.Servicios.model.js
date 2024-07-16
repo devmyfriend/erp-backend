@@ -1,8 +1,8 @@
 import { DataTypes } from "sequelize";
 import { Connection } from "../database/mariadb.database.js";
 
-export const ProductosServicios = Connection.define(
-    'ProductosServicios',
+export const VwProductosServicios = Connection.define(
+    'VwProductosServicios',
     {
         ClaveProductoServicio: {
             type: DataTypes.NUMBER,
@@ -17,13 +17,14 @@ export const ProductosServicios = Connection.define(
         Activo: {
             type: DataTypes.BOOLEAN
         },
-},  {
-            sequelize: Connection,
-            modelName: 'ProductosServicios',
-            tableName: 'SAT_ProductosServicios',       
-            freezeTableName: true,
-            timestamps: false
-        }
+    },  
+    {
+        sequelize: Connection,
+        modelName: 'VwProductosServicios',
+        tableName: 'vw_SAT_VwProductosServicios',  // Si la vista en la base de datos se llama así     
+        freezeTableName: true,
+        timestamps: false
+    }
 );
 
-export default ProductosServicios;
+export default VwProductosServicios;

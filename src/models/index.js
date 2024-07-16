@@ -1,6 +1,6 @@
-export { Email } from './email.model.js';
-export { EmpresaEmails } from './empresa.emails.model.js';
-export { FormaDePago } from './sat.forma.de.pago.model.js';
-export { MetodoDePago } from './sat.metodo.de.pago.model.js';
-export { ClaveUnidad } from './sat.clave.unidad.model.js';
-export { ProductosServicios } from './sat.productos.servicios.model.js';
+export { VwEmail } from './vw.Email.model.js';
+export { VwEmpresaEmails } from './vw.Empresa.Emails.model.js';
+export { VwFormaDePago } from './vw.Sat.Forma.De.Pago.model.js';
+export { VwMetodoDePago } from './vw.Sat.Metodo.De.Pago.model.js';
+export { VwClaveUnidad } from './vw.Sat.Clave.Unidad.model.js';
+export { VwProductosServicios } from './vw.Sat.Productos.Servicios.model.js';

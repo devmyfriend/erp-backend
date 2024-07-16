@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
-export const FormaDePago = Connection.define(
-    'FormaDePago',
+export const VwFormaDePago = Connection.define(
+    'VwFormaDePago',
     {
       ClaveFormaPago: {
         type: DataTypes.STRING,
@@ -19,11 +19,11 @@ export const FormaDePago = Connection.define(
     },
     {
       sequelize: Connection,
-      modelName: 'SAT_FormaPago',
-      tableName: 'SAT_FormaPago',
+      modelName: 'Vw_SAT_FormaPago',
+      tableName: 'Vw_SAT_FormaPago',
       timestamps: false,
       freezeTableName: true,
     },
   );
 
-  export default FormaDePago;
+  export default VwFormaDePago;

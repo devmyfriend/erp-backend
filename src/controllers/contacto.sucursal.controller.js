@@ -1,5 +1,5 @@
 import { Contacto } from '../models/contacto.model.js';
-import { Email } from '../models/email.model.js';
+import { VwEmail } from '../models/vw.Email.model.js';
 import { Telefono } from '../models/telefono.model.js';
 import { Connection as sequelize } from '../database/mariadb.database.js';
 import { ContactoCorreo } from '../models/contacto.correos.model.js';
@@ -55,12 +55,12 @@ const obtenerDatosContacto = async (req, res) => {
 			type: sequelize.QueryTypes.RAW,
 		});
 
-		const email = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
+		const VwEmail = await sequelize.query('CALL ObtenerContactoInfo(?, ?);', {
 			replacements: [2, idContacto],
 			type: sequelize.QueryTypes.RAW,
 		});
 
-		res.json({ email, telefono: tel });
+		res.json({ VwEmail, telefono: tel });
 	} catch (error) {
 		console.error('Error al obtener datos de contacto:', error.message);
 		res.status(500).json({ error: 'Internal Server Error' });
@@ -96,8 +96,8 @@ const agregarDetalleContacto = async (req, res) => {
 
 		const correosCreados = await Promise.all(
 			data.Correos.map(async correo => {
-				return await Email.create({
-					Email: correo.correo,
+				return await VwEmail.create({
+					VwEmail: correo.correo,
 					CreadoPor: data.CreadoPor,
 				});
 			}),
@@ -107,7 +107,7 @@ const agregarDetalleContacto = async (req, res) => {
 			correosCreados.map(async correo => {
 				await ContactoCorreo.create({
 					ContactoId: data.ContactoId,
-					EmailId: correo.EmailId,
+					VwEmailId: correo.VwEmailId,
 				});
 			}),
 		);
@@ -201,14 +201,14 @@ const crearCorreo = async (req, res) => {
 		if (!contacto) {
 			return res.status(404).json({ error: 'Contacto no encontrado' });
 		}
-		const correoCreado = await Email.create({
-			Email: data.Email,
+		const correoCreado = await VwEmail.create({
+			VwEmail: data.VwEmail,
 			CreadoPor: data.CreadoPor,
 		});
 
 		await ContactoCorreo.create({
 			ContactoId: data.ContactoId,
-			EmailId: correoCreado.dataValues.EmailId,
+			VwEmailId: correoCreado.dataValues.VwEmailId,
 		});
 		res.status(201).json({ success: true, data: correoCreado.toJSON() });
 	} catch (error) {
@@ -223,9 +223,9 @@ const editarCorreo = async (req, res) => {
 	try {
 		const dta = req.body;
 
-		const { EmailId, ...actualizacion } = dta;
+		const { VwEmailId, ...actualizacion } = dta;
 
-		const correo = await Email.findByPk(EmailId);
+		const correo = await VwEmail.findByPk(VwEmailId);
 
 		if (!correo) {
 			return res.status(404).json({ error: 'Correo no encontrado' });
@@ -248,7 +248,7 @@ const desactivarCorreo = async (req, res) => {
 	try {
 		const data = req.body;
 
-		const correo = await Email.findByPk(data.EmailId);
+		const correo = await VwEmail.findByPk(data.VwEmailId);
 
 		if (!correo) {
 			return res.status(404).json({ error: 'Correo no encontrado' });
@@ -263,7 +263,7 @@ const desactivarCorreo = async (req, res) => {
 
 		return res
 			.status(200)
-			.json({ message: 'Correo desactivado: ' + data.EmailId });
+			.json({ message: 'Correo desactivado: ' + data.VwEmailId });
 	} catch (error) {
 		console.error('Error al desactivar el Correo:', error);
 		return res

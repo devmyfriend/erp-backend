@@ -3,7 +3,6 @@ import { methods } from '../controllers/sat.payment.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/payment.methods.js';
 import router from './sucursal.routes.js';
-import { findFormaDePago, findMetodoDePago } from '../middlewares/finders/index.js';
 
 /**
  * @swagger
@@ -37,11 +36,10 @@ import { findFormaDePago, findMetodoDePago } from '../middlewares/finders/index.
  *         description: Error al crear el método de pago
  */
 router.post(
-	'/forma/pago',
-	schemas.createPaymentMethodsSchema,
-	middleware.validateSchema,
-    findFormaDePago,
-	methods.createPaymentMethods,
+    '/forma/pago',
+    schemas.createPaymentMethodsSchema,
+    middleware.validateSchema,
+    methods.createPaymentMethods,
 );
 
 /**
@@ -76,10 +74,10 @@ router.post(
  *         description: Error al actualizar el método de pago
  */
 router.patch(
-	'/forma/pago',
-	schemas.updatePaymentMethodsSchema,
-	middleware.validateSchema,
-	methods.updatePaymentMethods,
+    '/forma/pago',
+    schemas.updatePaymentMethodsSchema,
+    middleware.validateSchema,
+    methods.updatePaymentMethods,
 );
 
 /**
@@ -105,12 +103,12 @@ router.patch(
  *         description: Error al eliminar el método de pago
  */
 router.delete(
-	'/forma/pago/:ClaveFormaPago',
-	param('ClaveFormaPago', 'La clave del método de pago es requerida')
-		.notEmpty()
-		.isLength({ min: 3, max: 3 })
-		.withMessage('La clave del método de pago debe tener 3 caracteres'),
-	methods.deletePaymentMethods,
+    '/forma/pago/:ClaveFormaPago',
+    param('ClaveFormaPago', 'La clave del método de pago es requerida')
+        .notEmpty()
+        .isLength({ min: 3, max: 3 })
+        .withMessage('La clave del método de pago debe tener 3 caracteres'),
+    methods.deletePaymentMethods,
 );
 
 /**
@@ -145,11 +143,10 @@ router.delete(
  *         description: Error al crear el tipo de pago
  */
 router.post(
-	'/metodo/pago',
-	schemas.createPaymentTypeSchema,
-	middleware.validateSchema,
-    findMetodoDePago,
-	methods.createPaymentType,
+    '/metodo/pago',
+    schemas.createPaymentTypeSchema,
+    middleware.validateSchema,
+    methods.createPaymentType,
 );
 
 /**
@@ -187,13 +184,13 @@ router.post(
  *         description: Error interno del servidor
  */
 router.get(
-	'/metodo/forma/:Descripcion',
-	param('Descripcion')
-		.notEmpty()
-		.withMessage('La descripcion no puede estar vacia')
-		.isString()
-		.withMessage('El campo descripción tiene que ser una cadena de texto'),
-	methods.searchPaymentTypeByDescription,
+    '/metodo/forma/:Descripcion',
+    param('Descripcion')
+        .notEmpty()
+        .withMessage('La descripcion no puede estar vacia')
+        .isString()
+        .withMessage('El campo descripción tiene que ser una cadena de texto'),
+    methods.searchPaymentTypeByDescription,
 );
 
 /**
@@ -228,10 +225,10 @@ router.get(
  *         description: Error al actualizar el tipo de pago
  */
 router.patch(
-	'/metodo/pago',
-	schemas.updatePaymentTypeSchema,
-	middleware.validateSchema,
-	methods.updatedPaymentType,
+    '/metodo/pago',
+    schemas.updatePaymentTypeSchema,
+    middleware.validateSchema,
+    methods.updatedPaymentType,
 );
 
 /**
@@ -257,9 +254,12 @@ router.patch(
  *         description: Error al eliminar el tipo de pago
  */
 router.delete(
-	'/metodo/pago/:ClaveMetodoPago',
-	param('ClaveMetodoPago', 'La clave del método de pago es requerida'),
-	methods.deletePaymentType,
+    '/metodo/pago/:ClaveMetodoPago',
+    param('ClaveMetodoPago', 'La clave del método de pago es requerida')
+        .notEmpty()
+        .isLength({ min: 3, max: 3 })
+        .withMessage('La clave del método de pago debe tener 3 caracteres'),
+    methods.deletePaymentType,
 );
 
 export default router;

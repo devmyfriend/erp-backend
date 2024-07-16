@@ -6,8 +6,10 @@ import { Telefono } from '../models/telefono.model.js';
 import { Contacto } from '../models/contacto.model.js';
 import { EmpresaContacto } from '../models/empresa.contacto.model.js';
 import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
-import { Email } from '../models/email.model.js';
-import { EmpresaEmails } from '../models/empresa.emails.model.js';
+import { VwEmail } from '../models/vw.Email.model.js';
+import { VwEmpresaEmails } from '../models/vw.Empresa.Emails.model.js';
+import { handleDBOperation, messages } from '../middlewares/finders/index.js';
+import { helpers } from '../helpers/buscador.js';
 
 const obtenerEmpresas = async (req, res) => {
 	try {
@@ -389,15 +391,15 @@ const empresaDetalle = async (req, res) => {
 			},
 		);
 
-		const emails = await sequelize.query(
-			'CALL BuscarEmailsPorEntidadNegocioId(?)',
+		const VwEmails = await sequelize.query(
+			'CALL BuscarVwEmailsPorEntidadNegocioId(?)',
 			{
 				replacements: [entidadId],
 				type: sequelize.QueryTypes.RAW,
 			},
 		);
 
-		return res.status(200).json({ telefono, emails });
+		return res.status(200).json({ telefono, VwEmails });
 	} catch (error) {
 		console.error('Error al obtener el teléfono:', error.message);
 		return res.status(500).json({ error: 'Error al obtener el teléfono' });
@@ -587,31 +589,31 @@ const desactivarEmpresaTelefono = async (req, res) => {
 const buscarEmailsPorEmpresa = async (req, res) => {
 	const entidadId = parseInt(req.params.id, 10);
 	try {
-		const emails = await sequelize.query(
-			'CALL BuscarEmailsPorEntidadNegocioId(?)',
+		const VwEmails = await sequelize.query(
+			'CALL BuscarVwEmailsPorEntidadNegocioId(?)',
 			{
 				replacements: [entidadId],
 				type: sequelize.QueryTypes.RAW,
 			},
 		);
 
-		if (emails.length === 0) {
-			return res.status(404).json({ message: 'No existe el email' });
+		if (VwEmails.length === 0) {
+			return res.status(404).json({ message: 'No existe el VwEmail' });
 		}
-	return res.status(200).json(emails);
+	return res.status(200).json(VwEmails);
 	} catch (error) {
-		console.error('Error al obtener los emails:', error.message);
+		console.error('Error al obtener los VwEmails:', error.message);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
 
 const crearEmailEmpresa = async (req, res) => {
-	const emailsBody = req.body;
+	const VwEmailsBody = req.body;
 
 	try {
 		const validarEmpresa = await EntidadNegocio.findOne({
 			where: {
-				EntidadNegocioId: emailsBody.EntidadNegocioId,
+				EntidadNegocioId: VwEmailsBody.EntidadNegocioId,
 				Borrado: 0,
 			},
 		});
@@ -620,23 +622,23 @@ const crearEmailEmpresa = async (req, res) => {
 			return res.status(404).json({ message: 'La empresa no existe' });
 		}
 
-		const datosEmail = await Email.create({
-			Email: emailsBody.Email,
-			CreadoPor: emailsBody.CreadorPor,
+		const datosVwEmail = await VwEmail.create({
+			VwEmail: VwEmailsBody.VwEmail,
+			CreadoPor: VwEmailsBody.CreadorPor,
 		});
 
-		await EmpresaEmails.create({
-			EntidadNegocioId: emailsBody.EntidadNegocioId,
-			EmailId: datosEmail.EmailId,
+		await VwEmpresaEmails.create({
+			EntidadNegocioId: VwEmailsBody.EntidadNegocioId,
+			VwEmailId: datosVwEmail.VwEmailId,
 		});
 
 		return res.status(200).json({
 			status: 200,
 			message:
 				'Se ha creado el correo ' +
-				datosEmail.EmailId +
+				datosVwEmail.VwEmailId +
 				' para la empresa ' +
-				emailsBody.EntidadNegocioId,
+				VwEmailsBody.EntidadNegocioId,
 		});
 	} catch (error) {
 		console.error('Error al crear el correo:', error);
@@ -645,12 +647,12 @@ const crearEmailEmpresa = async (req, res) => {
 };
 
 const editarEmpresaEmails = async (req, res) => {
-	const emailsBody = req.body;
+	const VwEmailsBody = req.body;
 
 	try {
 		const empresaExistente = await EntidadNegocio.findOne({
 			where: {
-				EntidadNegocioId: emailsBody.EntidadNegocioId,
+				EntidadNegocioId: VwEmailsBody.EntidadNegocioId,
 				Borrado: 0,
 			},
 		});
@@ -659,21 +661,21 @@ const editarEmpresaEmails = async (req, res) => {
 			return res.status(404).json({ message: 'La empresa no existe' });
 		}
 
-		const emailExistente = await Email.findOne({
+		const VwEmailExistente = await VwEmail.findOne({
 			where: {
-				EmailId: emailsBody.EmailId,
+				VwEmailId: VwEmailsBody.VwEmailId,
 				Borrado: 0,
 			},
 		});
 
-		if (!emailExistente) {
+		if (!VwEmailExistente) {
 			return res.status(404).json({ message: 'El correo no existe' });
 		}
 
-		const validarRelacion = await EmpresaEmails.findOne({
+		const validarRelacion = await VwEmpresaEmails.findOne({
 			where: {
-				EntidadNegocioId: emailsBody.EntidadNegocioId,
-				EmailId: emailsBody.EmailId,
+				EntidadNegocioId: VwEmailsBody.EntidadNegocioId,
+				VwEmailId: VwEmailsBody.VwEmailId,
 			},
 		});
 
@@ -684,15 +686,15 @@ const editarEmpresaEmails = async (req, res) => {
 			});
 		}
 		
-		await Email.update(
+		await VwEmail.update(
 			{
-				Email: emailsBody.Email,
-				ActualizadoPor: emailsBody.ActualizadoPor,
+				VwEmail: VwEmailsBody.VwEmail,
+				ActualizadoPor: VwEmailsBody.ActualizadoPor,
 				ActualizadoEn: new Date(),
 			},
 			{
 				where: {
-					EmailId: emailsBody.EmailId,
+					VwEmailId: VwEmailsBody.VwEmailId,
 				},
 			},
 		);
@@ -702,30 +704,38 @@ const editarEmpresaEmails = async (req, res) => {
 			message: 'Se ha actualizado el correo',
 		});
 	} catch (error) {
-		console.error('Error al actualizar el email:', error);
-		return res.status(500).json({ error: 'Error al actualizar el email' });
+		console.error('Error al actualizar el VwEmail:', error);
+		return res.status(500).json({ error: 'Error al actualizar el VwEmail' });
 	}
 };
 
+// Operaciones CRUD
 const desactivarEmpresaEmails = async (req, res) => {
-	try {
-	  await req.empresaEmail.update({
-		Borrado: true,
-		BorradoPor: req.body.BorradoPor,
-	  });
+	await handleDBOperation(
+	  async () => {
+		const empresaVwEmail = await helpers.buscarEmpresaVwEmailPorId(req.body.VwEmailId);
+		const VwEmail = await helpers.buscarVwEmailPorId(req.body.VwEmailId);
   
-	  await req.email.update({
-		Borrado: true,
-		BorradoPor: req.body.BorradoPor,
-		BorradoEn: new Date(),
-	  });
+		if (!empresaVwEmail.existe || !VwEmail.existe) {
+		  return { error: messages.errors.notFound };
+		}
   
-	  return res.status(200).json({
-		message: 'Se ha desactivado el correo: ' + req.empresaEmail.EmailId,
-	  });
-	} catch (error) {
-	  return res.status(500).json(error.message);
-	}
+		await empresaVwEmail.data.update({
+		  Borrado: true,
+		  BorradoPor: req.body.BorradoPor,
+		});
+  
+		await VwEmail.data.update({
+		  Borrado: true,
+		  BorradoPor: req.body.BorradoPor,
+		  BorradoEn: new Date(),
+		});
+  
+		return { success: true, message: `Se ha desactivado el correo: ${empresaVwEmail.data.VwEmailId}` };
+	  },
+	  res,
+	  'Correo desactivado exitosamente'
+	);
   };
   
 

@@ -156,14 +156,14 @@ router.post(
  *         description: ID del contacto
  *     responses:
  *       200:
- *         description: Detalles del contacto incluyendo email y teléfono
+ *         description: Detalles del contacto incluyendo VwEmail y teléfono
  *         content:
  *           application/json:
  *             example:
- *               email:
- *                 - EmailId: 1
+ *               VwEmail:
+ *                 - VwEmailId: 1
  *                   ContactoId: 1
- *                   Email: "contacto@example.com"
+ *                   VwEmail: "contacto@example.com"
  *               telefono:
  *                 - TelefonoId: 1
  *                   ContactoId: 1
@@ -317,7 +317,7 @@ router.post(
  *                   properties:
  *                     correo:
  *                       type: string
- *                       format: email
+ *                       format: VwEmail
  *                       description: Dirección de correo electrónico a agregar
  *               Telefonos:
  *                 type: array
@@ -343,9 +343,9 @@ router.post(
  *               success: true
  *               data:
  *                 correos:
- *                   - EmailId: 1
+ *                   - VwEmailId: 1
  *                     ContactoId: 1
- *                     Email: "contacto@example.com"
+ *                     VwEmail: "contacto@example.com"
  *                 telefonos:
  *                   - TelefonoId: 1
  *                     ContactoId: 1
@@ -541,13 +541,13 @@ router.delete(
  *           schema:
  *             type: object
  *             required:
- *               - Email
+ *               - VwEmail
  *               - ContactoId
  *               - CreadoPor
  *             properties:
- *               Email:
+ *               VwEmail:
  *                 type: string
- *                 format: email
+ *                 format: VwEmail
  *                 description: Dirección de correo electrónico a crear
  *               ContactoId:
  *                 type: integer
@@ -556,7 +556,7 @@ router.delete(
  *                 type: integer
  *                 description: ID del usuario que crea el correo electrónico
  *           example:
- *             Email: "contacto@example.com"
+ *             VwEmail: "contacto@example.com"
  *             ContactoId: 1
  *             CreadoPor: 2
  *     responses:
@@ -567,8 +567,8 @@ router.delete(
  *             example:
  *               success: true
  *               data:
- *                 EmailId: 1
- *                 Email: "contacto@example.com"
+ *                 VwEmailId: 1
+ *                 VwEmail: "contacto@example.com"
  *                 ContactoId: 1
  *                 CreadoPor: 2
  *       400:
@@ -611,23 +611,23 @@ router.post(
  *           schema:
  *             type: object
  *             required:
- *               - EmailId
- *               - Email
+ *               - VwEmailId
+ *               - VwEmail
  *               - ActualizadoPor
  *             properties:
- *               EmailId:
+ *               VwEmailId:
  *                 type: integer
  *                 description: ID del correo electrónico a editar
- *               Email:
+ *               VwEmail:
  *                 type: string
- *                 format: email
+ *                 format: VwEmail
  *                 description: Nueva dirección de correo electrónico
  *               ActualizadoPor:
  *                 type: integer
  *                 description: ID del usuario que actualiza el correo electrónico
  *           example:
- *             EmailId: 1
- *             Email: "nuevo-email@example.com"
+ *             VwEmailId: 1
+ *             VwEmail: "nuevo-VwEmail@example.com"
  *             ActualizadoPor: 2
  *     responses:
  *       200:
@@ -637,9 +637,9 @@ router.post(
  *             example:
  *               success: true
  *               data:
- *                 EmailId: 1
+ *                 VwEmailId: 1
  *                 ContactoId: 1
- *                 Email: "nuevo-email@example.com"
+ *                 VwEmail: "nuevo-VwEmail@example.com"
  *       400:
  *         description: Error de validación. Los datos proporcionados no son válidos.
  *         content:
@@ -680,17 +680,17 @@ router.patch(
  *           schema:
  *             type: object
  *             required:
- *               - EmailId
+ *               - VwEmailId
  *               - BorradoPor
  *             properties:
- *               EmailId:
+ *               VwEmailId:
  *                 type: integer
  *                 description: ID del correo electrónico a desactivar
  *               BorradoPor:
  *                 type: integer
  *                 description: ID del usuario que realiza la desactivación
  *           example:
- *             EmailId: 1
+ *             VwEmailId: 1
  *             BorradoPor: 2
  *     responses:
  *       200:

@@ -1,16 +1,16 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const Email = Connection.define(
-  'Email',
+export const VwEmail = Connection.define(
+  'VwEmail',
   {
-    EmailId: {
+    VwEmailId: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
       allowNull: false,
     },
-    Email: {
+    VwEmail: {
       type: DataTypes.STRING,
     },
     CreadoPor: {
@@ -33,8 +33,10 @@ export const Email = Connection.define(
     },
   },
   {
-    tableName: 'orgEmails',
+    tableName: 'Vw_orgVwEmails',
     timestamps: false,
     freezeTableName: false,
   },
 );
+
+export default VwEmail;

@@ -4,7 +4,7 @@ import { param } from 'express-validator';
 import * as schemas from '../schemas/empresa.js';
 import * as middleware from '../middlewares/express-validator.js';
 
-import { findEmpresaEmail, findEmail } from '../middlewares/finders/index.js';
+import { buscarEmpresaEmailPorId, buscarEmailPorId } from '../middlewares/finders/index.js';
 const router = Router();
 
 /**
@@ -953,7 +953,7 @@ router.patch(
  *       500:
  *         description: Error al desactivar el email
  */
-	router.delete('/api/v1/empresa/emails/desactivar', findEmpresaEmail, findEmail, methods.desactivarEmpresaEmails);
+	router.delete('/api/v1/empresa/emails/desactivar', buscarEmpresaEmailPorId, buscarEmailPorId, methods.desactivarEmpresaEmails);
 
 /**
  * @swagger

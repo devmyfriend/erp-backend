@@ -9,14 +9,14 @@ export const ContactoCorreo = Connection.define(
 			allowNull: false,
 			primaryKey: true,
 		},
-		EmailId: {
+		VwEmailId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			primaryKey: true,
 		},
 	},
 	{
-		tableName: 'contacto_emails',
+		tableName: 'contacto_VwEmails',
 		timestamps: false,
 		freezeTableName: true,
 	},

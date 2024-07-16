@@ -1,7 +1,7 @@
 import { body } from 'express-validator';
 
 export const createUnitKeySchema = [
-	body('ClaveUnidadSat')
+	body('VwClaveUnidadSat')
 		.notEmpty()
 		.withMessage('La clave de la unidad no puede estar vacia')
 		.isString()
@@ -18,7 +18,7 @@ export const createUnitKeySchema = [
 ];
 
 export const updateUnitKeySchema = [
-	body('ClaveUnidadSat')
+	body('VwClaveUnidadSat')
 		.notEmpty()
 		.withMessage('La clave de la unidad no puede estar vacia')
 		.isString()
@@ -34,7 +34,7 @@ export const updateUnitKeySchema = [
 ];
 
 export const deleteUnitKeySchema = [
-	body('ClaveUnidadSat')
+	body('VwClaveUnidadSat')
 		.notEmpty()
 		.withMessage('La clave de la unidad no puede estar vacia')
 		.isLength({ min: 1, max: 3 })

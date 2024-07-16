@@ -1,28 +1,30 @@
+import { handleDBOperation, messages } from '../middlewares/finders/index.js';
+import { helpers } from '../helpers/buscador.js';
+import { VwProductosServicios } from '../models/vw.Sat.Productos.Servicios.model.js';
 import { Op, Sequelize } from 'sequelize';
-import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
 
 const findProductServicesByCode = async (req, res) => {
-    const code = req.params.code;
-    try {
-        const data = await ProductosServicios.findAll({
-            where: { ClaveProductoServicio: { [Op.like]: code }, Activo: 1 },
-        });
-        if (!data) {
-            return res.status(404).json({ error: 'No hay datos disponibles' });
-        }
-
-        return res.status(200).json({ response: data });
-    } catch (error) {
-        console.error('Error al obtener los datos del producto', error.message);
-        return res.status(500).json({ error: 'Error al obtener los datos' });
-    }
-};
+	const code = req.params.code;
+	await handleDBOperation(
+	  async () => {
+		const data = await helpers.buscarProductoPorClave(code);
+  
+		if (!data.existe) {
+		  return { error: messages.errors.notFound };
+		}
+  
+		return data.data;
+	  },
+	  res,
+	  messages.success.found
+	);
+  };
 
 const findProductServicesByDescription = async (req, res) => {
 	const descripcion = req.params.descripcion;
 
 	try {
-		const data = await ProductosServicios.findAll({
+		const data = await VwProductosServicios.findAll({
 			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
@@ -39,7 +41,7 @@ const findProductServicesByDescription = async (req, res) => {
 const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
-		const data = await ProductosServicios.findAll({
+		const data = await VwProductosServicios.findAll({
 			where: Sequelize.where(
 				Sequelize.fn('lower', Sequelize.col('PalabrasSimilares')),
 				{
@@ -61,7 +63,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 const createProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductosServicios.findOne({
+		const validateProductServices = await VwProductosServicios.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
@@ -74,7 +76,7 @@ const createProductServices = async (req, res) => {
 				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
 		}
 
-		await ProductosServicios.create(productServicesBody);
+		await VwProductosServicios.create(productServicesBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio creado' });
@@ -89,7 +91,7 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductosServicios.findOne({
+		const validateProductServices = await VwProductosServicios.findOne({
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 				Activo: 1,
@@ -100,7 +102,7 @@ const updateProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductosServicios.update(productServicesBody, {
+		await VwProductosServicios.update(productServicesBody, {
 			where: {
 				ClaveProductoServicio: productServicesBody.ClaveProductoServicio,
 			},
@@ -119,7 +121,7 @@ const updateProductServices = async (req, res) => {
 
 const deleteProductServices = async (req, res) => {
 	try {
-		const product = await ProductosServicios.findOne({
+		const product = await VwProductosServicios.findOne({
 			where: {
 				ClaveProductoServicio: req.body.ClaveProductoServicio,
 				Activo: 1,

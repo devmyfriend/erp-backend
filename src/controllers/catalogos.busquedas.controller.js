@@ -4,8 +4,8 @@ import { Colonias } from '../models/colonia.model.js';
 import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
 import { Moneda } from '../models/sat.moneda.js';
 import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
-import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
-import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
+import { VwProductosServicios } from '../models/vw.Sat.Productos.Servicios.model.js';
+import { VwClaveUnidad } from '../models/vw.Sat.Clave.Unidad.model.js';
 
 const getPostalCodes = async (req, res) => {
 	try {
@@ -378,7 +378,7 @@ const findCFDI = async (req, res) => {
 const findProductServicesByCode = async (req, res) => {
 	const code = req.params.code;
 	try {
-		const data = await ProductosServicios.findAll({
+		const data = await VwProductosServicios.findAll({
 			where: { ClaveProductsServices: { [Op.like]: code }, Activo: 1 },
 		});
 		if (!data) {
@@ -396,7 +396,7 @@ const findProductServicesByDescription = async (req, res) => {
 	const descripcion = req.params.descripcion;
 
 	try {
-		const data = await ProductosServicios.findAll({
+		const data = await VwProductosServicios.findAll({
 			where: { Descripcion: { [Op.like]: `%${descripcion}%` }, Activo: 1 },
 		});
 		if (!data) {
@@ -413,7 +413,7 @@ const findProductServicesByDescription = async (req, res) => {
 const findProductServicesByMatchWord = async (req, res) => {
 	const { palabra } = req.params;
 	try {
-		const data = await ProductosServicios.findAll({
+		const data = await VwProductosServicios.findAll({
 			where: { PalabrasSimilares: { [Op.like]: palabra }, Activo: 1 },
 		});
 		if (!data) {
@@ -429,7 +429,7 @@ const findProductServicesByMatchWord = async (req, res) => {
 const createProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductosServicios.findOne({
+		const validateProductServices = await VwProductosServicios.findOne({
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -442,7 +442,7 @@ const createProductServices = async (req, res) => {
 				.json({ error: 'La clave del producto/servicio ya esta en uso ' });
 		}
 
-		await ProductosServicios.create(productServicesBody);
+		await VwProductosServicios.create(productServicesBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Producto/Servicio creado' });
@@ -457,7 +457,7 @@ const createProductServices = async (req, res) => {
 const updateProductServices = async (req, res) => {
 	const productServicesBody = req.body;
 	try {
-		const validateProductServices = await ProductosServicios.findOne({
+		const validateProductServices = await VwProductosServicios.findOne({
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -468,7 +468,7 @@ const updateProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		const [updated] = await ProductosServicios.update(productServicesBody, {
+		const [updated] = await VwProductosServicios.update(productServicesBody, {
 			where: {
 				ClaveProductsServices: productServicesBody.ClaveProductsServices,
 				Activo: 1,
@@ -494,7 +494,7 @@ const deleteProductServices = async (req, res) => {
 	const { ClaveProductsServices } = req.body;
 
 	try {
-		const product = await ProductosServicios.findOne({
+		const product = await VwProductosServicios.findOne({
 			where: { ClaveProductsServices, Activo: 1 },
 		});
 
@@ -502,7 +502,7 @@ const deleteProductServices = async (req, res) => {
 			return res.status(404).json({ error: 'Producto/Servicio no encontrado' });
 		}
 
-		await ProductosServicios.update(
+		await VwProductosServicios.update(
 			{ Activo: false },
 			{ where: { ClaveProductsServices } },
 		);
@@ -524,7 +524,7 @@ const findAllUnitKeys = async (req, res) => {
 	const offset = (page - 1) * limit;
 
 	try {
-		const { count, rows } = await ClaveUnidad.findAndCountAll({
+		const { count, rows } = await VwClaveUnidad.findAndCountAll({
 			limit,
 			offset,
 		});
@@ -548,9 +548,9 @@ const findAllUnitKeys = async (req, res) => {
 const findUnitKeysByKey = async (req, res) => {
 	const { key } = req.params;
 	try {
-		const data = await ClaveUnidad.findAll({
+		const data = await VwClaveUnidad.findAll({
 			where: {
-				ClaveUnidadSat: key,
+				VwClaveUnidadSat: key,
 			},
 		});
 
@@ -571,9 +571,9 @@ const findUnitKeysByKey = async (req, res) => {
 const createUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const validateUnitKey = await ClaveUnidad.findOne({
+		const validateUnitKey = await VwClaveUnidad.findOne({
 			where: {
-				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
+				VwClaveUnidadSat: unitKeyBody.VwClaveUnidadSat,
 				Activo: 1,
 			},
 		});
@@ -584,7 +584,7 @@ const createUnitKey = async (req, res) => {
 				.json({ error: 'La clave de unidad ya esta en uso ' });
 		}
 
-		await ClaveUnidad.create(unitKeyBody);
+		await VwClaveUnidad.create(unitKeyBody);
 		return res
 			.status(200)
 			.json({ success: true, message: 'Clave de unidad creada' });
@@ -597,9 +597,9 @@ const createUnitKey = async (req, res) => {
 const updateUnitKey = async (req, res) => {
 	const unitKeyBody = req.body;
 	try {
-		const [updated] = await ClaveUnidad.update(unitKeyBody, {
+		const [updated] = await VwClaveUnidad.update(unitKeyBody, {
 			where: {
-				ClaveUnidadSat: unitKeyBody.ClaveUnidadSat,
+				VwClaveUnidadSat: unitKeyBody.VwClaveUnidadSat,
 				Activo: 1,
 			},
 		});
@@ -620,18 +620,18 @@ const updateUnitKey = async (req, res) => {
 };
 
 const deleteUnitKey = async (req, res) => {
-	const { ClaveUnidadSat } = req.body;
+	const { VwClaveUnidadSat } = req.body;
 
 	try {
-		const unitKey = await ClaveUnidad.findOne({
-			where: { ClaveUnidadSat, Activo: 1 },
+		const unitKey = await VwClaveUnidad.findOne({
+			where: { VwClaveUnidadSat, Activo: 1 },
 		});
 
 		if (!unitKey) {
 			return res.status(404).json({ error: 'Clave de unidad no encontrada' });
 		}
 
-		await ClaveUnidad.update({ Activo: false }, { where: { ClaveUnidadSat } });
+		await VwClaveUnidad.update({ Activo: false }, { where: { VwClaveUnidadSat } });
 
 		return res
 			.status(200)
