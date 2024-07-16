@@ -4,7 +4,7 @@ import { SucursalDomicilio } from '../models/sucursal.domicilio.model.js';
 import { Domicilio } from '../models/domicilios.model.js';
 import { EntidadNegocio } from '../models/empresa.model.js';
 import { EmpresaSucursal } from '../models/empresa.sucursalmodel.js';
-import { validationResult, validarSucursal, validarNombreSucursal, buscarDomicilioSucursal} from '../middlewares/finders/index.js'
+import { validarSucursal, validarNombreSucursal, buscarDomicilioSucursal} from '../middlewares/finders/index.js'
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
 	// TODO ->  VALIDAR SI LA EXPRESA EXISTE
@@ -89,11 +89,6 @@ const crearSucursal = async (req, res) => {
 };
 
 const editarSucursal = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
-    }
-
     const { sucursal, datos } = req.body;
 
     try {
