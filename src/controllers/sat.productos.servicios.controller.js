@@ -1,13 +1,13 @@
-import { handleDBOperation, messages } from '../middlewares/finders/index.js';
-import { helpers } from '../helpers/buscador.js';
 import { VwProductosServicios } from '../models/vw.Sat.Productos.Servicios.model.js';
 import { Op, Sequelize } from 'sequelize';
+import { handleDBOperation, messages, buscarProductoPorClave } from '../middlewares/finders/index.js';
+import { buscarProducto } from '../helpers/buscador.js';
 
 const findProductServicesByCode = async (req, res) => {
 	const code = req.params.code;
 	await handleDBOperation(
 	  async () => {
-		const data = await helpers.buscarProductoPorClave(code);
+		const data = await buscarProductoPorClave(code);
   
 		if (!data.existe) {
 		  return { error: messages.errors.notFound };
@@ -18,6 +18,17 @@ const findProductServicesByCode = async (req, res) => {
 	  res,
 	  messages.success.found
 	);
+  };
+  
+  const searchProductServicesByDescription = async (req, res) => {
+	const description = req.params.descripcion;
+	const result = await buscarProducto(description, 1);
+  
+	if (!result.existe || !result.data.rows.length) {
+	  return res.status(400).json({ error: 'No hay datos disponibles' });
+	}
+  
+	res.status(200).json({ message: messages.success.found, data: result.data.rows });
   };
 
 const findProductServicesByDescription = async (req, res) => {
@@ -148,6 +159,7 @@ const deleteProductServices = async (req, res) => {
 
 export const methods = {
 	findProductServicesByCode,
+	searchProductServicesByDescription,
 	findProductServicesByDescription,
 	findProductServicesByMatchWord,
 	createProductServices,

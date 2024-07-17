@@ -1,87 +1,60 @@
-import { handleDBOperation, messages } from '../middlewares/finders/index.js';
-import { helpers } from '../helpers/buscador.js';
-import { VwClaveUnidad } from '../models/vw.Sat.Clave.Unidad.model.js';
-import { Op } from 'sequelize';
+import { handleDBOperation, messages, buscarClaveUnidadPorClave } from '../middlewares/finders/index.js';
+import { buscarUnidadMedida } from '../helpers/buscador.js';
+import { VwClaveUnidad } from '../models/index.js';
 
 const findAllUnitKeys = async (req, res) => {
   const page = req.params.pagina ? Number(req.params.pagina) : 1;
-  const limit = 10;
-  const offset = (page - 1) * limit;
+  const result = await buscarUnidadMedida('', page);
 
-  await handleDBOperation(
-    async () => {
-      const { count, rows } = await VwClaveUnidad.findAndCountAll({
-        limit,
-        offset,
-      });
+  if (!result.existe) {
+    return res.status(400).json({ error: 'La página solicitada no existe' });
+  }
 
-      const totalPages = Math.ceil(count / limit);
+  const totalPages = Math.ceil(result.data.count / 10);
+  if (page > totalPages) {
+    return res.status(400).json({ error: 'La página solicitada no existe' });
+  }
 
-      if (page > totalPages) {
-        return { error: 'La página solicitada no existe' };
-      }
-
-      return {
-        info: {
-          totalPages,
-          currentPage: page,
-          totalItems: count,
-        },
-        items: rows,
-      };
+  res.status(200).json({
+    message: messages.success.found,
+    data: {
+      info: {
+        totalPages,
+        currentPage: page,
+        totalItems: result.data.count,
+      },
+      items: result.data.rows,
     },
-    res,
-    messages.success.found
-  );
+  });
 };
 
 const findUnitKeysByKey = async (req, res) => {
   const key = req.params.clave;
-  await handleDBOperation(
-    async () => {
-      const data = await VwClaveUnidad.findAll({
-        where: {
-          VwClaveUnidadSat: { [Op.like]: `%${key}%` },
-        },
-      });
+  const result = await buscarUnidadMedida(key, 1);
 
-      if (!data.length) {
-        return { error: 'No hay datos disponibles' };
-      }
+  if (!result.existe || !result.data.rows.length) {
+    return res.status(400).json({ error: 'No hay datos disponibles' });
+  }
 
-      return data;
-    },
-    res,
-    messages.success.found
-  );
+  res.status(200).json({ message: messages.success.found, data: result.data.rows });
 };
 
 const findUnitKeysByName = async (req, res) => {
   const name = req.params.nombre;
-  await handleDBOperation(
-    async () => {
-      const data = await VwClaveUnidad.findAll({
-        where: {
-          NombreUnidadSat: { [Op.like]: `%${name}%` },
-        },
-      });
+  const result = await buscarUnidadMedida(name, 1);
 
-      if (!data.length) {
-        return { error: 'No hay datos disponibles' };
-      }
+  if (!result.existe || !result.data.rows.length) {
+    return res.status(400).json({ error: 'No hay datos disponibles' });
+  }
 
-      return data;
-    },
-    res,
-    messages.success.found
-  );
+  res.status(200).json({ message: messages.success.found, data: result.data.rows });
 };
 
 const createUnitKey = async (req, res) => {
   const unitKeyBody = req.body;
   await handleDBOperation(
     async () => {
-      const validateUnitKey = await helpers.buscarClaveUnidadPorClave(unitKeyBody.VwClaveUnidadSat);
+      const validateUnitKey = await buscarClaveUnidadPorClave(unitKeyBody.VwClaveUnidadSat);
 
       if (validateUnitKey.existe) {
         return { error: messages.errors.alreadyExists };
@@ -98,7 +71,7 @@ const updateUnitKey = async (req, res) => {
   const unitKeyBody = req.body;
   await handleDBOperation(
     async () => {
-      const validateUnitKey = await helpers.buscarClaveUnidadPorClave(unitKeyBody.VwClaveUnidadSat);
+      const validateUnitKey = await buscarClaveUnidadPorClave(unitKeyBody.VwClaveUnidadSat);
 
       if (!validateUnitKey.existe) {
         return { error: messages.errors.notFound };
@@ -123,7 +96,7 @@ const deleteUnitKey = async (req, res) => {
 
   await handleDBOperation(
     async () => {
-      const unitKey = await helpers.buscarClaveUnidadPorClave(UnitSATKey);
+      const unitKey = await buscarClaveUnidadPorClave(UnitSATKey);
 
       if (!unitKey.existe) {
         return { error: messages.errors.notFound };

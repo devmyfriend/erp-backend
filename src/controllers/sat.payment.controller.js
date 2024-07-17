@@ -1,13 +1,12 @@
 import { VwFormaDePago, VwMetodoDePago } from '../models/index.js';
 import { handleDBOperation, messages } from '../middlewares/finders/index.js';
-import { helpers } from '../helpers/buscador.js';
-import { Op } from 'sequelize';
+import { buscarFormaDePago, buscarMetodoDePago } from '../helpers/buscador.js';
 
 const createPaymentMethods = async (req, res) => {
   const paymentBody = req.body;
   await handleDBOperation(
     async () => {
-      const existingPaymentMethod = await helpers.buscarVwFormaDePagoPorClave(paymentBody.ClaveFormaPago);
+      const existingPaymentMethod = await buscarFormaDePago(paymentBody.ClaveFormaPago);
       if (existingPaymentMethod.existe) {
         return { error: messages.errors.alreadyExists };
       }
@@ -22,11 +21,11 @@ const updatePaymentMethods = async (req, res) => {
   const paymentBody = req.body;
   await handleDBOperation(
     async () => {
-      const payment = await helpers.buscarVwFormaDePagoPorClave(paymentBody.ClaveFormaPago);
+      const payment = await buscarFormaDePago(paymentBody.ClaveFormaPago);
       if (!payment.existe) {
         return { error: messages.errors.notFound };
       }
-      return await payment.data.update(paymentBody);
+      return await VwFormaDePago.update(paymentBody, { where: { ClaveFormaPago: paymentBody.ClaveFormaPago } });
     },
     res,
     messages.success.updated
@@ -37,12 +36,11 @@ const deletePaymentMethods = async (req, res) => {
   const id = req.params.ClaveFormaPago;
   await handleDBOperation(
     async () => {
-      const payment = await helpers.buscarVwFormaDePagoPorClave(id);
+      const payment = await buscarFormaDePago(id);
       if (!payment.existe) {
         return { error: messages.errors.notFound };
       }
-      payment.data.Activo = 0;
-      await payment.data.save();
+      await VwFormaDePago.update({ Activo: 0 }, { where: { ClaveFormaPago: id } });
       return payment.data;
     },
     res,
@@ -54,7 +52,7 @@ const createPaymentType = async (req, res) => {
   const paymentTypeBody = req.body;
   await handleDBOperation(
     async () => {
-      const existingPaymentType = await helpers.buscarVwMetodoDePagoPorClave(paymentTypeBody.ClaveMetodoPago);
+      const existingPaymentType = await buscarMetodoDePago(paymentTypeBody.ClaveMetodoPago);
       if (existingPaymentType.existe) {
         return { error: messages.errors.alreadyExists };
       }
@@ -69,11 +67,11 @@ const updatedPaymentType = async (req, res) => {
   const paymentBody = req.body;
   await handleDBOperation(
     async () => {
-      const payment = await helpers.buscarVwMetodoDePagoPorClave(paymentBody.ClaveMetodoPago);
+      const payment = await buscarMetodoDePago(paymentBody.ClaveMetodoPago);
       if (!payment.existe) {
         return { error: messages.errors.notFound };
       }
-      return await payment.data.update(paymentBody);
+      return await VwMetodoDePago.update(paymentBody, { where: { ClaveMetodoPago: paymentBody.ClaveMetodoPago } });
     },
     res,
     messages.success.updated
@@ -84,12 +82,11 @@ const deletePaymentType = async (req, res) => {
   const id = req.params.ClaveMetodoPago;
   await handleDBOperation(
     async () => {
-      const payment = await helpers.buscarVwMetodoDePagoPorClave(id);
+      const payment = await buscarMetodoDePago(id);
       if (!payment.existe) {
         return { error: messages.errors.notFound };
       }
-      payment.data.Activo = 0;
-      await payment.data.save();
+      await VwMetodoDePago.update({ Activo: 0 }, { where: { ClaveMetodoPago: id } });
       return payment.data;
     },
     res,
@@ -97,26 +94,15 @@ const deletePaymentType = async (req, res) => {
   );
 };
 
-// Esta función parece no estar definida en tu código proporcionado
 const searchPaymentTypeByDescription = async (req, res) => {
   const description = req.params.Descripcion;
-  await handleDBOperation(
-    async () => {
-      const data = await VwMetodoDePago.findAll({
-        where: {
-          Descripcion: { [Op.like]: `%${description}%` },
-        },
-      });
+  const result = await buscarMetodoDePago(description, 1);
 
-      if (!data.length) {
-        return { error: 'No hay datos disponibles' };
-      }
+  if (!result.existe || !result.data.rows.length) {
+    return res.status(400).json({ error: 'No hay datos disponibles' });
+  }
 
-      return data;
-    },
-    res,
-    messages.success.found
-  );
+  res.status(200).json({ message: messages.success.found, data: result.data.rows });
 };
 
 export const methods = {

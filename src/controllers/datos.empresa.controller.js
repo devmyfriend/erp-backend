@@ -8,8 +8,7 @@ import { EmpresaContacto } from '../models/empresa.contacto.model.js';
 import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
 import { VwEmail } from '../models/vw.Email.model.js';
 import { VwEmpresaEmails } from '../models/vw.Empresa.Emails.model.js';
-import { handleDBOperation, messages } from '../middlewares/finders/index.js';
-import { helpers } from '../helpers/buscador.js';
+import { handleDBOperation, messages, buscarEmpresaEmailPorId, buscarEmailPorId } from '../middlewares/finders/index.js';
 
 const obtenerEmpresas = async (req, res) => {
 	try {
@@ -709,12 +708,11 @@ const editarEmpresaEmails = async (req, res) => {
 	}
 };
 
-// Operaciones CRUD
 const desactivarEmpresaEmails = async (req, res) => {
 	await handleDBOperation(
 	  async () => {
-		const empresaVwEmail = await helpers.buscarEmpresaVwEmailPorId(req.body.VwEmailId);
-		const VwEmail = await helpers.buscarVwEmailPorId(req.body.VwEmailId);
+		const empresaVwEmail = await buscarEmpresaEmailPorId(req.body.VwEmailId);
+		const VwEmail = await buscarEmailPorId(req.body.VwEmailId);
   
 		if (!empresaVwEmail.existe || !VwEmail.existe) {
 		  return { error: messages.errors.notFound };

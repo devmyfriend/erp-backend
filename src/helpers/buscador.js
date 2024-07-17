@@ -1,12 +1,18 @@
-import { buscarFormaDePagoPorClave, buscarMetodoDePagoPorClave, buscarClaveUnidadPorClave, buscarProductoPorClave, buscarEmpresaEmailPorId, buscarEmailPorId } from '../middlewares/finders/index.js';
 import { Op } from 'sequelize';
+import { 
+  VwFormaDePago, 
+  VwMetodoDePago, 
+  VwClaveUnidad, 
+  VwProductosServicios, 
+  VwEmpresaEmails, 
+  VwEmail 
+} from '../models/index.js';
+
 const paginado = parseInt(process.env.RegistrosPorPagina) || 10;
 
 const manejadorDBError = error => {
   console.error(error);
-  return {
-    error: 'Error interno en el servidor',
-  };
+  return { error: 'Error interno en el servidor' };
 };
 
 const searchItems = async (modelo, condicion, pagina) => {
@@ -29,15 +35,40 @@ export const buscarUnidadMedida = async (item, pagina) => {
       NombreUnidadSat: { [Op.like]: `%${item}%` },
     },
   };
-  return searchItems(buscarClaveUnidadPorClave, condicion, pagina);
+  return searchItems(VwClaveUnidad, condicion, pagina);
 };
 
-export const helpers = {
-  buscarFormaDePagoPorClave,
-  buscarMetodoDePagoPorClave,
-  buscarClaveUnidadPorClave,
-  buscarProductoPorClave,
-  buscarEmpresaEmailPorId,
-  buscarEmailPorId,
-  buscarUnidadMedida,
+export const buscarFormaDePago = async (descripcion, pagina) => {
+  const condicion = {
+    Descripcion: { [Op.like]: `%${descripcion}%` },
+  };
+  return searchItems(VwFormaDePago, condicion, pagina);
+};
+
+export const buscarMetodoDePago = async (descripcion, pagina) => {
+  const condicion = {
+    Descripcion: { [Op.like]: `%${descripcion}%` },
+  };
+  return searchItems(VwMetodoDePago, condicion, pagina);
+};
+
+export const buscarProducto = async (descripcion, pagina) => {
+  const condicion = {
+    Descripcion: { [Op.like]: `%${descripcion}%` },
+  };
+  return searchItems(VwProductosServicios, condicion, pagina);
+};
+
+export const buscarEmpresaEmail = async (email, pagina) => {
+  const condicion = {
+    VwEmail: { [Op.like]: `%${email}%` },
+  };
+  return searchItems(VwEmpresaEmails, condicion, pagina);
+};
+
+export const buscarEmail = async (email, pagina) => {
+  const condicion = {
+    VwEmail: { [Op.like]: `%${email}%` },
+  };
+  return searchItems(VwEmail, condicion, pagina);
 };
