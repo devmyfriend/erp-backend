@@ -11,7 +11,9 @@ import{
     EmpresaEmails,
     Sucursal,
     SucursalDomicilio,
-    Domicilio 
+    Domicilio,
+    vwSatCFDI,
+    vwRegimenFiscal
 } from '../../models/index.js'
 
 const manejadorDBError = error =>{
@@ -78,13 +80,14 @@ export const validarRelacionEmpresaContacto = async id =>
 /*
 VALIDAR EMPRESA-EMAIL
 */
-
 export const validarEmail = async id => 
     buscarItem(EmpresaEmails,{EmailId: id} )
 export const validarRelacionEmpresaEmail = async (EntidadNegocioId, EmailId) => 
     buscarItem(EmpresaEmails, { EntidadNegocioId, EmailId });
 
-
+/*
+VALIDAR SUCURSAL
+*/
 export const validarSucursal = async (SucursalId) => 
     buscarItem(Sucursal, { SucursalId, Borrado: 0 });
 export const validarNombreSucursal = async (Nombre) => 
@@ -93,3 +96,22 @@ export const buscarDomicilioSucursal = async (SucursalId) =>
     buscarItem(SucursalDomicilio, { SucursalId });
 export const buscarDomicilioPorId = async (DomicilioId) => 
     buscarItem(Domicilio, { DomicilioId });
+
+
+/*
+VALIDAR CFDI
+*/
+export const validarCFDIPorClave = async (clave) =>
+    buscarItem(vwSatCFDI, { ClaveUsoCFDI: clave });
+
+export const validarCFDIActivoPorClave = async (clave) =>
+    buscarItem(vwSatCFDI, { ClaveUsoCFDI: clave, Activo: true });
+
+/*
+VALIDAR REGIMENES FISCALES
+*/
+export const validarRegimenFiscalPorClave = async (clave) =>
+    buscarItem(vwRegimenFiscal, { ClaveRegimenFiscal: clave });
+
+export const validarRegimenFiscalActivoPorClave = async (clave) =>
+    buscarItem(vwRegimenFiscal, { ClaveRegimenFiscal: clave, Activo: true });

@@ -1,7 +1,7 @@
 import { DataTypes } from "sequelize";
 import { Connection } from "../database/mariadb.database.js";
-import { regimenFiscal } from '../models/sat.regimen.fiscal.model.js';
-import { UsoCFDI } from '../models/sat.uso.cfdi.model.js';
+import { vwRegimenFiscal } from '../models/sat.regimen.fiscal.model.js';
+import { vwSatCFDI } from '../models/sat.uso.cfdi.model.js';
 
 export const CFDIRegimen = Connection.define(
     "UsoCFD_RegimenFiscal",
@@ -24,5 +24,5 @@ export const CFDIRegimen = Connection.define(
     }
 );
 
-regimenFiscal.belongsToMany(UsoCFDI, { through: CFDIRegimen, foreignKey: 'ClaveRegimenFiscal', otherKey: 'ClaveUsoCFDI' });
-UsoCFDI.belongsToMany(regimenFiscal, { through: CFDIRegimen, foreignKey: 'ClaveUsoCFDI', otherKey: 'ClaveRegimenFiscal' });
+vwRegimenFiscal.belongsToMany(vwSatCFDI, { through: CFDIRegimen, foreignKey: 'ClaveRegimenFiscal', otherKey: 'ClavevwSatCFDI' });
+vwSatCFDI.belongsToMany(vwRegimenFiscal, { through: CFDIRegimen, foreignKey: 'ClaveUsoCFDI', otherKey: 'ClaveRegimenFiscal' });

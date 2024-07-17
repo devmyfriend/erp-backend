@@ -1,12 +1,11 @@
-import { DataTypes } from "sequelize";
-import { Connection } from "../database/mariadb.database.js";
+import { DataTypes } from 'sequelize';
+import { Connection } from '../database/mariadb.database.js';
 
-export const UsoCFDI = Connection.define(
-    "CFDI",
+export const vwSatCFDI = Connection.define(
+    'vwSatCFDI',
     {
         ClaveUsoCFDI: {
             type: DataTypes.STRING,
-            autoIncrement: false,
             primaryKey: true,
             allowNull: false,
         },
@@ -24,10 +23,8 @@ export const UsoCFDI = Connection.define(
         },
     },
     {
-        sequelize: Connection,
-        modelName: "CFDI",
-        tableName: "SAT_UsoCFDI",
+        tableName: 'SAT_UsoCFDI',
         timestamps: false,
-        freezeTableName: false,
+        freezeTableName: true,
     }
 );

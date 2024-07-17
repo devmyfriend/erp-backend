@@ -149,27 +149,23 @@ export const createCFDISchema = [
 ];
 
 export const editCFDISchema = [
-	body('ClaveUsoCFDI')
-		.notEmpty()
-		.withMessage('La clave del uso del CFDI no puede estar vacia')
-		.isString()
-		.withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
-	body('Descripcion')
-		.optional()
-		.isString()
-		.withMessage('La descripcion tiene que ser una cadena de texto'),
-	body('Fisica')
-		.optional()
-		.isBoolean()
-		.withMessage(
-			'El estatus de la persona fisica tiene que ser un valor booleano',
-		),
-	body('Moral')
-		.optional()
-		.isBoolean()
-		.withMessage(
-			'El estatus de la persona moral tiene que ser un valor booleano',
-		),
+    body('ClaveUsoCFDI')
+        .notEmpty()
+        .withMessage('La clave del uso del CFDI no puede estar vacía')
+        .isString()
+        .withMessage('La clave del uso del CFDI tiene que ser una cadena de texto'),
+    body('Descripcion')
+        .optional()
+        .isString()
+        .withMessage('La descripción tiene que ser una cadena de texto'),
+    body('Fisica')
+        .optional()
+        .isBoolean()
+        .withMessage('El estatus de la persona física tiene que ser un valor booleano'),
+    body('Moral')
+        .optional()
+        .isBoolean()
+        .withMessage('El estatus de la persona moral tiene que ser un valor booleano'),
 ];
 
 export const deleteCFDISchema = [

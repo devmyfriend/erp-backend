@@ -14,10 +14,19 @@ const router = Router();
  *   - name: Catálogo de colonias
  *     description: Operaciones relacionadas con las colonias
  *
- *   - name: Régimen Fiscal y CFDI
- *     description: Régimen fiscal con sus usos de CFDI
+ *   - name: Usos de CFDI
+ *     description: Operaciones relacionadas con los usos de CFDi
  *
- *   - name: Metodos de pago
+ *   - name: Regimen Fiscal
+ *     description: Operaciones relacionadas con los regímenes fiscales
+ *
+ * 	 - name: Uso de CFDI con Regímenes Fiscales
+ *     description: Operaciones relacionadas con el enlace de uso de CFDi a regímenes fiscales
+ *
+ *   - name: Régimen Fiscal con Usos de CFDI
+ *     description: Operaciones relacionadas con el enlace de regimen fiscal a usos de CFDi
+ *
+ *   - name: Metodos de pagoF
  *     description: Metodos de pago
  *
  *
@@ -183,59 +192,6 @@ router.post(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/cfdi:
- *   get:
- *     summary: Obtener Régimen Fiscal y CFDI
- *     tags: [Régimen Fiscal y CFDI]
- *     responses:
- *       200:
- *         description: Régimen Fiscal y CFDI
- *         content:
- *           application/json:
- *             example:
- *               - regimen:
- *                   ClaveRegimenFiscal: "601"
- *                   Descripcion: "General de Ley Personas Morales"
- *                   Fisica: false
- *                   Moral: true
- *                 cfdi:
- *                   - ClaveUsoCFDI: "G01"
- *                     Descripcion: "Adquisición de mercancías."
- *                     Fisica: 1
- *                     Moral: 1
- *                   - ClaveUsoCFDI: "G02"
- *                     Descripcion: "Devoluciones, descuentos o bonificaciones."
- *                     Fisica: 1
- *                     Moral: 1
- */
-
-router.get('/sat/cfdi', methods.findSatRF);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/cfdi/lista:
- *   get:
- *     summary: Lista CFDI
- *     tags: [Régimen Fiscal y CFDI]
- *     responses:
- *       200:
- *         description: Lista CFDI
- *         content:
- *           application/json:
- *             example:
- *                   - ClaveUsoCFDI: "G01"
- *                     Descripcion: "Adquisición de mercancías."
- *                     Fisica: 1
- *                     Moral: 1
- *                   - ClaveUsoCFDI: "G02"
- *                     Descripcion: "Devoluciones, descuentos o bonificaciones."
- *                     Fisica: 1
- *                     Moral: 1
- */
-router.get('/sat/cfdi/lista', methods.findCFDI);
-
-/**
- * @swagger
  * /api/v1/catalogo/metodos/pago:
  *   get:
  *     summary: Obtener una lista de formas y metodos de pago
@@ -267,8 +223,7 @@ router.get('/metodos/pago', methods.paymentMethods);
  *                     Descripcion: "Peso Mexicano"
  *
  */
-router.get(
-	'/metodos/moneda', methods.getTypeCoin);
+router.get('/metodos/moneda', methods.getTypeCoin);
 
 /**
  * @swagger
@@ -420,120 +375,38 @@ router.delete(
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/regimenfiscal:
- *   post:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Crea un nuevo régimen fiscal
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveRegimenFiscal:
- *                 type: string
- *                 description: La clave del régimen fiscal
- *               Descripcion:
- *                 type: string
- *                 description: La descripción del régimen fiscal
- *               Fisica:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas físicas
- *               Moral:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas morales
+ * /api/v1/catalogo/sat/cfdi:
+ *   get:
+ *     summary: Lista CFDI
+ *     tags: [Usos de CFDI]
  *     responses:
  *       200:
- *         description: Régimen fiscal creado con éxito
+ *         description: Lista CFDI
+ *         content:
+ *           application/json:
+ *             example:
+ *               - ClaveUsoCFDI: "G01"
+ *                 Descripcion: "Adquisición de mercancías."
+ *                 Fisica: true
+ *                 Moral: true
+ *               - ClaveUsoCFDI: "G02"
+ *                 Descripcion: "Devoluciones, descuentos o bonificaciones."
+ *                 Fisica: true
+ *                 Moral: true
  *       500:
- *         description: Error al crear el régimen fiscal
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               error: "Error interno del servidor"
  */
-router.post(
-	'/sat/regimenfiscal',
-	schemas.createSatFKSchema,
-	middleware.validateSchema,
-	methods.createRegimenFiscal,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/regimenfiscal:
- *   patch:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Actualiza un régimen fiscal existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveRegimenFiscal:
- *                 type: string
- *                 description: La clave del régimen fiscal
- *               Descripcion:
- *                 type: string
- *                 description: La descripción del régimen fiscal
- *               Fisica:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas físicas
- *               Moral:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas morales
- *     responses:
- *       200:
- *         description: Régimen fiscal actualizado con éxito
- *       404:
- *         description: Régimen fiscal no encontrado
- *       500:
- *         description: Error al actualizar el régimen fiscal
- */
-router.patch(
-	'/sat/regimenfiscal',
-	schemas.editSatFKSchema,
-	middleware.validateSchema,
-	methods.updateRegimenFiscal,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/regimenfiscal:
- *   delete:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Borra un régimen fiscal existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveRegimenFiscal:
- *                 type: string
- *                 description: La clave del régimen fiscal
- *     responses:
- *       200:
- *         description: Régimen fiscal borrado con éxito
- *       400:
- *         description: El régimen fiscal ya está desactivado
- *       404:
- *         description: Régimen fiscal no encontrado
- *       500:
- *         description: Error al borrar el régimen fiscal
- */
-router.delete(
-	'/sat/regimenfiscal',
-	schemas.deleteSatFKSchema,
-	middleware.validateSchema,
-	methods.deleteRegimenFiscal,
-);
+router.get('/sat/cfdi', methods.findCFDI);
 
 /**
  * @swagger
  * /api/v1/catalogo/sat/cfdi:
  *   post:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Usos de CFDI]
  *     summary: Crea un nuevo uso de CFDI
  *     requestBody:
  *       required: true
@@ -557,8 +430,37 @@ router.delete(
  *     responses:
  *       200:
  *         description: Uso de CFDI creado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       409:
+ *         description: La clave del CFDI ya está en uso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       500:
  *         description: Error al crear el uso de CFDI
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
  */
 router.post(
 	'/sat/cfdi',
@@ -571,7 +473,7 @@ router.post(
  * @swagger
  * /api/v1/catalogo/sat/cfdi:
  *   patch:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Usos de CFDI]
  *     summary: Edita un uso de CFDI existente
  *     requestBody:
  *       required: true
@@ -595,10 +497,37 @@ router.post(
  *     responses:
  *       200:
  *         description: Uso de CFDI editado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
  *       404:
  *         description: Uso de CFDI no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       500:
  *         description: Error al editar el uso de CFDI
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
  */
 router.patch(
 	'/sat/cfdi',
@@ -611,7 +540,7 @@ router.patch(
  * @swagger
  * /api/v1/catalogo/sat/cfdi:
  *   delete:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Usos de CFDI]
  *     summary: Borra un uso de CFDI existente
  *     requestBody:
  *       required: true
@@ -626,76 +555,93 @@ router.patch(
  *     responses:
  *       200:
  *         description: Uso de CFDI borrado con éxito
- *       400:
- *         description: El uso de CFDI no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       404:
  *         description: Uso de CFDI no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       500:
  *         description: Error al borrar el uso de CFDI
- */
-router.delete(
-	'/sat/cfdi',
-	schemas.deleteCFDISchema,
-	middleware.validateSchema,
-	methods.deleteCFDI,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/cfdi/regimen:
- *   post:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Enlaza un CFDi a un Regimen fiscal existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               regimen:
- *                 type: object
- *                 properties:
- *                   ClaveRegimenFiscal:
- *                     type: string
- *                     description: La clave del régimen fiscal
- *                     example: "213"
- *               cfdi:
- *                 type: object
- *                 properties:
- *                   ClaveUsoCFDI:
- *                     type: string
- *                     description: La clave de Uso CFDi
- *                     example: "CN01"
- *     responses:
- *       200:
- *         description: Régimen Fiscal y CFDI enlazados con éxito
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
- *                 message:
+ *                 errors:
  *                   type: string
- *       
  */
-
-router.post(
-    '/sat/cfdi/regimen',
-    schemas.createCFDIRegimenSchema,
+router.delete(
+    '/sat/cfdi',
+    schemas.deleteCFDISchema,
     middleware.validateSchema,
-    methods.createSatRegimenCfdi
+    methods.deleteCFDI,
 );
-
 
 /**
  * @swagger
- * /api/v1/catalogo/sat/cfdi/regimen:
- *   delete:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Desvincula múltiples CFDis de un Regimen fiscal existente
+ * /api/v1/catalogo/sat/regimenfiscal:
+ *   get:
+ *     summary: Lista Regimenes Fiscales
+ *     tags: [Régimen Fiscal]
+ *     responses:
+ *       200:
+ *         description: Lista de Regimenes Fiscales
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   ClaveRegimenFiscal:
+ *                     type: string
+ *                   Descripcion:
+ *                     type: string
+ *                   Fisica:
+ *                     type: boolean
+ *                   Moral:
+ *                     type: boolean
+ *                   Activo:
+ *                     type: boolean
+ *             example:
+ *               - ClaveRegimenFiscal: "601"
+ *                 Descripcion: "General de Ley Personas Morales"
+ *                 Fisica: false
+ *                 Moral: true
+ *                 Activo: true
+ *       500:
+ *         description: Error al obtener la lista de regímenes fiscales
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
+ */
+router.get('/sat/regimenfiscal', methods.findSatRF);
+
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/regimenfiscal:
+ *   post:
+ *     tags: [Régimen Fiscal]
+ *     summary: Crea un nuevo régimen fiscal
  *     requestBody:
  *       required: true
  *       content:
@@ -703,46 +649,181 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               regimen:
- *                 type: object
- *                 properties:
- *                   ClaveRegimenFiscal:
- *                     type: string
- *                     description: La clave del régimen fiscal
- *                     example: "213"
- *               cfdi:
- *                 type: array
- *                 items:
- *                   type: object
- *                   properties:
- *                     ClaveUsoCFDI:
- *                       type: string
- *                       description: La clave de Uso CFDi
- *                       example: "CN01"
+ *               ClaveRegimenFiscal:
+ *                 type: string
+ *                 description: La clave del régimen fiscal
+ *               Descripcion:
+ *                 type: string
+ *                 description: La descripción del régimen fiscal
+ *               Fisica:
+ *                 type: boolean
+ *                 description: Si el régimen fiscal es para personas físicas
+ *               Moral:
+ *                 type: boolean
+ *                 description: Si el régimen fiscal es para personas morales
  *     responses:
  *       200:
- *         description: Régimen Fiscal y CFDIs desvinculados con éxito
+ *         description: Régimen fiscal creado con éxito
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
- *       400:
- *         description: CFDI no encontrado
- *       404:
- *         description: Régimen Fiscal no encontrado
+ *                 data:
+ *                   type: object
+ *       409:
+ *         description: La clave del Regimen Fiscal ya está en uso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
  *       500:
- *         description: Error al desvincular Régimen Fiscal y CFDI
+ *         description: Error al crear el régimen fiscal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
+ */
+router.post(
+    '/sat/regimenfiscal',
+    schemas.createSatFKSchema,
+    middleware.validateSchema,
+    methods.createRegimenFiscal,
+);
+
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/regimenfiscal:
+ *   patch:
+ *     tags: [Régimen Fiscal]
+ *     summary: Actualiza un régimen fiscal existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ClaveRegimenFiscal:
+ *                 type: string
+ *                 description: La clave del régimen fiscal
+ *               Descripcion:
+ *                 type: string
+ *                 description: La descripción del régimen fiscal
+ *               Fisica:
+ *                 type: boolean
+ *                 description: Si el régimen fiscal es para personas físicas
+ *               Moral:
+ *                 type: boolean
+ *                 description: Si el régimen fiscal es para personas morales
+ *     responses:
+ *       200:
+ *         description: Régimen fiscal actualizado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *       404:
+ *         description: Régimen fiscal no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error al actualizar el régimen fiscal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
+ */
+router.patch(
+    '/sat/regimenfiscal',
+    schemas.editSatFKSchema,
+    middleware.validateSchema,
+    methods.updateRegimenFiscal,
+);
+
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/regimenfiscal:
+ *   delete:
+ *     tags: [Régimen Fiscal]
+ *     summary: Borra un régimen fiscal existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               ClaveRegimenFiscal:
+ *                 type: string
+ *                 description: La clave del régimen fiscal
+ *     responses:
+ *       200:
+ *         description: Régimen fiscal borrado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *       404:
+ *         description: Régimen fiscal no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error al borrar el régimen fiscal
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 errors:
+ *                   type: string
  */
 router.delete(
-	'/sat/cfdi/regimen',
-	schemas.createCFDIRegimenSchema,
-	middleware.validateSchema,
-	methods.deleteSatRegimenCfdi
+    '/sat/regimenfiscal',
+    schemas.deleteSatFKSchema,
+    middleware.validateSchema,
+    methods.deleteRegimenFiscal,
 );
 
 
@@ -750,7 +831,7 @@ router.delete(
  * @swagger
  * /api/v1/catalogo/sat/cfdi/{claveUsoCFDI}/regimenes:
  *   get:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Uso de CFDI con Regímenes Fiscales]
  *     summary: Obtener regímenes disponibles y seleccionados para un CFDI
  *     parameters:
  *       - in: path
@@ -798,17 +879,61 @@ router.delete(
  *                       Activo:
  *                         type: boolean
  */
+router.get('/sat/cfdi/:claveUsoCFDI/regimenes', methods.getRegimenByCfdi);
 
-router.get(
-    '/sat/cfdi/:claveUsoCFDI/regimenes',
-    methods.getRegimenByCfdi
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/cfdi/regimen:
+ *   post:
+ *     tags: [Régimen Fiscal con Usos de CFDI]
+ *     summary: Enlaza un CFDi a un Regimen fiscal existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               regimen:
+ *                 type: object
+ *                 properties:
+ *                   ClaveRegimenFiscal:
+ *                     type: string
+ *                     description: La clave del régimen fiscal
+ *                     example: "213"
+ *               cfdi:
+ *                 type: object
+ *                 properties:
+ *                   ClaveUsoCFDI:
+ *                     type: string
+ *                     description: La clave de Uso CFDi
+ *                     example: "CN01"
+ *     responses:
+ *       200:
+ *         description: Régimen Fiscal y CFDI enlazados con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *
+ */
+router.post(
+	'/sat/cfdi/regimen',
+	schemas.createCFDIRegimenSchema,
+	middleware.validateSchema,
+	methods.createSatRegimenCfdi,
 );
 
 /**
  * @swagger
  * /api/v1/catalogo/sat/cfdi/regimenes:
  *   post:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Uso de CFDI con Regímenes Fiscales]
  *     summary: Enlazar un CFDI con regímenes fiscales
  *     requestBody:
  *       required: true
@@ -843,18 +968,72 @@ router.get(
  *         description: Error interno del servidor
  */
 router.post(
-    '/sat/cfdi/regimenes',
+	'/sat/cfdi/regimenes',
 	schemas.linkCfdiToRegimenSchema,
-    middleware.validateSchema,
-    methods.linkCfdiToRegimen
+	middleware.validateSchema,
+	methods.linkCfdiToRegimen,
 );
 
+/**
+ * @swagger
+ * /api/v1/catalogo/sat/cfdi/regimen:
+ *   delete:
+ *     tags: [Régimen Fiscal con Usos de CFDI]
+ *     summary: Desvincula múltiples CFDis de un Regimen fiscal existente
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               regimen:
+ *                 type: object
+ *                 properties:
+ *                   ClaveRegimenFiscal:
+ *                     type: string
+ *                     description: La clave del régimen fiscal
+ *                     example: "213"
+ *               cfdi:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     ClaveUsoCFDI:
+ *                       type: string
+ *                       description: La clave de Uso CFDi
+ *                       example: "CN01"
+ *     responses:
+ *       200:
+ *         description: Régimen Fiscal y CFDIs desvinculados con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                 message:
+ *                   type: string
+ *       400:
+ *         description: CFDI no encontrado
+ *       404:
+ *         description: Régimen Fiscal no encontrado
+ *       500:
+ *         description: Error al desvincular Régimen Fiscal y CFDI
+ */
+router.delete(
+	'/sat/cfdi/regimen',
+	schemas.createCFDIRegimenSchema,
+	middleware.validateSchema,
+	methods.deleteSatRegimenCfdi,
+);
 
 /**
  * @swagger
  * /api/v1/catalogo/sat/cfdi/regimenes:
  *   delete:
- *     tags: [Régimen Fiscal y CFDI]
+ *     tags: [Uso de CFDI con Regímenes Fiscales]
  *     summary: Desvincular un CFDI de regímenes fiscales
  *     requestBody:
  *       required: true
@@ -886,194 +1065,11 @@ router.post(
  *                 message:
  *                   type: string
  */
-
 router.delete(
 	'/sat/cfdi/regimenes',
 	schemas.deleteCFDIToRegimenSchema,
 	middleware.validateSchema,
-	methods.unlinkCfdiFromRegimen
-  );
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/regimenfiscal:
- *   patch:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Actualiza un régimen fiscal existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveRegimenFiscal:
- *                 type: integer
- *                 description: La clave del régimen fiscal
- *               Descripcion:
- *                 type: string
- *                 description: La descripción del régimen fiscal
- *               Fisica:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas físicas
- *               Moral:
- *                 type: boolean
- *                 description: Si el régimen fiscal es para personas morales
- *     responses:
- *       200:
- *         description: Régimen fiscal actualizado con éxito
- *       404:
- *         description: Régimen fiscal no encontrado
- *       500:
- *         description: Error al actualizar el régimen fiscal
- */
-router.patch(
-	'/sat/regimenfiscal',
-	schemas.editSatFKSchema,
-	middleware.validateSchema,
-	methods.updateRegimenFiscal,
+	methods.unlinkCfdiFromRegimen,
 );
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/regimenfiscal:
- *   delete:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Borra un régimen fiscal existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveRegimenFiscal:
- *                 type: string
- *                 description: La clave del régimen fiscal
- *     responses:
- *       200:
- *         description: Régimen fiscal borrado con éxito
- *       400:
- *         description: El régimen fiscal ya está desactivado
- *       404:
- *         description: Régimen fiscal no encontrado
- *       500:
- *         description: Error al borrar el régimen fiscal
- */
-router.delete(
-	'/sat/regimenfiscal',
-	schemas.deleteSatFKSchema,
-	middleware.validateSchema,
-	methods.deleteRegimenFiscal,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/cfdi:
- *   post:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Crea un nuevo uso de CFDI
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveUsoCFDI:
- *                 type: string
- *                 description: La clave del uso de CFDI
- *               Descripcion:
- *                 type: string
- *                 description: La descripción del uso de CFDI
- *               Fisica:
- *                 type: boolean
- *                 description: Si el uso de CFDI es para personas físicas
- *               Moral:
- *                 type: boolean
- *                 description: Si el uso de CFDI es para personas morales
- *     responses:
- *       200:
- *         description: Uso de CFDI creado con éxito
- *       500:
- *         description: Error al crear el uso de CFDI
- */
-router.post(
-	'/sat/cfdi',
-	schemas.createCFDISchema,
-	middleware.validateSchema,
-	methods.createUsoCFDI,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/cfdi:
- *   patch:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Edita un uso de CFDI existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveUsoCFDI:
- *                 type: string
- *                 description: La clave del uso de CFDI
- *               Descripcion:
- *                 type: string
- *                 description: La descripción del uso de CFDI
- *               Fisica:
- *                 type: boolean
- *                 description: Si el uso de CFDI es para personas físicas
- *               Moral:
- *                 type: boolean
- *                 description: Si el uso de CFDI es para personas morales
- *     responses:
- *       200:
- *         description: Uso de CFDI editado con éxito
- *       404:
- *         description: Uso de CFDI no encontrado
- *       500:
- *         description: Error al editar el uso de CFDI
- */
-router.patch(
-	'/sat/cfdi',
-	schemas.editCFDISchema,
-	middleware.validateSchema,
-	methods.updateUsoCFDI,
-);
-
-/**
- * @swagger
- * /api/v1/catalogo/sat/cfdi:
- *   delete:
- *     tags: [Régimen Fiscal y CFDI]
- *     summary: Borra un uso de CFDI existente
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveUsoCFDI:
- *                 type: string
- *                 description: La clave del uso de CFDI
- *     responses:
- *       200:
- *         description: Uso de CFDI borrado con éxito
- *       400:
- *         description: El uso de CFDI no existe
- *       404:
- *         description: Uso de CFDI no encontrado
- *       500:
- *         description: Error al borrar el uso de CFDI
- */
-router.delete('/sat/cfdi',
-schemas.deleteCFDISchema,
-middleware.validateSchema,
-methods.deleteCFDI);
 
 export default router;
