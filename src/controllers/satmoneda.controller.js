@@ -1,5 +1,5 @@
 import { SatMonedaModel } from "../models/satmoneda.model.js";
-import { buscarMonedaSatPorClave, buscarMonedaSatPorClaveActivo } from "../middlewares/finders/index.js"; 
+import { buscarMonedaSatPorClave} from "../middlewares/finders/index.js"; 
 
 const CrearSatMoneda = async(req, res)=>{
     try{
@@ -20,9 +20,9 @@ const CrearSatMoneda = async(req, res)=>{
         });
         
         return res.status(200).send({
-            status: 'Ok',
+            status: 'OK',
             message: 'Se creo moneda SAT', 
-            data: Crear
+            moneda: Crear
         })
 
     }
@@ -90,7 +90,9 @@ const EliminarSatMoneda = async (req, res) => {
 
 	} catch (error) {
         return res.status(500).send({
-            errors: 'Error al obtener los datos'
+            status: 'errors',
+            Message: 'Error al obtener los datos',
+            error: error
         });
 	}
 };
