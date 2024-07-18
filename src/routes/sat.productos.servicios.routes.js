@@ -2,144 +2,211 @@ import { Router }  from 'express'
 import { methods } from '../controllers/sat.productos.servicios.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/products.services.js';
+import { param } from 'express-validator'; /* Borrar cuando se mueva al schema */
 const router = Router()
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/clave:
- *   post:
+ * /api/v1/productos/servicio/buscar/{code}:
+ *   get:
  *     tags:
  *       - Productos Servicios
- *     summary: Busca un producto o servicio por su clave
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               ClaveProductoServicio:
- *                 type: integer
- *               Pagina:
- *                 type: integer
- *           example:
- *             ClaveProductoServicio: 101
- *             Pagina: 1
+ *     summary: Busca un producto o servicio por su código
+ *     parameters:
+ *       - in: path
+ *         name: code
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: El código del producto o servicio
  *     responses:
  *       200:
- *         description: Datos del producto o servicio encontrado
+ *         description: Datos del producto o servicio
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
  *                 ClaveProductoServicio:
- *                   type: integer
- *                 Pagina:
- *                   type: integer
+ *                   type: string
+ *                 Descripcion:
+ *                   type: string
+ *                 PalabrasSimilares:
+ *                   type: string
  *             example:
- *               ClaveProductoServicio: 101
- *               Pagina: 1
+ *               ClaveProductoServicio: "101"
+ *               Descripcion: "Producto Servicio"
+ *               PalabrasSimilares: "Palabra 1"
  */
-router.post(
-	'/servicio/buscar/clave',
-	/* schemas.buscarProductosServiciosPorClaveSchema, */
+router.get(
+	'/servicio/buscar/:code',
+	param('code')
+	.notEmpty()
+	.withMessage('El código del producto o servicio no puede estar vacio')
+    .isInt()
+    .withMessage('El código del producto o servicio tiene que ser un numero entero')
+    .matches(/^\S*$/)
+    .withMessage('El código del producto o servicio no puede contener espacios'),	
 	middleware.validateSchema,
 	methods.buscarProductosServiciosPorClave,
 );
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/descripcion:
- *   post:
+ * /api/v1/productos/servicio/buscar/descripcion/{descripcion}:
+ *   get:
  *     tags:
  *       - Productos Servicios
- *     summary: Busca un producto o servicio por su descripción
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Descripcion:
- *                 type: string
- *               Pagina:
- *                 type: integer
- *           example:
- *             Descripcion: "Producto Servicio"
- *             Pagina: 1
+ *     summary: Busca un producto o servicio por su descripción con paginación
+ *     parameters:
+ *       - in: path
+ *         name: descripcion
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Descripción del producto o servicio a buscar
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Número de página para la paginación (opcional)
  *     responses:
  *       200:
- *         description: Datos del producto o servicio
+ *         description: Datos del producto o servicio encontrados
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 Descripcion:
+ *                 status:
  *                   type: string
- *                 Pagina:
- *                   type: integer
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalItems:
+ *                       type: integer
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           name:
+ *                             type: string
+ *                           description:
+ *                             type: string
  *             example:
- *               Descripcion: "Producto Servicio"
- *               Pagina: 1
+ *               status: "OK"
+ *               message: "Productos/Servicios encontrados con la descripción Producto Servicio"
+ *               data:
+ *                 totalItems: 2
+ *                 items:
+ *                   - id: 1
+ *                     name: Producto 1
+ *                     description: "Descripción del producto 1"
+ *                   - id: 2
+ *                     name: Producto 2
+ *                     description: "Descripción del producto 2"
+ *       404:
+ *         description: No se encontraron productos/servicios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontraron productos/servicios con esa descripción"
  */
-router.post(
-	'/servicio/buscar/descripcion',
-	/* schemas.buscarProductosServiciosPorDescripcionSchema, */
+router.get(
+	'/servicio/buscar/descripcion/:descripcion',
 	middleware.validateSchema,
 	methods.buscarProductosServiciosPorDescripcion,
 );
 
 /**
  * @swagger
- * /api/v1/productos/servicio/buscar/palabra:
- *   post:
+ * /api/v1/productos/servicio/buscar/palabra/{palabra}:
+ *   get:
  *     tags:
  *       - Productos Servicios
- *     summary: Busca un producto o servicio por palabra similar
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               Palabra:
- *                 type: string
- *               Pagina:
- *                 type: integer
- *           example:
- *             Palabra: "Producto Servicio"
- *             Pagina: 1
+ *     summary: Busca un producto o servicio por palabra similar con paginación
+ *     parameters:
+ *       - in: path
+ *         name: palabra
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Palabra similar del producto o servicio a buscar
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *         description: Número de página para la paginación (opcional)
  *     responses:
  *       200:
- *         description: Datos del producto o servicio
+ *         description: Datos del producto o servicio encontrados
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 PalabrasSimilares:
+ *                 status:
  *                   type: string
- *                   example: "Palabra 1"
- *                 Pagina:
- *                   type: integer
- *                   example: 1
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     totalItems:
+ *                       type: integer
+ *                     items:
+ *                       type: array
+ *                       items:
+ *                         type: object
+ *                         properties:
+ *                           id:
+ *                             type: integer
+ *                           name:
+ *                             type: string
+ *                           description:
+ *                             type: string
  *             example:
- *               PalabrasSimilares: "Palabra 1"
- *               Pagina: 1
+ *               status: "OK"
+ *               message: "Productos/Servicios encontrados con la palabra Producto Servicio"
+ *               data:
+ *                 totalItems: 2
+ *                 items:
+ *                   - id: 1
+ *                     name: Producto 1
+ *                     description: "Descripción del producto 1"
+ *                   - id: 2
+ *                     name: Producto 2
+ *                     description: "Descripción del producto 2"
+ *       404:
+ *         description: No se encontraron productos/servicios
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontraron productos/servicios con esa palabra"
  */
-router.post(
-	'/servicio/buscar/palabra',
-	schemas.buscarProductosServiciosPorPalabraSchema,
-	middleware.validateSchema,
-	methods.buscarProductosServiciosPorPalabra,
-);
-
 router.get(
-	'/servicio/palabra/:palabra/:pagina?',
+	'/servicio/buscar/palabra/:palabra',
 	schemas.buscarProductosServiciosPorPalabraSchema,
 	middleware.validateSchema,
 	methods.buscarProductosServiciosPorPalabra,
@@ -177,13 +244,40 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ClaveProductoServicio:
+ *                       type: integer
+ *                     Descripcion:
+ *                       type: string
+ *                     PalabrasSimilares:
+ *                       type: string
+ *             example:
+ *               status: "OK"
+ *               message: "Producto/Servicio creado"
+ *               data:
+ *                 ClaveProductoServicio: 101
+ *                 Descripcion: "Producto Servicio"
+ *                 PalabrasSimilares: "Palabra 1"
+ *       409:
+ *         description: La clave del producto/servicio ya está en uso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
  *             example:
- *               success: true
- *               message: "Producto/Servicio creado"
+ *               status: "OK"
+ *               message: "La clave del producto/servicio ya está en uso"
  */
 router.post(
 	'/servicio',
@@ -218,19 +312,46 @@ router.post(
  *             PalabrasSimilares: "Palabra 1"
  *     responses:
  *       200:
- *         description: Producto/Servicio creado
+ *         description: Producto/Servicio actualizado
  *         content:
  *           application/json:
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ClaveProductoServicio:
+ *                       type: integer
+ *                     Descripcion:
+ *                       type: string
+ *                     PalabrasSimilares:
+ *                       type: string
+ *             example:
+ *               status: "OK"
+ *               message: "Producto/Servicio actualizado"
+ *               data:
+ *                 ClaveProductoServicio: 101
+ *                 Descripcion: "Producto Servicio"
+ *                 PalabrasSimilares: "Palabra 1"
+ *       404:
+ *         description: Producto/Servicio no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
  *             example:
- *               success: true
- *               message: "Producto/Servicio creado"
+ *               status: "Error"
+ *               message: "Producto/Servicio no encontrado"
  */
 router.patch(
 	'/servicio',
@@ -265,13 +386,27 @@ router.patch(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
  *             example:
- *               success: true
+ *               status: "OK"
  *               message: "Producto/Servicio borrado"
+ *       404:
+ *         description: Producto/Servicio no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "Producto/Servicio no encontrado"
  */
 router.delete(
 	'/servicio',
