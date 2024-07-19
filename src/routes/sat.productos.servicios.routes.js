@@ -127,6 +127,7 @@ router.get(
  */
 router.get(
 	'/servicio/buscar/descripcion/:descripcion',
+	schemas.buscarProductosServiciosPorDescripcionSchema,
 	middleware.validateSchema,
 	methods.buscarProductosServiciosPorDescripcion,
 );
