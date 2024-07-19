@@ -1,5 +1,5 @@
 import { Op } from 'sequelize';
-import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
+import { ProductosServicios } from '../models/satProductosServicios.model.js';
 import { buscadorProductosServiciosPorDescripcion, buscadorProductosServiciosPorPalabra } from '../helpers/buscadores.js';
 import { validaClaveProductoServicio } from '../middlewares/finders/index.js';
 

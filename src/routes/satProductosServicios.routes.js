@@ -1,7 +1,7 @@
 import { Router }  from 'express'
-import { methods } from '../controllers/sat.productos.servicios.controller.js';
+import { methods } from '../controllers/satProductosServicios.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
-import * as schemas from '../schemas/products.services.js';
+import * as schemas from '../schemas/productosServicios.js';
 import { param } from 'express-validator'; /* Borrar cuando se mueva al schema */
 const router = Router()
 
