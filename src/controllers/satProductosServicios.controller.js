@@ -60,7 +60,7 @@ const buscarProductosServiciosPorPalabra = async (req, res) => {
 
 const crearProductosServicios = async (req, res) => {
 	const productosServiciosBody = req.body;
-
+	console.log('ClaveProductoServicio: ', productosServiciosBody.ClaveProductoServicio);
 	const idExistente = await validaClaveProductoServicio(productosServiciosBody.ClaveProductoServicio);
 
 	if (idExistente.existe) {
@@ -72,9 +72,9 @@ const crearProductosServicios = async (req, res) => {
 			});
 	}
 
-	return res.
-		status(200).
-		send({ 
+	return res
+		.status(200)
+		.send({ 
 			status: "OK",
 			message: "Producto/Servicio creado",
 			data: await ProductosServicios.create(productosServiciosBody),
@@ -94,16 +94,18 @@ const actualizarProductosServicios = async (req, res) => {
 			});
 	}
 
-	return res.
-		status(200).
-		send({ 
+	await ProductosServicios.update(productosServiciosBody, {
+		where: {
+			ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
+		},
+	});
+
+	return res
+		.status(200)
+		.send({ 
 			status: "OK",
 			message: "Producto/Servicio actualizado",
-			data: await ProductosServicios.update(productosServiciosBody, {
-				where: {
-					ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
-				},
-			}),
+			data: productosServiciosBody,
 		});
 };
 
@@ -120,9 +122,9 @@ const borrarProductosServicios = async (req, res) => {
 			});
 	}
 
-	return res.
-		status(200).
-		send({ 
+	return res
+		.status(200)
+		.send({ 
 			status: "OK",
 			message: "Producto/Servicio borrado",
 			data: await ProductosServicios.update({ Activo: 0 }, {
