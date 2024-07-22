@@ -330,7 +330,6 @@ router.delete(
  *             example:
  *               error: "Error al actualizar la sucursal"
  */
-
 router.patch(
 	'/editar',
 	schemas.editarSucursal,

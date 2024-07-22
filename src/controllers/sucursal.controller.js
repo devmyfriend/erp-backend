@@ -93,17 +93,19 @@ const editarSucursal = async (req, res) => {
 
     try {
         const { existe: sucursalExiste, data: sucursalData } = await validarSucursal(sucursal[0].SucursalId);
-
-        if (!sucursalExiste) return;
+        if (!sucursalExiste) {
+            return res.status(404).send({ status: "Error", message: "Sucursal no encontrada" });
+        }
 
         const { existe: nombreExiste } = await validarNombreSucursal(sucursal[0].Nombre);
-
-        if (nombreExiste) return;
-        
+        if (nombreExiste) {
+            return res.status(409).send({ status: "Error", message: "El nombre de la sucursal ya está en uso" });
+        }
 
         const { existe: domicilioExiste, data: domicilioData } = await buscarDomicilioSucursal(sucursal[0].SucursalId);
-
-        if (!domicilioExiste) return;     
+        if (!domicilioExiste) {
+            return res.status(404).send({ status: "Error", message: "Domicilio de la sucursal no encontrado" });
+        }
 
         const actualizacionSucursal = {
             ...sucursalData,
@@ -125,10 +127,9 @@ const editarSucursal = async (req, res) => {
             where: { DomicilioId: actualizacionDomicilio.DomicilioId },
         });
 
-        return res.status(200).json({ message: 'Sucursal actualizada' });
+        return res.status(200).send({ status: "OK", message: "Sucursal actualizada correctamente", data: { sucursal: actualizacionSucursal, domicilio: actualizacionDomicilio } });
     } catch (error) {
-        console.error('Error al actualizar la sucursal:', error);
-        return res.status(500).json({ error: 'Error al actualizar la sucursal' });
+        return res.status(500).send({ status: "Error", message: "Error al actualizar la sucursal", Error: error });
     }
 };
 

@@ -481,14 +481,11 @@ router.patch(
  */
 router.delete('/desactivar', methods.desactivarIdEmpresa);
 
-
-
 /**
  * @swagger
  * /api/v1/empresa/contactos/{id}:
  *   get:
- *     tags:
- *       - EmpresaContacto
+ *     tags: [EmpresaContacto]
  *     summary: Obtiene los contactos de una entidad de negocio por su ID
  *     parameters:
  *       - in: path
@@ -502,60 +499,44 @@ router.delete('/desactivar', methods.desactivarIdEmpresa);
  *         description: Contacto de la entidad de negocio
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 EntidadNegocioId:
- *                   type: integer
- *                 ContactoId:
- *                   type: integer
- *                 Nombres:
- *                   type: string
- *                 ApellidoPaterno:
- *                   type: string
- *                 ApellidoMaterno:
- *                   type: string
- *                 Departamento:
- *                   type: string
- *                 Puesto:
- *                   type: string
  *             example:
- *               {
- *                 "EntidadNegocioId": 33,
- *                 "ContactoId": 5,
- *                 "Nombres": "Sergio",
- *                 "ApellidoPaterno": "Perez",
- *                 "ApellidoMaterno": "Mendoza",
- *                 "Departamento": "IT",
- *                 "Puesto": "QA"
- *               }
+ *               status: "OK"
+ *               message: "Contactos obtenidos correctamente"
+ *               data:
+ *                 - EntidadNegocioId: 33
+ *                   ContactoId: 5
+ *                   Nombres: "Sergio"
+ *                   ApellidoPaterno: "Perez"
+ *                   ApellidoMaterno: "Mendoza"
+ *                   Departamento: "IT"
+ *                   Puesto: "QA"
  *       404:
  *         description: No se encontraron contactos para la entidad de negocio
  *         content:
  *           application/json:
  *             example:
+ *               status: "Error"
  *               message: "No existen contactos relacionados con esta empresa"
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
  *             example:
- *               error: "Error interno del servidor"
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.get(
     '/contactos/:id',
     schemas.ObtenerEmpresaContactosSchema,
     middleware.validateSchema,
     methods.buscarContactosPorEntidadNegocioId
-);
-  
+); 
 
 /**
  * @swagger
  * /api/v1/empresa/contacto/crear:
  *   post:
- *     tags:
- *       - EmpresaContacto
+ *     tags: [EmpresaContacto]
  *     summary: Crea una nueva relación EmpresaContacto
  *     requestBody:
  *       required: true
@@ -578,36 +559,51 @@ router.get(
  *                 type: string
  *               CreadoPor:
  *                 type: integer
+ *           example:
+ *             EmpresaId: 123
+ *             Nombres: "Juan"
+ *             ApellidoPaterno: "Pérez"
+ *             ApellidoMaterno: "Gómez"
+ *             Departamento: "Ventas"
+ *             Puesto: "Ejecutivo de ventas"
+ *             CreadoPor: 1
  *     responses:
  *       200:
  *         description: Relación creada con éxito
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                 data:
- *                   $ref: '#/components/schemas/EmpresaContacto'
+ *             example:
+ *               status: "OK"
+ *               message: "Contacto creado: 5"
+ *               Id: 5
  *       400:
  *         description: Cuerpo de la petición inválido
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Cuerpo de la petición inválido"
  *       500:
- *         description: Internal Server Error
+ *         description: Error al crear la relación EmpresaContacto
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al crear la relación EmpresaContacto"
  */
 router.post(
-	'/contacto/crear',
-	schemas.crearEmpresaContactoSchema,
-	middleware.validateSchema,
-	methods.crearEmpresaContacto,
+    '/contacto/crear',
+    schemas.crearEmpresaContactoSchema,
+    middleware.validateSchema,
+    methods.crearEmpresaContacto,
 );
 
 /**
  * @swagger
  * /api/v1/empresa/contacto/editar:
  *   patch:
- *     summary: Actualiza una relación EmpresaContacto
  *     tags: [EmpresaContacto]
+ *     summary: Actualiza una relación EmpresaContacto
  *     requestBody:
  *       required: true
  *       content:
@@ -631,29 +627,59 @@ router.post(
  *                 type: string
  *               ActualizadoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 123
+ *             ContactoId: 5
+ *             Nombres: "Juan"
+ *             ApellidoPaterno: "Pérez"
+ *             ApellidoMaterno: "Gómez"
+ *             Departamento: "Ventas"
+ *             Puesto: "Ejecutivo de ventas"
+ *             ActualizadoPor: 1
  *     responses:
  *       200:
  *         description: La relación EmpresaContacto se ha actualizado correctamente
- *       400:
- *         description: Error, ya existe una relación con esta EntidadNegocioId
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "OK"
+ *               message: "Se ha actualizado el contacto"
+ *               data:
+ *               - EntidadNegocioId: 123
+ *                 ContactoId: 5
+ *                 Nombres: "Juan"
+ *                 ApellidoPaterno: "Pérez"
+ *                 ApellidoMaterno: "Gómez"
+ *                 Departamento: "Ventas"
+ *                 Puesto: "Ejecutivo de ventas"
+ *                 ActualizadoPor: 1
  *       404:
  *         description: Empresa o Contacto no encontrado
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Empresa o Contacto no encontrado"
  *       500:
  *         description: Error al actualizar la relación EmpresaContacto
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al actualizar la relación EmpresaContacto"
  */
 router.patch(
-	'/contacto/editar',
-	schemas.editarEmpresaContactoSchema,
-	middleware.validateSchema,
-	methods.editarEmpresaContacto,
+    '/contacto/editar',
+    schemas.editarEmpresaContactoSchema,
+    middleware.validateSchema,
+    methods.editarEmpresaContacto,
 );
 
 /**
  * @swagger
  * /api/v1/empresa/telefono/{id}:
  *   get:
- *     tags:
- *       - EmpresaTelefono
+ *     tags: [EmpresaTelefono]
  *     summary: Obtener teléfono de la entidad de negocio por ID
  *     parameters:
  *       - in: path
@@ -664,29 +690,43 @@ router.patch(
  *           type: integer
  *     responses:
  *       200:
- *         description: Teléfono de la entidad de negocio
+ *         description: Teléfono de la entidad de negocio obtenido correctamente
  *         content:
  *           application/json:
- *             Telefono:
- *               type: object
- *               properties:
- *                 EntidadNegocioId:
- *                   type: integer
- *                 NumeroTelefono:
- *                   type: string
+ *             example:
+ *               status: "OK"
+ *               message: "Teléfono obtenido correctamente"
+ *               data:
+ *                 EntidadNegocioId: 1
+ *                 TelefonoId: 123
+ *                 NumeroTelefonico: "1234567890"
+ *       404:
+ *         description: No se encontró el teléfono de la entidad de negocio
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontró el teléfono de la entidad de negocio"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.get(
-	'/:id/telefono',
-	param('id', 'El parametro debe ser un entero').isNumeric(),
-	methods.empresaDetalle,
+    '/:id/telefono',
+    param('id', 'El parametro debe ser un entero').isNumeric(),
+    middleware.validateSchema,
+    methods.empresaDetalle
 );
 
 /**
  * @swagger
  * /api/v1/empresa/telefono/crear:
  *   post:
- *     tags:
- *       - EmpresaTelefono
+ *     tags: [EmpresaTelefono]
  *     summary: Crea una nueva relación EmpresaTelefono
  *     requestBody:
  *       required: true
@@ -701,25 +741,43 @@ router.get(
  *                 type: string
  *               CreadoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 1
+ *             NumeroTelefonico: "1234567890"
+ *             CreadoPor: 1
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha creado correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "OK"
+ *               message: "La relación EmpresaTelefono se ha creado correctamente"
+ *               data:
+ *                 EntidadNegocioId: 1
+ *                 TelefonoId: 123
+ *                 NumeroTelefonico: "1234567890"
+ *                 CreadoPor: 1
  *       500:
  *         description: Error al crear la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al crear la relación EmpresaTelefono"
  */
 router.post(
-	'/telefono/crear',
-	schemas.crearEmpresaTelefonoSchema,
-	middleware.validateSchema,
-	methods.crearEmpresaTelefono,
+    '/telefono/crear',
+    schemas.crearEmpresaTelefonoSchema,
+    middleware.validateSchema,
+    methods.crearEmpresaTelefono
 );
 
 /**
  * @swagger
  * /api/v1/empresa/telefono/editar:
  *   patch:
- *     tags:
- *       - EmpresaTelefono
+ *     tags: [EmpresaTelefono]
  *     summary: Actualiza una relación EmpresaTelefono existente
  *     requestBody:
  *       required: true
@@ -736,41 +794,51 @@ router.post(
  *                 type: string
  *               ActualizadoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 1
+ *             TelefonoId: 123
+ *             NumeroTelefonico: "1234567890"
+ *             ActualizadoPor: 1
  *     responses:
  *       200:
  *         description: La relación EmpresaTelefono se ha actualizado correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 EntidadNegocioId:
- *                   type: integer
- *                 TelefonoId:
- *                   type: integer
- *                 NumeroTelefonico:
- *                   type: string
- *                 ActualizadoPor:
- *                   type: integer
  *             example:
- *               EntidadNegocioId: 1
- *               TelefonoId: 123
- *               NumeroTelefonico: "1234567890"
- *               ActualizadoPor: 1
+ *               status: "OK"
+ *               message: "La relación EmpresaTelefono se ha actualizado correctamente"
+ *               data:
+ *                 EntidadNegocioId: 1
+ *                 TelefonoId: 123
+ *                 NumeroTelefonico: "1234567890"
+ *                 ActualizadoPor: 1
+ *       404:
+ *         description: No se encontró la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontró la relación EmpresaTelefono"
+ *       500:
+ *         description: Error al actualizar la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al actualizar la relación EmpresaTelefono"
  */
 router.patch(
-	'/telefono/editar',
-	schemas.editarEmpresaTelefonoSchema,
-	middleware.validateSchema,
-	methods.editarEmpresaTelefono,
+    '/telefono/editar',
+    schemas.editarEmpresaTelefonoSchema,
+    middleware.validateSchema,
+    methods.editarEmpresaTelefono
 );
 
 /**
  * @swagger
  * /api/v1/empresa/telefono/desactivar:
  *   delete:
- *     tags:
- *       - EmpresaTelefono
+ *     tags: [EmpresaTelefono]
  *     summary: Desactiva una relación EmpresaTelefono existente
  *     requestBody:
  *       required: true
@@ -785,23 +853,46 @@ router.patch(
  *                 type: integer
  *               BorradoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 1
+ *             TelefonoId: 123
+ *             BorradoPor: 1
  *     responses:
  *       200:
- *         description: Relación EmpresaTelefono desactivada
+ *         description: Relación EmpresaTelefono desactivada correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "OK"
+ *               message: "Relación EmpresaTelefono desactivada correctamente"
+ *       404:
+ *         description: No se encontró la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontró la relación EmpresaTelefono"
+ *       500:
+ *         description: Error al desactivar la relación EmpresaTelefono
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al desactivar la relación EmpresaTelefono"
  */
 router.delete(
-	'/telefono/desactivar',
-	schemas.desactivarTelefonoEmpresaSchema,
-	middleware.validateSchema,
-	methods.desactivarEmpresaTelefono,
+    '/telefono/desactivar',
+    schemas.desactivarTelefonoEmpresaSchema,
+    middleware.validateSchema,
+    methods.desactivarEmpresaTelefono
 );
+
 
 /**
  * @swagger
  * /api/v1/empresa/emails/{id}:
  *   get:
- *     tags:
- *       - EmpresaEmail
+ *     tags: [EmpresaEmail]
  *     summary: Obtener emails de la entidad de negocio por ID
  *     parameters:
  *       - in: path
@@ -812,24 +903,30 @@ router.delete(
  *           type: integer
  *     responses:
  *       200:
- *         description: Emails de la entidad de negocio
+ *         description: Emails de la entidad de negocio obtenidos correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   EntidadNegocioId:
- *                     type: integer
- *                   EmailId:
- *                     type: integer
- *                   Email:
- *                     type: string
+ *             example:
+ *               status: "OK"
+ *               message: "Emails obtenidos correctamente"
+ *               data:
+ *                 - EntidadNegocioId: 1
+ *                   EmailId: 123
+ *                   Email: "example@example.com"
  *       404:
  *         description: No existen emails relacionados con esta empresa
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No existen emails relacionados con esta empresa"
  *       500:
  *         description: Error al obtener los emails
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.get(
     '/emails/:id',
@@ -842,8 +939,7 @@ router.get(
  * @swagger
  * /api/v1/empresa/emails/crear:
  *   post:
- *     tags:
- *       - EmpresaEmail
+ *     tags: [EmpresaEmail]
  *     summary: Crea una nueva relación EmpresaEmail
  *     requestBody:
  *       required: true
@@ -856,29 +952,52 @@ router.get(
  *                 type: integer
  *               Email:
  *                 type: string
- *               CreadorPor:
+ *               CreadoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 1
+ *             Email: "example@example.com"
+ *             CreadoPor: 1
  *     responses:
  *       200:
  *         description: La relación EmpresaEmail se ha creado correctamente
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "OK"
+ *               message: "La relación EmpresaEmail se ha creado correctamente"
+ *               data:
+ *                 EntidadNegocioId: 1
+ *                 EmailId: 123
+ *                 Email: "example@example.com"
+ *                 CreadoPor: 1
  *       404:
  *         description: La empresa no existe
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "La empresa no existe"
  *       500:
  *         description: Error al crear la relación EmpresaEmail
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al crear la relación EmpresaEmail"
  */
 router.post(
-	'/emails/crear',
-	schemas.crearEmailEmpresaSchema,
-	middleware.validateSchema,
-	methods.crearEmailEmpresa,
+    '/emails/crear',
+    schemas.crearEmailEmpresaSchema,
+    middleware.validateSchema,
+    methods.crearEmailEmpresa
 );
 
 /**
  * @swagger
  * /api/v1/empresa/emails/editar:
  *   patch:
- *     tags:
- *       - EmpresaEmail
+ *     tags: [EmpresaEmail]
  *     summary: Editar una relación EmpresaEmail
  *     requestBody:
  *       required: true
@@ -895,34 +1014,46 @@ router.post(
  *                 type: string
  *               ActualizadoPor:
  *                 type: integer
+ *           example:
+ *             EntidadNegocioId: 1
+ *             EmailId: 123
+ *             Email: "example@example.com"
+ *             ActualizadoPor: 1
  *     responses:
  *       200:
  *         description: La relación EmpresaEmail se ha actualizado correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 EntidadNegocioId:
- *                   type: integer
- *                 EmailId:
- *                   type: integer
- *                 Email:
- *                   type: string
- *                 ActualizadoPor:
- *                   type: integer
  *             example:
- *               EntidadNegocioId: 1
- *               EmailId: 123
- *               Email: "example@example.com"
- *               ActualizadoPor: 1
+ *               status: "OK"
+ *               message: "La relación EmpresaEmail se ha actualizado correctamente"
+ *               data:
+ *                 EntidadNegocioId: 1
+ *                 EmailId: 123
+ *                 Email: "example@example.com"
+ *                 ActualizadoPor: 1
+ *       404:
+ *         description: No se encontró la relación EmpresaEmail
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontró la relación EmpresaEmail"
+ *       500:
+ *         description: Error al actualizar la relación EmpresaEmail
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al actualizar la relación EmpresaEmail"
  */
 router.patch(
-	'/emails/editar',
-	schemas.editarEmpresaEmailsSchema,
-	middleware.validateSchema,
-	methods.editarEmpresaEmails,
+    '/emails/editar',
+    schemas.editarEmpresaEmailsSchema,
+    middleware.validateSchema,
+    methods.editarEmpresaEmails
 );
+
 
 /**
  * @swagger
@@ -988,8 +1119,7 @@ router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
  * @swagger
  * /api/v1/empresa/contacto/nombre:
  *   post:
- *     tags:
- *       - EmpresaContacto
+ *     tags: [EmpresaContacto]
  *     summary: Buscar contactos por nombre y entidad
  *     requestBody:
  *       required: true
@@ -1000,8 +1130,10 @@ router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
  *             properties:
  *               Nombre:
  *                 type: string
+ *                 description: El nombre del contacto
  *               EntidadNegocioId:
  *                 type: integer
+ *                 description: El ID de la entidad de negocio
  *           example:
  *             Nombre: "lalo"
  *             EntidadNegocioId: 126
@@ -1010,25 +1142,36 @@ router.get('/nombre/:nombre', methods.buscarPorNombreOficial);
  *         description: Contactos obtenidos correctamente
  *         content:
  *           application/json:
- *             schema:
- *               type: array
- *               items:
- *                 type: object
- *                 properties:
- *                   ContactoId:
- *                     type: integer
- *                   Nombre:
- *                     type: string
- *                   EntidadNegocioId:
- *                     type: integer
+ *             example:
+ *               status: "OK"
+ *               message: "Contactos encontrados"
+ *               data:
+ *                 - ContactoId: 1
+ *                   NombreContacto: "Lalo"
+ *                   EntidadNegocioId: 126
+ *                   ApellidoPaterno: "García"
+ *                   ApellidoMaterno: "López"
+ *                   Departamento: "Ventas"
+ *                   Puesto: "Ejecutivo de ventas"
  *       404:
  *         description: No hay contactos disponibles
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "No hay contactos disponibles"
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.post('/contacto/nombre',
-schemas.BuscarContactosPorNombreYEntidadSchema,
-middleware.validateSchema,
-methods.buscarContactosPorNombreYEntidad);
+    schemas.BuscarContactosPorNombreYEntidadSchema,
+    middleware.validateSchema,
+    methods.buscarContactosPorNombreYEntidad
+);
 
 export default router;

@@ -13,7 +13,8 @@ import{
     SucursalDomicilio,
     Domicilio,
     vwSatCFDI,
-    vwRegimenFiscal
+    vwRegimenFiscal,
+    CFDIRegimen
 } from '../../models/index.js'
 
 const manejadorDBError = error =>{
@@ -58,16 +59,13 @@ export const validarMoneda = async id =>
 VALIDAR EMPRESA-TELEFONO
 */
 export const validarEntidad = async id => 
-    buscarItem(EntidadNegocio,{EntidadNegocioId: id, Borrado: 0 } )
-
+    buscarItem(EntidadNegocio, { EntidadNegocioId: id, Borrado: 0 });
 
 export const validarTelefono = async id => 
-    buscarItem(Telefono,{TelefonoId: id,} )
+    buscarItem(Telefono, { TelefonoId: id });
 
-export const validarRelacionEmpresaTelefono = async id => 
-    buscarItem(EmpresaTelefono,{EntidadNegocioId: id,TelefonoId: id,} )
-
-
+export const validarRelacionEmpresaTelefono = async (EntidadNegocioId, TelefonoId) => 
+    buscarItem(EmpresaTelefono, { EntidadNegocioId, TelefonoId });
 /*
 VALIDAR EMPRESA-CONTACTO
 */
@@ -115,3 +113,12 @@ export const validarRegimenFiscalPorClave = async (clave) =>
 
 export const validarRegimenFiscalActivoPorClave = async (clave) =>
     buscarItem(vwRegimenFiscal, { ClaveRegimenFiscal: clave, Activo: true });
+
+/*
+VALIDAR REGIMENES FISCALES CON USOS DE CFDI
+*/
+export const validarRegimenFiscalConUsoCFDIPorClave = async (claveRegimenFiscal, claveUsoCFDI) =>
+    buscarItem(CFDIRegimen, { ClaveRegimenFiscal: claveRegimenFiscal, ClaveUsoCFDI: claveUsoCFDI });
+
+export const validarRegimenFiscalConUsoCFDIActivoPorClave = async (claveRegimenFiscal, claveUsoCFDI) =>
+    buscarItem(CFDIRegimen, { ClaveRegimenFiscal: claveRegimenFiscal, ClaveUsoCFDI: claveUsoCFDI, Activo: true });

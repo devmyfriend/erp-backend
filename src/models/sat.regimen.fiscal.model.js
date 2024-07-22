@@ -23,7 +23,7 @@ export const vwRegimenFiscal = Connection.define(
         }
     },
     {
-        tableName: 'vwSatRegimenFiscal',
+        tableName: 'SAT_RegimenFiscal',
         timestamps: false,
         freezeTableName: true,
     }

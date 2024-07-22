@@ -1,7 +1,7 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-export const VistaContactos = Connection.define('vwContactosPorNombreYEntidad', {
+export const VistaContactos = Connection.define('VistaContactos', {
     ContactoId: {
         type: DataTypes.INTEGER,
         primaryKey: true,

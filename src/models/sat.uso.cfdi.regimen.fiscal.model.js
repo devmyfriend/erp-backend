@@ -1,10 +1,10 @@
-import { DataTypes } from "sequelize";
-import { Connection } from "../database/mariadb.database.js";
-import { vwRegimenFiscal } from '../models/sat.regimen.fiscal.model.js';
-import { vwSatCFDI } from '../models/sat.uso.cfdi.model.js';
+import { DataTypes } from 'sequelize';
+import { Connection } from '../database/mariadb.database.js';
+import { vwSatCFDI } from './sat.uso.cfdi.model.js';
+import { vwRegimenFiscal } from './sat.regimen.fiscal.model.js';
 
 export const CFDIRegimen = Connection.define(
-    "UsoCFD_RegimenFiscal",
+    'CFDIRegimen',
     {
         ClaveUsoCFDI: {
             type: DataTypes.STRING,
@@ -18,11 +18,11 @@ export const CFDIRegimen = Connection.define(
         },
     },
     {
-        tableName: "UsoCFD_RegimenFiscal",
+        tableName: 'UsoCFD_RegimenFiscal',
         timestamps: false,
         freezeTableName: true,
     }
 );
 
-vwRegimenFiscal.belongsToMany(vwSatCFDI, { through: CFDIRegimen, foreignKey: 'ClaveRegimenFiscal', otherKey: 'ClavevwSatCFDI' });
+vwRegimenFiscal.belongsToMany(vwSatCFDI, { through: CFDIRegimen, foreignKey: 'ClaveRegimenFiscal', otherKey: 'ClaveUsoCFDI' });
 vwSatCFDI.belongsToMany(vwRegimenFiscal, { through: CFDIRegimen, foreignKey: 'ClaveUsoCFDI', otherKey: 'ClaveRegimenFiscal' });
