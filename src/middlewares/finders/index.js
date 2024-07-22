@@ -1,6 +1,7 @@
 import {
     ProductosServicios,
     TiposComprobantes,
+    Ubicaciones
 } from '../../models/index.js';
 
 const manejadorDBError = error => {
@@ -23,3 +24,9 @@ export const validaClaveProductoServicio = async clave =>
 
 export const validaTiposComprobantes = async clave =>
     buscarItem(TiposComprobantes, { ClaveTipoDeComprobante: clave });
+
+export const validaUbicacion = async id =>
+    buscarItem(Ubicaciones, { UbicacionId: id });
+
+export const validaUbicacionPorNombre = async nombre =>
+    buscarItem(Ubicaciones, { Nombre: nombre });

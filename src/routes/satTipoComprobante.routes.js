@@ -69,7 +69,9 @@ const router = Router();
  *                   type: string
  *                   example: "Detalles del error"
  */
-router.get('/', methods.obtenerTiposComprobantes);
+router.get(
+	'/',
+	methods.obtenerTiposComprobantes);
 
 /**
  * @swagger

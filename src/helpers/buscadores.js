@@ -1,6 +1,7 @@
 import { Op } from 'sequelize';
 import { 
-    ProductosServicios, 
+    ProductosServicios,
+    Ubicaciones,
 } from '../models/index.js';
 
 const paginado = parseInt(process.env.RegistrosPorPagina) || 10;
@@ -44,4 +45,12 @@ export const buscadorProductosServiciosPorPalabra = async (palabra, pagina) => {
         PalabrasSimilares: { [Op.like]: `%${palabra}%` },
     };
     return searchItems(ProductosServicios, condicion, pagina);
+}
+
+export const buscadorUbicacionesPorNombre = async (nombre, pagina) => {
+    const condicion = {
+        Nombre: { [Op.like]: `%${nombre}%` },
+        Borrado: 0,
+    };
+    return searchItems(Ubicaciones, condicion, pagina);
 }
