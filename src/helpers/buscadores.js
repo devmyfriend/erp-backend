@@ -50,7 +50,6 @@ export const buscadorProductosServiciosPorPalabra = async (palabra, pagina) => {
 export const buscadorUbicacionesPorNombre = async (nombre, pagina) => {
     const condicion = {
         Nombre: { [Op.like]: `%${nombre}%` },
-        Borrado: 0,
     };
     return searchItems(Ubicaciones, condicion, pagina);
 }
