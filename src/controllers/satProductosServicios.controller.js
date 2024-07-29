@@ -1,7 +1,11 @@
 import { Op } from 'sequelize';
 import { ProductosServicios } from '../models/satProductosServicios.model.js';
-import { buscadorProductosServiciosPorDescripcion, buscadorProductosServiciosPorPalabra } from '../helpers/buscadores.js';
+import {
+	buscadorProductosServiciosPorDescripcion,
+	buscadorProductosServiciosPorPalabra,
+} from '../helpers/buscadores.js';
 import { validaClaveProductoServicio } from '../middlewares/finders/index.js';
+import { Bitacora } from '../helpers/logs/log.js';
 
 const buscarProductosServiciosPorClave = async (req, res) => {
 	const code = req.params.code;
@@ -20,119 +24,159 @@ const buscarProductosServiciosPorClave = async (req, res) => {
 	}
 };
 
-const buscarProductosServiciosPorDescripcion= async (req, res) => {
-	const { descripcion } = req.params;
-	const Page = parseInt(req.query.page) || 1;	
-	const resultado = await buscadorProductosServiciosPorDescripcion(descripcion, Page);
+const buscarProductosServiciosPorDescripcion = async (req, res) => {
+	try {
+		const { descripcion } = req.params;
+		const Page = parseInt(req.query.page) || 1;
+		const resultado = await buscadorProductosServiciosPorDescripcion(
+			descripcion,
+			Page,
+		);
 
-	if (!resultado.existe) {
-		return res.status(404).send({
-			status: "Error",
-			message: "No se encontraron productos/servicios",
-		})
+		if (!resultado.existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'No se encontraron productos/servicios',
+			});
+		}
+
+		res.status(200).send({
+			status: 'OK',
+			message:
+				'Productos/Servicios encontrados con la descripción ' + descripcion,
+			data: resultado,
+		});
+	} catch (error) {
+		Bitacora('buscarProductosServiciosPorDescripcion', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno del servidor',
+		});
 	}
-
-	res.status(200).send({
-		status:  "OK",
-		message: "Productos/Servicios encontrados con la descripción " + descripcion,
-		data: resultado 
-	});
 };
 
 const buscarProductosServiciosPorPalabra = async (req, res) => {
-	const { palabra } = req.params;
-	const Page = parseInt(req.query.page) || 1;	
-	const resultado = await buscadorProductosServiciosPorPalabra(palabra, Page);
+	try {
+		const { palabra } = req.params;
+		const Page = parseInt(req.query.page) || 1;
+		const resultado = await buscadorProductosServiciosPorPalabra(palabra, Page);
 
-	if (!resultado.existe) {
-		return res.status(404).send({
-			status: "Error",
-			message: "No se encontraron productos/servicios",
-		})
+		if (!resultado.existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'No se encontraron productos/servicios',
+			});
+		}
+
+		res.status(200).send({
+			status: 'OK',
+			message: 'Productos/Servicios encontrados con la palabra ' + palabra,
+			data: resultado,
+		});
+	} catch (error) {
+		Bitacora('buscarProductosServiciosPorPalabra', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno del servidor',
+		});
 	}
-
-	res.status(200).send({
-		status:  "OK",
-		message: "Productos/Servicios encontrados con la palabra " + palabra,
-		data: resultado 
-	});
 };
 
 const crearProductosServicios = async (req, res) => {
-	const productosServiciosBody = req.body;
-	console.log('ClaveProductoServicio: ', productosServiciosBody.ClaveProductoServicio);
-	const idExistente = await validaClaveProductoServicio(productosServiciosBody.ClaveProductoServicio);
+	try {
+		const productosServiciosBody = req.body;
+		const idExistente = await validaClaveProductoServicio(
+			productosServiciosBody.ClaveProductoServicio,
+		);
 
-	if (idExistente.existe) {
-		return res
-			.status(409)
-			.send({ 
-				status: "OK",
-				message: "La clave del producto/servicio ya esta en uso", 
+		if (idExistente.existe) {
+			return res.status(409).send({
+				status: 'OK',
+				message: 'La clave del producto/servicio ya esta en uso',
 			});
-	}
+		}
 
-	return res
-		.status(200)
-		.send({ 
-			status: "OK",
-			message: "Producto/Servicio creado",
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Producto/Servicio creado',
 			data: await ProductosServicios.create(productosServiciosBody),
 		});
+	} catch (error) {
+		Bitacora('crearProductosServicios', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno del servidor',
+		});
+	}
 };
 
 const actualizarProductosServicios = async (req, res) => {
-	const productosServiciosBody = req.body;
-	const idExistente = await validaClaveProductoServicio(productosServiciosBody.ClaveProductoServicio);
+	try {
+		const productosServiciosBody = req.body;
+		const idExistente = await validaClaveProductoServicio(
+			productosServiciosBody.ClaveProductoServicio,
+		);
 
-	if (!idExistente.existe) {
-		return res
-			.status(404)
-			.send({ 
-				status: "Error",
-				message: "Producto/Servicio no encontrado", 
+		if (!idExistente.existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Producto/Servicio no encontrado',
 			});
-	}
+		}
 
-	await ProductosServicios.update(productosServiciosBody, {
-		where: {
-			ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
-		},
-	});
+		await ProductosServicios.update(productosServiciosBody, {
+			where: {
+				ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
+			},
+		});
 
-	return res
-		.status(200)
-		.send({ 
-			status: "OK",
-			message: "Producto/Servicio actualizado",
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Producto/Servicio actualizado',
 			data: productosServiciosBody,
 		});
+	} catch (error) {
+		Bitacora('actualizarProductosServicios', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno del servidor',
+		});
+	}
 };
 
 const borrarProductosServicios = async (req, res) => {
-	const productosServiciosBody = req.body;
-	const idExistente = await validaClaveProductoServicio(productosServiciosBody.ClaveProductoServicio);
+	try {
+		const productosServiciosBody = req.body;
+		const idExistente = await validaClaveProductoServicio(
+			productosServiciosBody.ClaveProductoServicio,
+		);
 
-	if (!idExistente.existe) {
-		return res
-			.status(404)
-			.send({ 
-				status: "Error",
-				message: "Producto/Servicio no encontrado", 
+		if (!idExistente.existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Producto/Servicio no encontrado',
 			});
-	}
+		}
 
-	return res
-		.status(200)
-		.send({ 
-			status: "OK",
-			message: "Producto/Servicio borrado",
-			data: await ProductosServicios.update({ Activo: 0 }, {
-				where: {
-					ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Producto/Servicio borrado',
+			data: await ProductosServicios.update(
+				{ Activo: 0 },
+				{
+					where: {
+						ClaveProductoServicio: productosServiciosBody.ClaveProductoServicio,
+					},
 				},
-			}),
+			),
 		});
+	} catch (error) {
+		Bitacora('borrarProductosServicios', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno del servidor',
+		});
+	}
 };
 
 export const methods = {
