@@ -5,9 +5,9 @@ const pageSchema = query('page').optional().isInt({ min: 1 }).withMessage('La p�
 export const buscarProductosServiciosPorClaveSchema = [
 	param('code')
 		.notEmpty()
-		.withMessage('El código del producto o servicio no puede estar vacio')
+		.withMessage('El código del producto o servicio no puede estar vacío')
 		.isInt()
-		.withMessage('El código del producto o servicio tiene que ser un numero entero')
+		.withMessage('El código del producto o servicio tiene que ser un número entero')
 		.matches(/^\S*$/)
 		.withMessage('El código del producto o servicio no puede contener espacios'),	
 ];
@@ -37,16 +37,16 @@ export const buscarProductosServiciosPorPalabraSchema = [
 export const crearProductosServiciosSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
-		.withMessage('La clave del producto o servicio no puede estar vacia')
+		.withMessage('La clave del producto o servicio no puede estar vacía')
 		.isInt()
 		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto')
 		.isLength({ min: 1, max: 8 })
 		.withMessage('La clave del producto o servicio debe tener entre 1 y 8 caracteres'),
 	body('Descripcion')
 		.notEmpty()
-		.withMessage('La descripcion no puede estar vacia')
+		.withMessage('La descripción no puede estar vacía')
 		.isString({ min: 3, max: 255 })
-		.withMessage('La descripcion tiene que ser una cadena de texto'),
+		.withMessage('La descripción tiene que ser una cadena de texto'),
 	body('PalabrasSimilares')
 		.optional()
 		.isString({ min: 3, max: 255 })
@@ -56,7 +56,7 @@ export const crearProductosServiciosSchema = [
 export const actualizarProductosServiciosSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
-		.withMessage('La clave del producto o servicio no puede estar vacia')
+		.withMessage('La clave del producto o servicio no puede estar vacía')
 		.isInt()
 		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto')
 		.isLength({ min: 1, max: 8 })
@@ -64,7 +64,7 @@ export const actualizarProductosServiciosSchema = [
 	body('Descripcion')
 		.optional()
 		.isString({ min: 1, max: 255 })
-		.withMessage('La descripcion tiene que ser una cadena de texto'),
+		.withMessage('La descripción tiene que ser una cadena de texto'),
 	body('PalabrasSimilares')
 		.optional()
 		.isString({ min: 3, max: 255 })
@@ -74,7 +74,7 @@ export const actualizarProductosServiciosSchema = [
 export const borrarProductosServiciosSchema = [
 	body('ClaveProductoServicio')
 		.notEmpty()
-		.withMessage('La clave del producto o servicio no puede estar vacia')
+		.withMessage('La clave del producto o servicio no puede estar vacía')
 		.isInt()
 		.withMessage('La clave del producto o servicio tiene que ser una cadena de texto')
 		.isLength({ min: 1, max: 8 })

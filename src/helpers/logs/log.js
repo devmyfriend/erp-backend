@@ -11,6 +11,7 @@ export const Bitacora = (endpoint, mensaje)=>{
         const fechayhora = fechaLarga(new Date());
         const data = `${fechayhora} ${endpoint} ${mensaje} \n`;
         if(!fs.existsSync(ruta)){
+            fs.mkdirSync('./src/logs', { recursive: true });
             fs.writeFileSync(ruta,data);
         }else{
             fs.appendFileSync(ruta,data)
