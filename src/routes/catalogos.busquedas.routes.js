@@ -193,7 +193,7 @@ router.post(
  *         content:
  *           application/json:
  *             example:
- *               - regimen:
+ *               - régimen:
  *                   ClaveRegimenFiscal: "601"
  *                   Descripcion: "General de Ley Personas Morales"
  *                   Fisica: false

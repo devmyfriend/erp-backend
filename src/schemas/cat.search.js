@@ -57,10 +57,10 @@ export const deleteTypeCoinSchema = [
 export const createSatFKSchema = [
 	body('ClaveRegimenFiscal')
 		.notEmpty()
-		.withMessage('La clave del regimen fiscal no puede estar vacia')
+		.withMessage('La clave del régimen fiscal no puede estar vacia')
 		.isString()
 		.withMessage(
-			'La clave del regimen fiscal tiene que ser una cadena de texto',
+			'La clave del régimen fiscal tiene que ser una cadena de texto',
 		),
 	body('Descripcion')
 		.notEmpty()
@@ -86,10 +86,10 @@ export const createSatFKSchema = [
 export const editSatFKSchema = [
 	body('ClaveRegimenFiscal')
 		.notEmpty()
-		.withMessage('La clave del regimen fiscal no puede estar vacia')
+		.withMessage('La clave del régimen fiscal no puede estar vacia')
 		.isString()
 		.withMessage(
-			'La clave del regimen fiscal tiene que ser una cadena de texto',
+			'La clave del régimen fiscal tiene que ser una cadena de texto',
 		),
 	body('Descripcion')
 		.optional()
@@ -112,10 +112,10 @@ export const editSatFKSchema = [
 export const deleteSatFKSchema = [
 	body('ClaveRegimenFiscal')
 		.notEmpty()
-		.withMessage('La clave del regimen fiscal no puede estar vacia')
+		.withMessage('La clave del régimen fiscal no puede estar vacia')
 		.isString()
 		.withMessage(
-			'La clave del regimen fiscal tiene que ser una cadena de texto',
+			'La clave del régimen fiscal tiene que ser una cadena de texto',
 		),
 ];
 

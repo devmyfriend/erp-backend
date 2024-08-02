@@ -225,7 +225,7 @@ const createRegimenFiscal = async (req, res) => {
 		if (validateRegimenFiscal) {
 			return res
 				.status(409)
-				.json({ error: 'La clave del regimen fiscal ya esta en uso ' });
+				.json({ error: 'La clave del régimen fiscal ya esta en uso ' });
 		}
 
 		await regimenFiscal.create(satFKBody);
@@ -264,10 +264,10 @@ const updateRegimenFiscal = async (req, res) => {
 			.status(200)
 			.json({ success: true, message: 'Regimen Fiscal actualizado' });
 	} catch (error) {
-		console.error('Error al actualizar el regimen fiscal', error.message);
+		console.error('Error al actualizar el régimen fiscal', error.message);
 		return res
 			.status(500)
-			.json({ error: 'Error al actualizar el regimen fiscal' });
+			.json({ error: 'Error al actualizar el régimen fiscal' });
 	}
 };
 
@@ -292,8 +292,8 @@ const deleteRegimenFiscal = async (req, res) => {
 			.status(200)
 			.json({ success: true, message: 'Régimen fiscal borrado' });
 	} catch (error) {
-		console.error('Error al borrar el regimen fiscal', error.message);
-		return res.status(500).json({ error: 'Error al borrar el regimen fiscal' });
+		console.error('Error al borrar el régimen fiscal', error.message);
+		return res.status(500).json({ error: 'Error al borrar el régimen fiscal' });
 	}
 };
 

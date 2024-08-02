@@ -23,7 +23,7 @@ const obtenerUbicaciones = async (req, res) => {
 		res.status(200).send({
 			status: "OK",
 			message: "Ubicaciones encontradas",
-			data: {
+			ubicaciones: {
 				TotalRegistros: datos.count,
 				PaginaActual: page,
 				TotalPaginas: Math.ceil(datos.count / parseInt(process.env.RegistrosPorPagina)),
@@ -58,8 +58,8 @@ const buscarUbicacionesPorNombre = async (req, res) => {
 	
 		res.status(200).send({
 			status:  "OK",
-			message: "Ubicaciones encontradas con el nombre " + Nombre,
-			data: resultado 
+			message: `Ubicaciones encontradas con el nombre ${Nombre}`,
+			ubicaciones: resultado 
 		});
 	}catch(error){
 		console.error(error);
@@ -88,7 +88,7 @@ const crearUbicacion = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Ubicación creada correctamente",
-				data: await Ubicaciones.create(ubicacionBody),
+				ubicacion: await Ubicaciones.create(ubicacionBody),
 			});
 	}catch(error){
 		console.error(error);
@@ -129,7 +129,7 @@ const actualizarUbicaciones = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Ubicación actualizada correctamente",
-				data: ubicacionBody,
+				ubicacion: ubicacionBody,
 			});
 	}catch(error){
 		console.error(error);
@@ -162,7 +162,7 @@ const borrarUbicaciones = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Ubicación borrada correctamente",
-				data: id,
+				ubicacion: id,
 			});	
 	}catch(error){
 		console.error(error);

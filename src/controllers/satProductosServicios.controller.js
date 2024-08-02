@@ -43,8 +43,8 @@ const buscarProductosServiciosPorDescripcion = async (req, res) => {
 		res.status(200).send({
 			status: 'OK',
 			message:
-				'Productos/Servicios encontrados con la descripción ' + descripcion,
-			data: resultado,
+				`Productos/Servicios encontrados con la descripción ${descripcion}`,
+			productosServicios: resultado,
 		});
 	} catch (error) {
 		Bitacora('buscarProductosServiciosPorDescripcion', error);
@@ -70,8 +70,8 @@ const buscarProductosServiciosPorPalabra = async (req, res) => {
 
 		res.status(200).send({
 			status: 'OK',
-			message: 'Productos/Servicios encontrados con la palabra ' + palabra,
-			data: resultado,
+			message: `'Productos/Servicios encontrados con la palabra ${palabra}`,
+			productosServicios: resultado,
 		});
 	} catch (error) {
 		Bitacora('buscarProductosServiciosPorPalabra', error);
@@ -91,7 +91,7 @@ const crearProductosServicios = async (req, res) => {
 
 		if (idExistente.existe) {
 			return res.status(409).send({
-				status: 'OK',
+				status: 'Error',
 				message: 'La clave del producto/servicio ya esta en uso',
 			});
 		}
@@ -99,7 +99,7 @@ const crearProductosServicios = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Producto/Servicio creado',
-			data: await ProductosServicios.create(productosServiciosBody),
+			productoServicio: await ProductosServicios.create(productosServiciosBody),
 		});
 	} catch (error) {
 		Bitacora('crearProductosServicios', error);
@@ -133,7 +133,7 @@ const actualizarProductosServicios = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Producto/Servicio actualizado',
-			data: productosServiciosBody,
+			productoServicio: productosServiciosBody,
 		});
 	} catch (error) {
 		Bitacora('actualizarProductosServicios', error);
@@ -161,7 +161,7 @@ const borrarProductosServicios = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Producto/Servicio borrado',
-			data: await ProductosServicios.update(
+			productoServicio: await ProductosServicios.update(
 				{ Activo: 0 },
 				{
 					where: {

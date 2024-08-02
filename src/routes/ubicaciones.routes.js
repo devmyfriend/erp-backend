@@ -31,7 +31,7 @@ const router = Router();
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 ubicaciones:
  *                   type: object
  *                   properties:
  *                     TotalRegistros:
@@ -45,27 +45,56 @@ const router = Router();
  *                       items:
  *                         type: object
  *                         properties:
- *                           ID:
+ *                           UbicacionId:
  *                             type: integer
  *                           Nombre:
  *                             type: string
  *                           Borrado:
+ *                             type: boolean
+ *                           CreadoPor:
  *                             type: integer
- *                             description: Estado de borrado de la ubicación (0 no borrado, 1 borrado)
+ *                           ActualizadoPor:
+ *                             type: integer
+ *                           BorradoPor:
+ *                             type: integer
+ *                           BorradoEn:
+ *                             type: string
+ *                             format: date-time
+ *                           CreadoEn:
+ *                             type: string
+ *                             format: date-time
+ *                           ActualizadoEn:
+ *                             type: string
+ *                             format: date-time
  *             examples:
  *               example1:
  *                 summary: Ejemplo de respuesta
  *                 value:
  *                   status: "OK"
  *                   message: "Ubicaciones encontradas"
- *                   data:
- *                     TotalRegistros: 100
+ *                   ubicaciones:
+ *                     TotalRegistros: 18
  *                     PaginaActual: 1
- *                     TotalPaginas: 10
+ *                     TotalPaginas: 9
  *                     Datos:
- *                       - ID: 1
- *                         Nombre: "Ubicación Central"
- *                         Borrado: 0
+ *                       - UbicacionId: 101
+ *                         Nombre: "Ubicación 1"
+ *                         Borrado: false
+ *                         CreadoPor: 1
+ *                         ActualizadoPor: 0
+ *                         BorradoPor: 1
+ *                         BorradoEn: "2024-02-06T13:59:58.000Z"
+ *                         CreadoEn: null
+ *                         ActualizadoEn: null
+ *                       - UbicacionId: 102
+ *                         Nombre: "Colosio 32"
+ *                         Borrado: false
+ *                         CreadoPor: 1
+ *                         ActualizadoPor: 1
+ *                         BorradoPor: 1
+ *                         BorradoEn: "2024-02-06T13:59:58.000Z"
+ *                         CreadoEn: null
+ *                         ActualizadoEn: null
  *       404:
  *         description: No se encontraron ubicaciones
  *         content:
@@ -75,8 +104,27 @@ const router = Router();
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
+ *                   example: "No se encontraron ubicaciones"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La página debe ser un número entero mayor o igual a 1"
+ *                   ]
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -86,10 +134,10 @@ const router = Router();
  *               properties:
  *                 status:
  *                   type: string
- *                 message:
- *                   type: string
+ *                   example: "Error"
  *                 Error:
  *                   type: string
+ *                   example: "Error al obtener las ubicaciones"
  */
 router.get(
     '/',
@@ -131,34 +179,74 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 ubicaciones:
  *                   type: object
  *                   properties:
- *                     totalItems:
- *                       type: integer
- *                     totalPages:
- *                       type: integer
- *                     currentPage:
- *                       type: integer
- *                     items:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           ID:
- *                             type: integer
- *                           Nombre:
- *                             type: string
+ *                     existe:
+ *                       type: boolean
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         TotalRegistros:
+ *                           type: integer
+ *                         PaginaActual:
+ *                           type: integer
+ *                         TotalPaginas:
+ *                           type: integer
+ *                         Datos:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               UbicacionId:
+ *                                 type: integer
+ *                               Nombre:
+ *                                 type: string
+ *                               Borrado:
+ *                                 type: boolean
+ *                               CreadoPor:
+ *                                 type: integer
+ *                               ActualizadoPor:
+ *                                 type: integer
+ *                               BorradoPor:
+ *                                 type: integer
+ *                               BorradoEn:
+ *                                 type: string
+ *                                 format: date-time
+ *                               CreadoEn:
+ *                                 type: string
+ *                                 format: date-time
+ *                               ActualizadoEn:
+ *                                 type: string
+ *                                 format: date-time
  *             example:
  *               status: "OK"
- *               message: "Ubicaciones encontradas con el nombre NombreEjemplo"
- *               data:
- *                 totalItems: 5
- *                 totalPages: 1
- *                 currentPage: 1
- *                 items:
- *                   - ID: 1
- *                     Nombre: "NombreEjemplo"
+ *               message: "Ubicaciones encontradas con el nombre Colo"
+ *               ubicaciones:
+ *                 existe: true
+ *                 data:
+ *                   TotalRegistros: 6
+ *                   PaginaActual: 2
+ *                   TotalPaginas: 3
+ *                   Datos:
+ *                     - UbicacionId: 104
+ *                       Nombre: "colosiotestin"
+ *                       Borrado: false
+ *                       CreadoPor: 1
+ *                       ActualizadoPor: 4
+ *                       BorradoPor: null
+ *                       BorradoEn: null
+ *                       CreadoEn: null
+ *                       ActualizadoEn: null
+ *                     - UbicacionId: 105
+ *                       Nombre: "colosiotestin"
+ *                       Borrado: false
+ *                       CreadoPor: 2
+ *                       ActualizadoPor: 1
+ *                       BorradoPor: 8
+ *                       BorradoEn: null
+ *                       CreadoEn: null
+ *                       ActualizadoEn: null
  *       404:
  *         description: No se encontraron ubicaciones
  *         content:
@@ -168,11 +256,28 @@ router.get(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
- *             example:
- *               status: "Error"
- *               message: "No se encontraron ubicaciones"
+ *                   example: "No se encontraron ubicaciones"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "El nombre de la ubicación debe tener entre 3 y 255 caracteres",
+ *                     "La página debe ser un número entero mayor o igual a 1"
+ *                   ]
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -182,8 +287,10 @@ router.get(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
+ *                   example: "Error al buscar la ubicación"
  */
 router.get(
     '/nombre/:Nombre',
@@ -225,10 +332,10 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 ubicacion:
  *                   type: object
  *                   properties:
- *                     id:
+ *                     UbicacionId:
  *                       type: integer
  *                     Nombre:
  *                       type: string
@@ -237,10 +344,10 @@ router.get(
  *             example:
  *               status: "OK"
  *               message: "Ubicación creada correctamente"
- *               data:
- *                 id: 10
- *                 Nombre: "Colosio 1"
- *                 CreadoPor: "1"
+ *               ubicacion:
+ *                 UbicacionId: 119
+ *                 Nombre: "Colosio 2"
+ *                 CreadoPor: "2"
  *       409:
  *         description: La ubicación ya existe
  *         content:
@@ -254,7 +361,37 @@ router.get(
  *                   type: string
  *             example:
  *               status: 409
- *               error: "La ubicación ya existe"
+ *               error: "El nombre de la ubicación ya existe"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "El nombre de la ubicación es requerido"
+ *                   ]
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al crear la ubicación"
  */
 router.post(
     '/',
@@ -302,7 +439,7 @@ router.post(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 ubicacion:
  *                   type: object
  *                   properties:
  *                     UbicacionId:
@@ -314,9 +451,9 @@ router.post(
  *             example:
  *               status: "OK"
  *               message: "Ubicación actualizada correctamente"
- *               data:
- *                 UbicacionId: 1
- *                 Nombre: "Ubicación Actualizada"
+ *               ubicacion:
+ *                 UbicacionId: 119
+ *                 Nombre: "Colosio reconstruido"
  *                 ActualizadoPor: "2"
  *       404:
  *         description: La ubicación no existe
@@ -332,6 +469,23 @@ router.post(
  *             example:
  *               status: 404
  *               error: "La ubicación no existe"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "El nombre de la ubicación es requerido"
+ *                   ]
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -341,10 +495,10 @@ router.post(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
- *                 error:
- *                   type: string
+ *                   example: "Error al actualizar la ubicación"
  */
 router.patch(
     '/',
@@ -382,23 +536,67 @@ router.patch(
  *             schema:
  *               type: object
  *               properties:
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
  *                 ubicacion:
- *                   type: object
- *                   properties:
- *                     UbicacionId:
- *                       type: integer
+ *                   type: integer
  *             example:
- *               message: "Ubicación eliminada"
- *               ubicacion:
- *                 UbicacionId: 1
+ *               status: "OK"
+ *               message: "Ubicación borrada correctamente"
+ *               ubicacion: 119
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "El usuario que borra es requerido",
+ *                     "El usuario que borra debe ser un número entero"
+ *                   ]
+ *       404:
+ *         description: La ubicación no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 error:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               error: "La ubicación no existe"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al borrar la ubicación"
  */
 router.delete(
-	'/',
-	schemas.borrarUbicacionesSchema,
-	middleware.validateSchema,
-	methods.borrarUbicaciones,
+    '/',
+    schemas.borrarUbicacionesSchema,
+    middleware.validateSchema,
+    methods.borrarUbicaciones,
 );
 
 export default router;

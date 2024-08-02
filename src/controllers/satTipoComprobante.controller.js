@@ -16,7 +16,7 @@ const obtenerTiposComprobantes = async (req, res) => {
 		res.status(200).send({
 			status: "OK",
 			message: "Tipos de comprobante encontrados",
-			data: datos
+			comprobantes: datos
 		});
     } catch (error) {
 		console.error(error);
@@ -45,7 +45,7 @@ const crearTiposComprobantes = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Tipo de comprobante creado correctamente",
-				data: await TiposComprobantes.create(tiposComprobantesBody),
+				comprobante: await TiposComprobantes.create(tiposComprobantesBody),
 			});
 	}catch(error){
 		Bitacora('crearTiposComprobantes', error);
@@ -77,7 +77,7 @@ const actualizarTiposComprobantes = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Tipo de comprobante actualizado correctamente",
-				data: tiposComprobantesBody,
+				comprobante: tiposComprobantesBody,
 			});
 	}catch(error){
 		Bitacora('actualizarTiposComprobantes', error);
@@ -109,7 +109,7 @@ const borrarTiposComprobantes = async (req, res) => {
 			.send({ 
 				status: "OK",
 				message: "Tipo de comprobante eliminado correctamente",
-				data: id,
+				comprobante: id,
 			});
 	}catch(error){
 		Bitacora('borrarTiposComprobantes', error);

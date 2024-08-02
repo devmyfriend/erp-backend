@@ -145,7 +145,7 @@ router.get(
 		.isString()
 		.withMessage('El nombre de la unidad debe ser de tipo string')
 		.isLength({ min: 1})
-		.withMessage('El nombre de la unidad debe tener por lo menos 1 caracter'),
+		.withMessage('El nombre de la unidad debe tener por lo menos 1 carácter'),
 	middleware.validateSchema,
 	methods.findUnitKeysByName,
 );
