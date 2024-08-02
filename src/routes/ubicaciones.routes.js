@@ -66,35 +66,32 @@ const router = Router();
  *                           ActualizadoEn:
  *                             type: string
  *                             format: date-time
- *             examples:
- *               example1:
- *                 summary: Ejemplo de respuesta
- *                 value:
- *                   status: "OK"
- *                   message: "Ubicaciones encontradas"
- *                   ubicaciones:
- *                     TotalRegistros: 18
- *                     PaginaActual: 1
- *                     TotalPaginas: 9
- *                     Datos:
- *                       - UbicacionId: 101
- *                         Nombre: "Ubicación 1"
- *                         Borrado: false
- *                         CreadoPor: 1
- *                         ActualizadoPor: 0
- *                         BorradoPor: 1
- *                         BorradoEn: "2024-02-06T13:59:58.000Z"
- *                         CreadoEn: null
- *                         ActualizadoEn: null
- *                       - UbicacionId: 102
- *                         Nombre: "Colosio 32"
- *                         Borrado: false
- *                         CreadoPor: 1
- *                         ActualizadoPor: 1
- *                         BorradoPor: 1
- *                         BorradoEn: "2024-02-06T13:59:58.000Z"
- *                         CreadoEn: null
- *                         ActualizadoEn: null
+ *             example:
+ *               status: "OK"
+ *               message: "Ubicaciones encontradas"
+ *               ubicaciones:
+ *                 TotalRegistros: 18
+ *                 PaginaActual: 1
+ *                 TotalPaginas: 9
+ *                 Datos:
+ *                   - UbicacionId: 101
+ *                     Nombre: "Ubicación 1"
+ *                     Borrado: false
+ *                     CreadoPor: 1
+ *                     ActualizadoPor: 0
+ *                     BorradoPor: 1
+ *                     BorradoEn: "2024-02-06T13:59:58.000Z"
+ *                     CreadoEn: null
+ *                     ActualizadoEn: null
+ *                   - UbicacionId: 102
+ *                     Nombre: "Colosio 32"
+ *                     Borrado: false
+ *                     CreadoPor: 1
+ *                     ActualizadoPor: 1
+ *                     BorradoPor: 1
+ *                     BorradoEn: "2024-02-06T13:59:58.000Z"
+ *                     CreadoEn: null
+ *                     ActualizadoEn: null
  *       404:
  *         description: No se encontraron ubicaciones
  *         content:
