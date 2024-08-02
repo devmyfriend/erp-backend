@@ -21,24 +21,95 @@ const router = Router();
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "OK"
  *                 message:
  *                   type: string
- *                   example: "Tipos de comprobante encontrados"
- *                 data:
+ *                 comprobantes:
  *                   type: array
  *                   items:
  *                     type: object
  *                     properties:
  *                       ClaveTipoDeComprobante:
  *                         type: string
- *                         example: "I"
  *                       Descripcion:
  *                         type: string
- *                         example: "Egreso"
  *                       Borrado:
  *                         type: boolean
- *                         example: false
+ *             example:
+ *               status: "OK"
+ *               message: "Tipos de comprobante encontrados"
+ *               comprobantes:
+ *                 - ClaveTipoDeComprobante: "0"
+ *                   Descripcion: "Testing"
+ *                   Borrado: true
+ *                 - ClaveTipoDeComprobante: "1"
+ *                   Descripcion: "HOLA"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "2"
+ *                   Descripcion: "Egreso"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "3"
+ *                   Descripcion: "wasaaa"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "4"
+ *                   Descripcion: "El rojo es peligro"
+ *                   Borrado: true
+ *                 - ClaveTipoDeComprobante: "7"
+ *                   Descripcion: "HOLA"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "8"
+ *                   Descripcion: "League Of Valo"
+ *                   Borrado: true
+ *                 - ClaveTipoDeComprobante: "9"
+ *                   Descripcion: "La camioneta no esta diseñada para 7 personas"
+ *                   Borrado: true
+ *                 - ClaveTipoDeComprobante: "E"
+ *                   Descripcion: "Egreso"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "I"
+ *                   Descripcion: "Egreso"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "M"
+ *                   Descripcion: "Mano"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "N"
+ *                   Descripcion: "Nómina"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "O"
+ *                   Descripcion: "Test O"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "P"
+ *                   Descripcion: "Pago"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "Q"
+ *                   Descripcion: "Coca"
+ *                   Borrado: true
+ *                 - ClaveTipoDeComprobante: "R"
+ *                   Descripcion: "Raton"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "S"
+ *                   Descripcion: "Stun"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "T"
+ *                   Descripcion: "Traslado"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "U"
+ *                   Descripcion: "Usted"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "V"
+ *                   Descripcion: "Test V"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "W"
+ *                   Descripcion: "Test W"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "X"
+ *                   Descripcion: "Test X"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "Y"
+ *                   Descripcion: "Test Y"
+ *                   Borrado: false
+ *                 - ClaveTipoDeComprobante: "Z"
+ *                   Descripcion: "Test Z"
+ *                   Borrado: false
  *       404:
  *         description: No se encontraron tipos de comprobante
  *         content:
@@ -48,10 +119,10 @@ const router = Router();
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "Error"
  *                 message:
- *                   type: string
- *                   example: "No se encontraron tipos de comprobante"
+ *             example:
+ *               status: "Error"
+ *               message: "No se encontraron tipos de comprobante"
  *       500:
  *         description: Error al obtener los tipos de comprobante
  *         content:
@@ -61,17 +132,17 @@ const router = Router();
  *               properties:
  *                 status:
  *                   type: string
- *                   example: "Error"
  *                 message:
- *                   type: string
- *                   example: "Error al obtener los tipos de comprobante"
- *                 Error:
- *                   type: string
- *                   example: "Detalles del error"
+ *                 error:
+ *             example:
+ *               status: "Error"
+ *               message: "Error al obtener los tipos de comprobante"
+ *               error: "Detalles del error"
  */
 router.get(
-	'/',
-	methods.obtenerTiposComprobantes);
+    '/',
+    methods.obtenerTiposComprobantes
+);
 
 /**
  * @swagger
@@ -106,7 +177,7 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 comprobante:
  *                   type: object
  *                   properties:
  *                     ClaveTipoDeComprobante:
@@ -116,9 +187,27 @@ router.get(
  *             example:
  *               status: "OK"
  *               message: "Tipo de comprobante creado correctamente"
- *               data:
- *                 ClaveTipoDeComprobante: "I"
- *                 Descripcion: "Egreso"
+ *               comprobante:
+ *                 ClaveTipoDeComprobante: "5"
+ *                 Descripcion: "Español"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La clave del tipo de comprobante es requerida",
+ *                     "La clave del tipo de comprobante debe tener una longitud de 1 carácter"
+ *                   ]
  *       409:
  *         description: El tipo de comprobante ya existe
  *         content:
@@ -128,11 +217,10 @@ router.get(
  *               properties:
  *                 status:
  *                   type: integer
+ *                   example: 409
  *                 error:
  *                   type: string
- *             example:
- *               status: 409
- *               error: "El tipo de comprobante ya existe"
+ *                   example: "El tipo de comprobante ya existe"
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -142,20 +230,16 @@ router.get(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
- *                 error:
- *                   type: string
- *             example:
- *               status: "Error"
- *               message: "Error al crear el tipo de comprobante"
- *               error: "Detalles del error"
+ *                   example: "Error al crear el tipo de comprobante"
  */
 router.post(
-	'/',
-	schemas.crearTiposComprobantesSchema,
-	middleware.validateSchema,
-	methods.crearTiposComprobantes,
+    '/',
+    schemas.crearTiposComprobantesSchema,
+    middleware.validateSchema,
+    methods.crearTiposComprobantes,
 );
 
 /**
@@ -191,7 +275,7 @@ router.post(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 comprobante:
  *                   type: object
  *                   properties:
  *                     ClaveTipoDeComprobante:
@@ -201,9 +285,9 @@ router.post(
  *             example:
  *               status: "OK"
  *               message: "Tipo de comprobante actualizado correctamente"
- *               data:
- *                 ClaveTipoDeComprobante: "I"
- *                 Descripcion: "Egreso"
+ *               comprobante:
+ *                 ClaveTipoDeComprobante: "1"
+ *                 Descripcion: "Trabajadores"
  *       404:
  *         description: El tipo de comprobante no existe
  *         content:
@@ -218,6 +302,20 @@ router.post(
  *             example:
  *               status: 404
  *               error: "El tipo de comprobante no existe"
+ *       409:
+ *         description: La descripción del tipo de comprobante ya existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 error:
+ *                   type: string
+ *             example:
+ *               status: 409
+ *               error: "La descripción del tipo de comprobante ya existe"
  *       500:
  *         description: Error interno del servidor
  *         content:
@@ -229,18 +327,15 @@ router.post(
  *                   type: string
  *                 message:
  *                   type: string
- *                 error:
- *                   type: string
  *             example:
  *               status: "Error"
  *               message: "Error al actualizar el tipo de comprobante"
- *               error: "Detalles del error"
  */
 router.patch(
-	'/',
-	schemas.actualizarTiposComprobantesSchema,
-	middleware.validateSchema,
-	methods.actualizarTiposComprobantes,
+    '/',
+    schemas.actualizarTiposComprobantesSchema,
+    middleware.validateSchema,
+    methods.actualizarTiposComprobantes,
 );
 
 /**
@@ -269,21 +364,49 @@ router.patch(
  *             schema:
  *               type: object
  *               properties:
+ *                 status:
+ *                   type: string
  *                 message:
  *                   type: string
- *                 ClaveTipoDeComprobante:
+ *                 comprobante:
  *                   type: string
- *             examples:
- *               example1:
- *                 summary: Ejemplo de respuesta
- *                 value:
- *                   message: "Tipo de comprobante eliminado correctamente"
- *                   ClaveTipoDeComprobante: "I"
+ *             example:
+ *               status: "OK"
+ *               message: "Tipo de comprobante eliminado correctamente"
+ *               comprobante: "1"
+ *       404:
+ *         description: El tipo de comprobante no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                 error:
+ *                   type: string
+ *             example:
+ *               status: 404
+ *               error: "El tipo de comprobante no existe"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "Error al borrar el tipo de comprobante"
  */
 router.delete(
     '/',
-    middleware.validateSchema,
     schemas.borrarTiposComprobantesSchema,
+    middleware.validateSchema,
     methods.borrarTiposComprobantes,
 );
 

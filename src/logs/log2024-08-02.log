@@ -1,2 +1,4 @@
 2024-08-02T10:48:26 obtenerUbicaciones Error 
 2024-08-02T10:48:30 obtenerUbicaciones Error 
+2024-08-02T12:05:52 borrarTiposComprobantes SequelizeDatabaseError: (conn=521, no: 1292, SQLState: 22007) Truncated incorrect DECIMAL value: 'E'
+sql: UPDATE `SAT_TipoDeComprobante` SET `Borrado`=? WHERE `ClaveTipoDeComprobante` = ? - parameters:[true,1] 

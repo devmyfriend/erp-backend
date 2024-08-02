@@ -22,7 +22,9 @@ export const crearUbicacionSchema = [
     .notEmpty()
     .withMessage('El nombre de la ubicación es requerido')
     .isString()
-    .withMessage('El nombre de la ubicación debe ser una cadena de texto'),
+    .withMessage('El nombre de la ubicación debe ser una cadena de texto')
+    .isLength({ min: 3, max: 50 })
+    .withMessage('El nombre de la ubicación debe tener entre 3 y 50 caracteres'),
     body('CreadoPor')
     .notEmpty()
     .withMessage('El usuario creador es requerido')
@@ -35,12 +37,16 @@ export const actualizarUbicacionesSchema = [
     .notEmpty()
     .withMessage('El id de la ubicación es requerido')
     .isInt()
-    .withMessage('El id de la ubicación debe ser un número entero'),
+    .withMessage('El id de la ubicación debe ser un número entero')
+    .isLength({ min: 1, max: 11 })
+    .withMessage('El id de la ubicación debe tener una longitud entre 1 y 11 caracteres'),
     body('Nombre')
     .notEmpty()
     .withMessage('El nombre de la ubicación es requerido')
     .isString()
-    .withMessage('El nombre de la ubicación debe ser una cadena de texto'),
+    .withMessage('El nombre de la ubicación debe ser una cadena de texto')
+    .isLength({ min: 3, max: 50 })
+    .withMessage('El nombre de la ubicación debe tener entre 3 y 50 caracteres'),
     body('ActualizadoPor')
     .notEmpty()
     .withMessage('El usuario que actualiza es requerido')
@@ -53,7 +59,9 @@ export const borrarUbicacionesSchema = [
         .notEmpty()
         .withMessage('El id de la ubicación es requerido')
         .isInt()
-        .withMessage('El id de la ubicación debe ser un número entero'),
+        .withMessage('El id de la ubicación debe ser un número entero')        
+        .isLength({ min: 1, max: 11 })
+        .withMessage('El id de la ubicación debe tener una longitud entre 1 y 11 caracteres'),
     body('BorradoPor')
         .notEmpty()
         .withMessage('El usuario que borra es requerido')

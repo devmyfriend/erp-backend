@@ -25,6 +25,9 @@ export const validaClaveProductoServicio = async clave =>
 export const validaTiposComprobantes = async clave =>
     buscarItem(TiposComprobantes, { ClaveTipoDeComprobante: clave });
 
+export const validaTiposComprobantesDescripcion = async descripcion =>
+    buscarItem(TiposComprobantes, { Descripcion: descripcion });
+
 export const validaUbicacion = async id =>
     buscarItem(Ubicaciones, { UbicacionId: id });
 

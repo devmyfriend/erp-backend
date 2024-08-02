@@ -1,5 +1,5 @@
 import { TiposComprobantes } from '../models/satTipoComprobante.model.js';
-import { validaTiposComprobantes } from '../middlewares/finders/index.js';
+import { validaTiposComprobantes, validaTiposComprobantesDescripcion } from '../middlewares/finders/index.js';
 import { Bitacora } from '../helpers/logs/log.js';
 
 const obtenerTiposComprobantes = async (req, res) => {
@@ -67,7 +67,15 @@ const actualizarTiposComprobantes = async (req, res) => {
 				error: 'El tipo de comprobante no existe',
 			});
 		}
-	
+
+		const descripcionExistente = await validaTiposComprobantesDescripcion(tiposComprobantesBody.Descripcion);
+		if (descripcionExistente.existe) {
+			return res.status(409).json({
+				status: 409,
+				error: 'La descripción del tipo de comprobante ya existe',
+			});
+		}
+
 		await TiposComprobantes.update(tiposComprobantesBody, {
 			where: { ClaveTipoDeComprobante: tiposComprobantesBody.ClaveTipoDeComprobante },
 		})

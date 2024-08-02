@@ -82,34 +82,68 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 productosServicios:
  *                   type: object
  *                   properties:
- *                     totalItems:
- *                       type: integer
- *                     items:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: integer
- *                           name:
- *                             type: string
- *                           description:
- *                             type: string
+ *                     existe:
+ *                       type: boolean
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         TotalRegistros:
+ *                           type: integer
+ *                         PaginaActual:
+ *                           type: integer
+ *                         TotalPaginas:
+ *                           type: integer
+ *                         Datos:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               ClaveProductoServicio:
+ *                                 type: string
+ *                               Descripcion:
+ *                                 type: string
+ *                               PalabrasSimilares:
+ *                                 type: string
+ *                               Activo:
+ *                                 type: boolean
  *             example:
  *               status: "OK"
- *               message: "Productos/Servicios encontrados con la descripción Producto Servicio"
- *               data:
- *                 totalItems: 2
- *                 items:
- *                   - id: 1
- *                     name: Producto 1
- *                     description: "Descripción del producto 1"
- *                   - id: 2
- *                     name: Producto 2
- *                     description: "Descripción del producto 2"
+ *               message: "Productos/Servicios encontrados con la descripción prod"
+ *               productosServicios:
+ *                 existe: true
+ *                 data:
+ *                   TotalRegistros: 3
+ *                   PaginaActual: 1
+ *                   TotalPaginas: 2
+ *                   Datos:
+ *                     - ClaveProductoServicio: "102"
+ *                       Descripcion: "Producto Servicio"
+ *                       PalabrasSimilares: "Palabra 1"
+ *                       Activo: true
+ *                     - ClaveProductoServicio: "101"
+ *                       Descripcion: "Producto Servicio"
+ *                       PalabrasSimilares: "Palabra 1"
+ *                       Activo: true
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La página debe ser un número entero mayor o igual a 1"
+ *                   ]
  *       404:
  *         description: No se encontraron productos/servicios
  *         content:
@@ -119,17 +153,29 @@ router.get(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
- *             example:
- *               status: "Error"
- *               message: "No se encontraron productos/servicios con esa descripción"
+ *                   example: "No se encontraron productos/servicios"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error interno del servidor"
  */
 router.get(
-	'/servicio/buscar/descripcion/:descripcion',
-	schemas.buscarProductosServiciosPorDescripcionSchema,
-	middleware.validateSchema,
-	methods.buscarProductosServiciosPorDescripcion,
+    '/servicio/buscar/descripcion/:descripcion',
+    schemas.buscarProductosServiciosPorDescripcionSchema,
+    middleware.validateSchema,
+    methods.buscarProductosServiciosPorDescripcion,
 );
 
 /**
@@ -163,34 +209,68 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 productosServicios:
  *                   type: object
  *                   properties:
- *                     totalItems:
- *                       type: integer
- *                     items:
- *                       type: array
- *                       items:
- *                         type: object
- *                         properties:
- *                           id:
- *                             type: integer
- *                           name:
- *                             type: string
- *                           description:
- *                             type: string
+ *                     existe:
+ *                       type: boolean
+ *                     data:
+ *                       type: object
+ *                       properties:
+ *                         TotalRegistros:
+ *                           type: integer
+ *                         PaginaActual:
+ *                           type: integer
+ *                         TotalPaginas:
+ *                           type: integer
+ *                         Datos:
+ *                           type: array
+ *                           items:
+ *                             type: object
+ *                             properties:
+ *                               ClaveProductoServicio:
+ *                                 type: string
+ *                               Descripcion:
+ *                                 type: string
+ *                               PalabrasSimilares:
+ *                                 type: string
+ *                               Activo:
+ *                                 type: boolean
  *             example:
  *               status: "OK"
- *               message: "Productos/Servicios encontrados con la palabra Producto Servicio"
- *               data:
- *                 totalItems: 2
- *                 items:
- *                   - id: 1
- *                     name: Producto 1
- *                     description: "Descripción del producto 1"
- *                   - id: 2
- *                     name: Producto 2
- *                     description: "Descripción del producto 2"
+ *               message: "'Productos/Servicios encontrados con la palabra pala"
+ *               productosServicios:
+ *                 existe: true
+ *                 data:
+ *                   TotalRegistros: 3
+ *                   PaginaActual: 1
+ *                   TotalPaginas: 2
+ *                   Datos:
+ *                     - ClaveProductoServicio: "1013"
+ *                       Descripcion: "SERVICIO 1"
+ *                       PalabrasSimilares: "Palabra 1"
+ *                       Activo: true
+ *                     - ClaveProductoServicio: "102"
+ *                       Descripcion: "Producto Servicio"
+ *                       PalabrasSimilares: "Palabra 1"
+ *                       Activo: true
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La página debe ser un número entero mayor o igual a 1"
+ *                   ]
  *       404:
  *         description: No se encontraron productos/servicios
  *         content:
@@ -200,17 +280,29 @@ router.get(
  *               properties:
  *                 status:
  *                   type: string
+ *                   example: "Error"
  *                 message:
  *                   type: string
- *             example:
- *               status: "Error"
- *               message: "No se encontraron productos/servicios con esa palabra"
+ *                   example: "No se encontraron productos/servicios"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error interno del servidor"
  */
 router.get(
-	'/servicio/buscar/palabra/:palabra',
-	schemas.buscarProductosServiciosPorPalabraSchema,
-	middleware.validateSchema,
-	methods.buscarProductosServiciosPorPalabra,
+    '/servicio/buscar/palabra/:palabra',
+    schemas.buscarProductosServiciosPorPalabraSchema,
+    middleware.validateSchema,
+    methods.buscarProductosServiciosPorPalabra,
 );
 
 /**
@@ -249,7 +341,7 @@ router.get(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 productoServicio:
  *                   type: object
  *                   properties:
  *                     ClaveProductoServicio:
@@ -261,10 +353,27 @@ router.get(
  *             example:
  *               status: "OK"
  *               message: "Producto/Servicio creado"
- *               data:
- *                 ClaveProductoServicio: 101
- *                 Descripcion: "Producto Servicio"
- *                 PalabrasSimilares: "Palabra 1"
+ *               productoServicio:
+ *                 ClaveProductoServicio: 922
+ *                 Descripcion: "Producto Servicio ZAZAZA"
+ *                 PalabrasSimilares: "ZAZAZA"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La descripción no puede estar vacía"
+ *                   ]
  *       409:
  *         description: La clave del producto/servicio ya está en uso
  *         content:
@@ -277,14 +386,28 @@ router.get(
  *                 message:
  *                   type: string
  *             example:
- *               status: "OK"
+ *               status: "Error"
  *               message: "La clave del producto/servicio ya está en uso"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.post(
-	'/servicio',
-	schemas.crearProductosServiciosSchema,
-	middleware.validateSchema,
-	methods.crearProductosServicios,
+    '/servicio',
+    schemas.crearProductosServiciosSchema,
+    middleware.validateSchema,
+    methods.crearProductosServicios,
 );
 
 /**
@@ -323,7 +446,7 @@ router.post(
  *                   type: string
  *                 message:
  *                   type: string
- *                 data:
+ *                 productoServicio:
  *                   type: object
  *                   properties:
  *                     ClaveProductoServicio:
@@ -335,10 +458,27 @@ router.post(
  *             example:
  *               status: "OK"
  *               message: "Producto/Servicio actualizado"
- *               data:
- *                 ClaveProductoServicio: 101
- *                 Descripcion: "Producto Servicio"
- *                 PalabrasSimilares: "Palabra 1"
+ *               productoServicio:
+ *                 ClaveProductoServicio: 922
+ *                 Descripcion: "Producto Servicio ZAZAZA"
+ *                 PalabrasSimilares: "ZAZA FLACO"
+ *       400:
+ *         description: Error de validación
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: [
+ *                     "La clave del producto o servicio debe tener entre 1 y 8 caracteres"
+ *                   ]
  *       404:
  *         description: Producto/Servicio no encontrado
  *         content:
@@ -353,12 +493,26 @@ router.post(
  *             example:
  *               status: "Error"
  *               message: "Producto/Servicio no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.patch(
-	'/servicio',
-	schemas.actualizarProductosServiciosSchema,
-	middleware.validateSchema,
-	methods.actualizarProductosServicios,
+    '/servicio',
+    schemas.actualizarProductosServiciosSchema,
+    middleware.validateSchema,
+    methods.actualizarProductosServicios,
 );
 
 /**
@@ -391,9 +545,14 @@ router.patch(
  *                   type: string
  *                 message:
  *                   type: string
+ *                 productoServicio:
+ *                   type: array
+ *                   items:
+ *                     type: integer
  *             example:
  *               status: "OK"
  *               message: "Producto/Servicio borrado"
+ *               productoServicio: [1]
  *       404:
  *         description: Producto/Servicio no encontrado
  *         content:
@@ -408,12 +567,26 @@ router.patch(
  *             example:
  *               status: "Error"
  *               message: "Producto/Servicio no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *             example:
+ *               status: "Error"
+ *               message: "Error interno del servidor"
  */
 router.delete(
-	'/servicio',
-	schemas.borrarProductosServiciosSchema,
-	middleware.validateSchema,
-	methods.borrarProductosServicios,
+    '/servicio',
+    schemas.borrarProductosServiciosSchema,
+    middleware.validateSchema,
+    methods.borrarProductosServicios,
 );
 
 export default router;

@@ -9,7 +9,9 @@ export const buscarProductosServiciosPorClaveSchema = [
 		.isInt()
 		.withMessage('El código del producto o servicio tiene que ser un número entero')
 		.matches(/^\S*$/)
-		.withMessage('El código del producto o servicio no puede contener espacios'),	
+		.withMessage('El código del producto o servicio no puede contener espacios')
+		.isLength({ min: 1, max: 8 })
+		.withMessage('La clave del producto o servicio debe tener entre 1 y 8 caracteres'),
 ];
 
 export const buscarProductosServiciosPorDescripcionSchema = [
