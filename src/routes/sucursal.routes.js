@@ -297,7 +297,7 @@ router.delete(
  *                 NumeroInt: "A"
  *                 CodigoPostal: "45678"
  *                 Estado: "EST"
- *                 Municipio: "Benito Juarez"
+ *                 Municipio: "Benito Juárez"
  *                 Localidad: "LOC"
  *                 Colonia: "Hola soy una colonia"
  *                 Pais: "México"
@@ -306,30 +306,96 @@ router.delete(
  *         description: Sucursal actualizada con éxito
  *         content:
  *           application/json:
- *             example:
- *               message: "Sucursal actualizada"
- *
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Sucursal actualizada correctamente"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     sucursal:
+ *                       type: object
+ *                       properties:
+ *                         SucursalId:
+ *                           type: integer
+ *                         Nombre:
+ *                           type: string
+ *                         EntidadNegocioId:
+ *                           type: integer
+ *                         ActualizadoPor:
+ *                           type: integer
+ *                     domicilio:
+ *                       type: object
+ *                       properties:
+ *                         Calle:
+ *                           type: string
+ *                         NumeroExt:
+ *                           type: string
+ *                         NumeroInt:
+ *                           type: string
+ *                         CodigoPostal:
+ *                           type: string
+ *                         Estado:
+ *                           type: string
+ *                         Municipio:
+ *                           type: string
+ *                         Localidad:
+ *                           type: string
+ *                         Colonia:
+ *                           type: string
+ *                         Pais:
+ *                           type: string
  *       400:
  *         description: Error de validación. Los datos proporcionados no son válidos.
  *         content:
  *           application/json:
- *             example:
- *               status: "Error de validación"
- *               errors: ["Mensaje de error 1", "Mensaje de error 2"]
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error de validación"
+ *                 errors:
+ *                   type: array
+ *                   items:
+ *                     type: string
+ *                   example: ["Mensaje de error 1", "Mensaje de error 2"]
  *       409:
  *         description: Conflicto. El nombre de la sucursal ya está en uso.
  *         content:
  *           application/json:
- *             example:
- *               status: 409
- *               errors: "El nombre de la sucursal ya esta en uso"
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: integer
+ *                   example: 409
+ *                 message:
+ *                   type: string
+ *                   example: "El nombre de la sucursal ya está en uso"
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
- *             example:
- *               error: "Error al actualizar la sucursal"
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al actualizar la sucursal"
+ *                 error:
+ *                   type: string
+ *                   example: "Detalles del error"
  */
+
 router.patch(
 	'/editar',
 	schemas.editarSucursal,

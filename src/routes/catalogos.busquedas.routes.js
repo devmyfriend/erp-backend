@@ -204,7 +204,7 @@ router.get('/metodos/pago', methods.paymentMethods);
  * /api/v1/catalogo/metodos/moneda:
  *   get:
  *     summary: Obtener una lista de los tipos de moneda
- *     tags: [Metodos de pago]
+ *     tags: [Moneda]
  *     responses:
  *       200:
  *         description: Lista de los tipos de moneda
@@ -222,7 +222,7 @@ router.get('/metodos/moneda', methods.getTypeCoin);
  * /api/v1/catalogo/metodos/moneda/buscar/{Descripcion}:
  *   get:
  *     summary: Obtener una lista de los tipos de moneda.
- *     tags: [Metodos de pago]
+ *     tags: [Moneda]
  *     parameters:
  *       - in: path
  *         name: Descripcion
@@ -613,10 +613,9 @@ router.patch(
  */
 router.delete(
 	'/sat/cfdi',
-	schemas.deleteCFDISchema,
 	middleware.validateSchema,
 	methods.deleteCFDI,
-);
+  );
 
 /**
  * @swagger
@@ -685,7 +684,6 @@ router.get('/sat/regimenfiscal', methods.findSatRF);
  *               Descripcion: "General de Ley Personas Morales"
  *               Fisica: false
  *               Moral: true
- *               Activo: true
  *     responses:
  *       200:
  *         description: Régimen fiscal creado con éxito
@@ -829,7 +827,6 @@ router.patch(
  */
 router.delete(
 	'/sat/regimenfiscal',
-	schemas.deleteSatFKSchema,
 	middleware.validateSchema,
 	methods.deleteRegimenFiscal,
 );

@@ -7,6 +7,7 @@ import { Moneda } from '../models/sat.moneda.js';
 import { vwSatCFDI } from '../models/sat.uso.cfdi.model.js';
 import { ProductosServicios } from '../models/sat.productos.servicios.model.js';
 import { ClaveUnidad } from '../models/sat.clave.unidad.model.js';
+import { Bitacora } from '../helpers/logs/log.js';
 
 import {
 	validarMoneda,
@@ -14,7 +15,6 @@ import {
 	validarCFDIPorClave,
 	validarRegimenFiscalPorClave,
 	validarRegimenFiscalActivoPorClave,
-	validarRegimenFiscalConUsoCFDIPorClave
 } from '../middlewares/finders/index.js';
 
 // POSTAL CODES
@@ -130,60 +130,86 @@ const findTypeCoin = async (req, res) => {
 };
 
 const createTypeCoin = async (req, res) => {
-    const coinBody = req.body;
+	const coinBody = req.body;
 
-    try {
-        const { existe } = await validarMoneda(coinBody.ClaveMoneda, 1);
+	try {
+		const { existe } = await validarMoneda(coinBody.ClaveMoneda, 1);
 
-        if (existe) {
-            return res.status(409).send({ status: "Error", message: "La clave de la moneda ya está en uso" });
-        }
+		if (existe) {
+			return res.status(409).send({
+				status: 'Error',
+				message: 'La clave de la moneda ya está en uso',
+			});
+		}
 
-        await Moneda.create(coinBody);
+		await Moneda.create(coinBody);
 
-        return res.status(200).send({ status: "OK", message: "Moneda creada correctamente", data: coinBody });
-    } catch (error) {
-        console.error('Error al crear la moneda:', error.message);
-        return res.status(500).send({ status: "Error", message: "Error al crear la moneda", Error: error });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Moneda creada correctamente',
+			moneda: coinBody,
+		});
+	} catch (error) {
+		Bitacora('createTypeCoin', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
+	}
 };
 
 const updateTypeCoin = async (req, res) => {
-    const { ClaveMoneda, Descripcion } = req.body;
+	const { ClaveMoneda, Descripcion } = req.body;
 
-    try {
-        const { existe } = await validarMoneda(ClaveMoneda, 1);
+	try {
+		const { existe } = await validarMoneda(ClaveMoneda, 1);
 
-        if (!existe) {
-            return res.status(404).send({ status: "Error", message: "Moneda no encontrada" });
-        }
+		if (!existe) {
+			return res.status(404).send({ status: 'Error', message: 'Moneda no encontrada' });
+		}
 
-        await Moneda.update({ Descripcion }, { where: { ClaveMoneda } });
+		await Moneda.update({ Descripcion }, { where: { ClaveMoneda } });
 
-        return res.status(200).send({ status: "OK", message: "Moneda actualizada correctamente", data: { ClaveMoneda, Descripcion } });
-    } catch (error) {
-        console.error('Error al actualizar la moneda:', error.message);
-        return res.status(500).send({ status: "Error", message: "Error al actualizar la moneda", Error: error });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Moneda actualizada correctamente',
+			moneda: {
+			ClaveMoneda,
+			Descripcion,
+			}
+		});
+	} catch (error) {
+		Bitacora('updateTypeCoin', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
+	}
 };
 
 const deleteTypeCoin = async (req, res) => {
-    const { ClaveMoneda } = req.body;
+	const { ClaveMoneda } = req.body;
 
-    try {
-        const { existe } = await validarMoneda(ClaveMoneda, 1);
+	try {
+		const { existe } = await validarMoneda(ClaveMoneda, 1);
 
-        if (!existe) {
-            return res.status(404).send({ status: "Error", message: "Moneda no encontrada" });
-        }
+		if (!existe) {
+			return res.status(404).send({ status: 'Error', message: 'Moneda no encontrada' });
+		}
 
-        await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
+		await Moneda.update({ Activo: false }, { where: { ClaveMoneda } });
 
-        return res.status(200).send({ status: "OK", message: "Moneda desactivada correctamente" });
-    } catch (error) {
-        console.error('Error al desactivar la moneda:', error.message);
-        return res.status(500).send({ status: "Error", message: "Error al desactivar la moneda", Error: error });
-    }
+		return res.status(200).send({ 
+			status: 'OK', 
+			message: 'Moneda desactivada correctamente' 
+		});
+	} catch (error) {
+		Bitacora('deleteTypeCoin', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
+	}
 };
 
 // REGIMEN FISCAL
@@ -191,20 +217,18 @@ const findSatRF = async (req, res) => {
 	try {
 		const data = await vwRegimenFiscal.findAll();
 		if (data.length === 0) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'No existen registros' });
+			return res.status(404).send({ status: 'Error', message: 'No existen registros' });
 		}
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Lista de regímenes fiscales obtenida correctamente',
-			data,
+			regimenfiscal: data,
 		});
 	} catch (error) {
+		Bitacora('findSatRF', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al obtener la lista de regímenes fiscales',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -212,9 +236,7 @@ const findSatRF = async (req, res) => {
 const createRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 	try {
-		const { existe } = await validarRegimenFiscalPorClave(
-			satFKBody.ClaveRegimenFiscal,
-		);
+		const { existe } = await validarRegimenFiscalPorClave(satFKBody.ClaveRegimenFiscal);
 
 		if (existe) {
 			return res.status(409).send({
@@ -227,13 +249,13 @@ const createRegimenFiscal = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Régimen Fiscal creado correctamente',
-			data: satFKBody,
+			regimenfiscal: satFKBody,
 		});
 	} catch (error) {
+		Bitacora('createRegimenFiscal', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al crear el regimen fiscal',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -242,14 +264,13 @@ const updateRegimenFiscal = async (req, res) => {
 	const satFKBody = req.body;
 
 	try {
-		const { existe } = await validarRegimenFiscalPorClave(
-			satFKBody.ClaveRegimenFiscal,
-		);
+		const { existe } = await validarRegimenFiscalPorClave(satFKBody.ClaveRegimenFiscal);
 
 		if (!existe) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'El regimen fiscal no existe' });
+			return res.status(404).send({
+				status: 'Error',
+				message: 'El regimen fiscal no existe',
+			});
 		}
 
 		await vwRegimenFiscal.update(satFKBody, {
@@ -259,13 +280,13 @@ const updateRegimenFiscal = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Régimen Fiscal actualizado correctamente',
-			data: satFKBody,
+			regimenfiscal: satFKBody,
 		});
 	} catch (error) {
+		Bitacora('updateRegimenFiscal', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al actualizar el regimen fiscal',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -274,13 +295,13 @@ const deleteRegimenFiscal = async (req, res) => {
 	const { ClaveRegimenFiscal } = req.body;
 
 	try {
-		const { existe } =
-			await validarRegimenFiscalActivoPorClave(ClaveRegimenFiscal);
+		const { existe } = await validarRegimenFiscalActivoPorClave(ClaveRegimenFiscal);
 
 		if (!existe) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'El regimen fiscal no existe' });
+			return res.status(404).send({
+				status: 'Error',
+				message: 'El regimen fiscal no existe',
+			});
 		}
 
 		await vwRegimenFiscal.update(
@@ -288,14 +309,15 @@ const deleteRegimenFiscal = async (req, res) => {
 			{ where: { ClaveRegimenFiscal } },
 		);
 
-		return res
-			.status(200)
-			.send({ status: 'OK', message: 'Régimen Fiscal borrado correctamente' });
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Régimen Fiscal borrado correctamente',
+		});
 	} catch (error) {
+		Bitacora('deleteRegimenFiscal', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al eliminar el regimen fiscal',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -306,21 +328,24 @@ const findCFDI = async (req, res) => {
 		const data = await vwSatCFDI.findAll({
 			where: { Activo: true },
 		});
+
 		if (data.length === 0) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'No existen registros' });
+			return res.status(404).send({
+				status: 'Error',
+				message: 'No existen registros',
+			});
 		}
+
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Lista de CFDIs obtenida correctamente',
-			data,
+			cfdi: data,
 		});
 	} catch (error) {
+		Bitacora('findCFDI', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al obtener la lista de usos de CFDi',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -342,13 +367,13 @@ const createUsoCFDI = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'CFDI creado correctamente',
-			data: cfdiBody,
+			cfdi: cfdiBody,
 		});
 	} catch (error) {
+		Bitacora('createUsoCFDI', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al crear el uso de CFDi',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -373,13 +398,13 @@ const updateUsoCFDI = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Se actualizó el uso de CFDi',
-			data: cfdiBody,
+			cfdi: cfdiBody,
 		});
 	} catch (error) {
+		Bitacora('updateUsoCFDI', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al actualizar el uso de CFDi',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
@@ -388,15 +413,12 @@ const deleteCFDI = async (req, res) => {
 	const { ClaveUsoCFDI } = req.body;
 
 	try {
-		const { existe, data: cfdi } =
-			await validarCFDIActivoPorClave(ClaveUsoCFDI);
+		const { existe } = await validarCFDIActivoPorClave(ClaveUsoCFDI);
 
-		if (!existe.existe) return;
-
-		if (!cfdi.Activo) {
+		if (!existe) {
 			return res
 				.status(404)
-				.send({ status: 'Error', message: 'El CFDI no existe' });
+				.send({ status: 'Error', message: 'El uso de CFDi no existe' });
 		}
 
 		await vwSatCFDI.update({ Activo: false }, { where: { ClaveUsoCFDI } });
@@ -405,304 +427,299 @@ const deleteCFDI = async (req, res) => {
 			.status(200)
 			.send({ status: 'OK', message: 'CFDI borrado correctamente' });
 	} catch (error) {
+		Bitacora('deleteCFDI', error);
 		return res.status(500).send({
 			status: 'Error',
-			message: 'Error al eliminar el uso de CFDi',
-			Error: error,
+			message: 'Error interno en el servidor',
 		});
 	}
 };
 
 // REGIMEN FISCAL CON USOS CFDI
-export const findRegimenesFiscalesConUsoCFDI = async (req, res) => {
-    const { claveRegimenFiscal } = req.query;
+const findRegimenesFiscalesConUsoCFDI = async (req, res) => {
+	const { claveRegimenFiscal } = req.query;
 
-    try {
-        const regimenConCFDIS = await vwRegimenFiscal.findOne({
-            where: { ClaveRegimenFiscal: claveRegimenFiscal },
-            include: [
-                {
-                    model: vwSatCFDI,
-                    where: { Activo: true },
-                    through: {
-                        attributes: []
-                    },
-                    as: 'vwSatCFDIs'
-                }
-            ]
-        });
+	try {
+		const regimenConCFDIS = await vwRegimenFiscal.findOne({
+			where: { ClaveRegimenFiscal: claveRegimenFiscal, Activo: true },
+			include: [
+				{
+					model: vwSatCFDI,
+					where: { Activo: true },
+					required: false,
+					through: {
+						attributes: [],
+					},
+					as: 'vwSatCFDIs',
+				},
+			],
+		});
 
-        if (!regimenConCFDIS) {
-            return res.status(404).send({
-                status: 'Error',
-                message: `No existen registros para la clave de régimen fiscal ${claveRegimenFiscal}`,
-            });
-        }
+		if (!regimenConCFDIS) {
+			return res.status(404).send({
+				status: 'Error',
+				message: `No existen registros para la clave de régimen fiscal ${claveRegimenFiscal}`,
+			});
+		}
 
-        const cfdisSeleccionados = regimenConCFDIS.vwSatCFDIs.map((cfdi) => ({
-            ClaveUsoCFDI: cfdi.ClaveUsoCFDI,
-            Descripcion: cfdi.Descripcion,
-        }));
+		const cfdisSeleccionados = regimenConCFDIS.vwSatCFDIs.map(cfdi => ({
+			ClaveUsoCFDI: cfdi.ClaveUsoCFDI,
+			Descripcion: cfdi.Descripcion,
+		}));
 
-        return res.status(200).send({
-            status: 'OK',
-            message: 'Usos de CFDIs obtenidos correctamente',
-            regimen: {
-                ClaveRegimenFiscal: regimenConCFDIS.ClaveRegimenFiscal,
-                Descripcion: regimenConCFDIS.Descripcion,
-                cfdis: cfdisSeleccionados,
-            },
-        });
-    } catch (error) {
-        console.error('Error al obtener los Usos de CFDIs por régimen fiscal', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al obtener los Usos de CFDIs por régimen fiscal',
-            error: error.message,
-        });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Usos de CFDIs obtenidos correctamente',
+			regimen: {
+				ClaveRegimenFiscal: regimenConCFDIS.ClaveRegimenFiscal,
+				Descripcion: regimenConCFDIS.Descripcion,
+				cfdis: cfdisSeleccionados,
+			},
+		});
+	} catch (error) {
+		Bitacora('findRegimenesFiscalesConUsoCFDI', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
+	}
 };
 
-export const linkRegimenesFiscalesConUsoCFDI = async (req, res) => {
-    const { claveRegimenFiscal, usosCfdis } = req.body;
+const linkRegimenesFiscalesConUsoCFDI = async (req, res) => {
+	const { claveRegimenFiscal, usosCfdis } = req.body;
 
-    try {
-        const { existe: regimenExiste } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
-        if (!regimenExiste) {
-            return res.status(404).send({
-                status: 'Error',
-                message: 'La clave del régimen fiscal no existe o no está activa',
-            });
-        }
+	try {
+		const { existe } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'La clave del régimen fiscal no existe o no está activa',
+			});
+		}
 
-        const responses = [];
+		const cfdisValidos = await vwSatCFDI.findAll({
+			where: {
+				ClaveUsoCFDI: usosCfdis,
+				Activo: true,
+			},
+			attributes: ['ClaveUsoCFDI'],
+		});
 
-        for (const claveUsoCFDI of usosCfdis) {
-            const { existe: cfdiExiste } = await validarCFDIActivoPorClave(claveUsoCFDI);
-            if (!cfdiExiste) {
-                return res.status(404).send({
-                    status: 'Error',
-                    message: `La clave del CFDI ${claveUsoCFDI} no existe o no está activa`,
-                });
-            }
+		if (cfdisValidos.length !== usosCfdis.length) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Algunas claves de CFDIs no existen o no están activas',
+			});
+		}
 
-            const { existe: relacionExiste } = await validarRegimenFiscalConUsoCFDIPorClave(claveRegimenFiscal, claveUsoCFDI);
-            if (relacionExiste) {
-                return res.status(409).send({
-                    status: 'Error',
-                    message: `La relación entre el régimen fiscal ${claveRegimenFiscal} y el CFDI ${claveUsoCFDI} ya existe`,
-                });
-            }
+		const relacionesExistentes = await CFDIRegimen.findAll({
+			where: {
+				ClaveUsoCFDI: usosCfdis,
+				ClaveRegimenFiscal: claveRegimenFiscal,
+			},
+			attributes: ['ClaveUsoCFDI'],
+		});
 
-            const [result] = await CFDIRegimen.findOrCreate({
-                where: { ClaveUsoCFDI: claveUsoCFDI, ClaveRegimenFiscal: claveRegimenFiscal }
-            });
-            responses.push(result);
-        }
+		const relacionesNuevas = usosCfdis
+			.filter(
+				cfdi => !relacionesExistentes.some(rel => rel.ClaveUsoCFDI === cfdi),
+			)
+			.map(cfdi => ({
+				ClaveUsoCFDI: cfdi,
+				ClaveRegimenFiscal: claveRegimenFiscal,
+			}));
 
-        return res.status(200).send({
-            status: 'OK',
-            message: 'CFDI relacionado con los regímenes exitosamente',
-            results: responses,
-        });
-    } catch (error) {
-        console.error('Error al relacionar el CFDI con los regímenes', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al relacionar el CFDI con los regímenes',
-            error: error.message,
-        });
-    }
+		await CFDIRegimen.bulkCreate(relacionesNuevas);
+
+		return res.status(200).send({
+			status: 'OK',
+			message: 'CFDI relacionado con los regímenes exitosamente',
+			...relacionesNuevas,
+		});
+	} catch (error) {
+		Bitacora('linkRegimenesFiscalesConUsoCFDI', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error al relacionar el CFDI con los regímenes',
+		});
+	}
 };
 
-export const unlinkRegimenesFiscalesConUsoCFDI = async (req, res) => {
-    const { claveRegimenFiscal, usosCfdis } = req.body;
+const unlinkRegimenesFiscalesConUsoCFDI = async (req, res) => {
+	const { claveRegimenFiscal, usosCfdis } = req.body;
 
-    try {
-        const { existe: regimenExiste } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
-        if (!regimenExiste) {
-            return res.status(404).send({
-                status: 'Error',
-                message: 'La clave del régimen fiscal no existe o no está activa',
-            });
-        }
+	try {
+		const { existe } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'La clave del régimen fiscal no existe o no está activa',
+			});
+		}
 
-        for (const claveUsoCFDI of usosCfdis) {
-            const { existe: cfdiExiste } = await validarCFDIActivoPorClave(claveUsoCFDI);
-            if (!cfdiExiste) {
-                return res.status(404).send({
-                    status: 'Error',
-                    message: `La clave del CFDI ${claveUsoCFDI} no existe o no está activa`,
-                });
-            }
+		await CFDIRegimen.destroy({
+			where: {
+				ClaveUsoCFDI: usosCfdis,
+				ClaveRegimenFiscal: claveRegimenFiscal,
+			},
+		});
 
-            await CFDIRegimen.destroy({
-                where: {
-                    ClaveUsoCFDI: claveUsoCFDI,
-                    ClaveRegimenFiscal: claveRegimenFiscal,
-                },
-            });
-        }
-
-        return res.status(200).send({
-            status: 'OK',
-            message: 'CFDI desvinculado de los regímenes exitosamente',
-        });
-    } catch (error) {
-        console.error('Error al desvincular el CFDI de los regímenes', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al desvincular el CFDI de los regímenes',
-            error: error.message,
-        });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'CFDI desvinculado de los regímenes exitosamente',
+		});
+	} catch (error) {
+		Bitacora('unlinkRegimenesFiscalesConUsoCFDI', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error al desvincular el CFDI de los regímenes',
+		});
+	}
 };
 
 // USOS CFDI CON REGÍMENES FISCALES
-export const findCfdiConRegimenesFiscales = async (req, res) => {
-    const { claveUsoCFDI } = req.query;
+const findCfdiConRegimenesFiscales = async (req, res) => {
+	const { claveUsoCFDI } = req.query;
 
-    try {
-        const cfdiConRegimenes = await vwSatCFDI.findOne({
-            where: { ClaveUsoCFDI: claveUsoCFDI },
-            include: [
-                {
-                    model: vwRegimenFiscal,
-                    where: { Activo: 1 },
-                    through: {
-                        attributes: []
-                    },
-                    as: 'vwSatRegimenFiscals'
-                }
-            ]
-        });
+	try {
+		const cfdiConRegimenes = await vwSatCFDI.findOne({
+			where: { ClaveUsoCFDI: claveUsoCFDI, Activo: true },
+			include: [
+				{
+					model: vwRegimenFiscal,
+					where: { Activo: true },
+					required: false,
+					through: {
+						attributes: [],
+					},
+					as: 'vwSatRegimenFiscals',
+				},
+			],
+		});
 
-        if (!cfdiConRegimenes) {
-            return res.status(404).send({
-                status: 'Error',
-                message: `No existen registros para la clave de uso de CFDI ${claveUsoCFDI}`,
-            });
-        }
+		if (!cfdiConRegimenes) {
+			return res.status(404).send({
+				status: 'Error',
+				message: `No existen registros para la clave de uso CFDI ${claveUsoCFDI}`,
+			});
+		}
 
-        const regimenesSeleccionados = cfdiConRegimenes.vwSatRegimenFiscals.map((regimen) => ({
-            ClaveRegimenFiscal: regimen.ClaveRegimenFiscal,
-            Descripcion: regimen.Descripcion,
-        }));
+		const regimenesSeleccionados = cfdiConRegimenes.vwSatRegimenFiscals.map(
+			regimen => ({
+				ClaveRegimenFiscal: regimen.ClaveRegimenFiscal,
+				Descripcion: regimen.Descripcion,
+			}),
+		);
 
-        return res.status(200).send({
-            status: 'OK',
-            message: 'Regímenes obtenidos correctamente',
-            cfdi: {
-                ClaveUsoCFDI: cfdiConRegimenes.ClaveUsoCFDI,
-                Descripcion: cfdiConRegimenes.Descripcion,
-                regimenes: regimenesSeleccionados,
-            },
-        });
-    } catch (error) {
-        console.error('Error al obtener los regímenes por CFDI', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al obtener los regímenes por CFDI',
-            error: error.message,
-        });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Regímenes obtenidos correctamente',
+			cfdi: {
+				ClaveUsoCFDI: cfdiConRegimenes.ClaveUsoCFDI,
+				Descripcion: cfdiConRegimenes.Descripcion,
+				regimenes: regimenesSeleccionados,
+			},
+		});
+	} catch (error) {
+		Bitacora('findCfdiConRegimenesFiscales', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error al obtener los regímenes por CFDI',
+		});
+	}
 };
 
-export const linkCfdiConRegimenesFiscales = async (req, res) => {
-    const { claveUsoCFDI, regimenes } = req.body;
+const linkCfdiConRegimenesFiscales = async (req, res) => {
+	const { claveUsoCFDI, regimenes } = req.body;
 
-    try {
-        const { existe: cfdiExiste } = await validarCFDIActivoPorClave(claveUsoCFDI);
-        if (!cfdiExiste) {
-            return res.status(404).send({
-                status: 'Error',
-                message: 'La clave del uso de CFDI no existe o no está activa',
-            });
-        }
+	try {
+		const { existe } = await validarCFDIActivoPorClave(claveUsoCFDI);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'La clave del uso de CFDI no existe o no está activa',
+			});
+		}
 
-        const responses = [];
+		const regimenesValidos = await vwRegimenFiscal.findAll({
+			where: {
+				ClaveRegimenFiscal: regimenes,
+				Activo: true,
+			},
+			attributes: ['ClaveRegimenFiscal'],
+		});
 
-        for (const claveRegimenFiscal of regimenes) {
-            const { existe: regimenExiste } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
-            if (!regimenExiste) {
-                return res.status(404).send({
-                    status: 'Error',
-                    message: `La clave del régimen fiscal ${claveRegimenFiscal} no existe o no está activa`,
-                });
-            }
+		if (regimenesValidos.length !== regimenes.length) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Algunas claves de regímenes fiscales no existen o no están activas',
+			});
+		}
 
-            const { existe: relacionExiste } = await validarRegimenFiscalConUsoCFDIPorClave(claveRegimenFiscal, claveUsoCFDI);
-            if (relacionExiste) {
-                return res.status(409).send({
-                    status: 'Error',
-                    message: `La relación entre el uso de CFDI ${claveUsoCFDI} y el régimen fiscal ${claveRegimenFiscal} ya existe`,
-                });
-            }
+		const relacionesExistentes = await CFDIRegimen.findAll({
+			where: {
+				ClaveUsoCFDI: claveUsoCFDI,
+				ClaveRegimenFiscal: regimenes,
+			},
+			attributes: ['ClaveRegimenFiscal'],
+		});
 
-            const [result] = await CFDIRegimen.findOrCreate({
-                where: { ClaveUsoCFDI: claveUsoCFDI, ClaveRegimenFiscal: claveRegimenFiscal }
-            });
-            responses.push(result);
-        }
+		const relacionesNuevas = regimenes
+			.filter(
+				regimen => !relacionesExistentes.some(rel => rel.ClaveRegimenFiscal === regimen),
+			)
+			.map(regimen => ({
+				ClaveUsoCFDI: claveUsoCFDI,
+				ClaveRegimenFiscal: regimen,
+			}));
 
-        return res.status(200).send({
-            status: 'OK',
-            message: 'Regímenes fiscales relacionados con el uso de CFDI exitosamente',
-            results: responses,
-        });
-    } catch (error) {
-        console.error('Error al relacionar el uso de CFDI con los regímenes fiscales', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al relacionar el uso de CFDI con los regímenes fiscales',
-            error: error.message,
-        });
-    }
+		await CFDIRegimen.bulkCreate(relacionesNuevas);
+
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Regímenes fiscales relacionados con el uso de CFDI exitosamente',
+			...relacionesNuevas,
+		});
+	} catch (error) {
+		Bitacora('linkCfdiConRegimenesFiscales', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error al relacionar el uso de CFDI con los regímenes fiscales',
+		});
+	}
 };
 
-export const unlinkCfdiConRegimenesFiscales = async (req, res) => {
-    const { claveUsoCFDI, regimenes } = req.body;
+const unlinkCfdiConRegimenesFiscales = async (req, res) => {
+	const { claveUsoCFDI, regimenes } = req.body;
 
-    try {
-        const { existe: cfdiExiste } = await validarCFDIActivoPorClave(claveUsoCFDI);
-        if (!cfdiExiste) {
-            return res.status(404).send({
-                status: 'Error',
-                message: 'La clave del uso de CFDI no existe o no está activa',
-            });
-        }
+	try {
+		const { existe } = await validarCFDIActivoPorClave(claveUsoCFDI);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'La clave del uso de CFDI no existe o no está activa',
+			});
+		}
 
-        for (const claveRegimenFiscal of regimenes) {
-            const { existe: regimenExiste } = await validarRegimenFiscalActivoPorClave(claveRegimenFiscal);
-            if (!regimenExiste) {
-                return res.status(404).send({
-                    status: 'Error',
-                    message: `La clave del régimen fiscal ${claveRegimenFiscal} no existe o no está activa`,
-                });
-            }
+		await CFDIRegimen.destroy({
+			where: {
+				ClaveUsoCFDI: claveUsoCFDI,
+				ClaveRegimenFiscal: regimenes,
+			},
+		});
 
-            await CFDIRegimen.destroy({
-                where: {
-                    ClaveUsoCFDI: claveUsoCFDI,
-                    ClaveRegimenFiscal: claveRegimenFiscal,
-                },
-            });
-        }
-
-        return res.status(200).send({
-            status: 'OK',
-            message: 'Regímenes fiscales desvinculados del uso de CFDI exitosamente',
-        });
-    } catch (error) {
-        console.error('Error al desvincular el uso de CFDI de los regímenes fiscales', error);
-        return res.status(500).send({
-            status: 'Error',
-            message: 'Error al desvincular el uso de CFDI de los regímenes fiscales',
-            error: error.message,
-        });
-    }
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Regímenes fiscales desvinculados del uso de CFDI exitosamente',
+		});
+	} catch (error) {
+		Bitacora('unlinkCfdiConRegimenesFiscales', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error al desvincular el uso de CFDI de los regímenes fiscales',
+		});
+	}
 };
-
 
 // PRODUCT SERVICES
 const findProductServicesByCode = async (req, res) => {

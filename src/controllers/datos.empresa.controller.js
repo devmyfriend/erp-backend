@@ -13,6 +13,7 @@ import { EmailsPorEntidadNegocio } from '../models/vw.emails.por.entidad.negocio
 import { TelefonosPorEntidadNegocio } from '../models/vw.telefonos.por.entidad.negocio.model.js';
 import { ValidarEntidadNegocio } from '../models/vw.validar.entidad.negocio.model.js';
 import { VistaContactos } from '../models/vw.contactos.por.nombre.entidad.model.js';
+import { Bitacora } from '../helpers/logs/log.js';
 import {
 	validarRelacionEmpresaTelefono,
 	validarEntidad,
@@ -293,27 +294,20 @@ const buscarContactosPorEntidadNegocioId = async (req, res) => {
 		});
 
 		if (contactos.length === 0) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'No hay contactos disponibles' });
+			return res.status(404).send({ status: 'Error', message: 'No hay contactos disponibles' });
 		}
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Contactos obtenidos correctamente',
-				data: contactos,
-			});
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Contactos obtenidos correctamente',
+			contacto: contactos,
+		});
 	} catch (error) {
-		console.error('Error al obtener los contactos:', error.message);
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al obtener los contactos',
-				Error: error,
-			});
+		Bitacora('buscarContactosPorEntidadNegocioId', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
@@ -321,8 +315,13 @@ const crearEmpresaContacto = async (req, res) => {
 	const { EmpresaId: EntidadNegocioId, ...restoDelCuerpo } = req.body;
 
 	try {
-		const validarEmpresa = await validarEntidad(EntidadNegocioId, res);
-		if (!validarEmpresa) return;
+		const { existe } = await validarEntidad(EntidadNegocioId);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Entidad de negocio no encontrada',
+			});
+		}
 
 		const datosContacto = await Contacto.create({
 			EntidadNegocioId,
@@ -337,62 +336,53 @@ const crearEmpresaContacto = async (req, res) => {
 		return res.status(200).send({
 			status: 'OK',
 			message: 'Contacto creado correctamente',
-			data: datosContacto,
+			contacto: datosContacto,
 		});
 	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al crear el contacto',
-				Error: error,
-			});
+		Bitacora('crearEmpresaContacto', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
 const editarEmpresaContacto = async (req, res) => {
 	const contactoBody = req.body;
 	try {
-		const validarEmpresa = await validarEntidad(
-			contactoBody.EntidadNegocioId,
-			res,
-		);
-		if (!validarEmpresa) return;
+		const { existe: empresaExiste } = await validarEntidad(contactoBody.EntidadNegocioId);
+		if (!empresaExiste) {
+			return res.status(404).send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
+		}
 
-		const validarContactoExistente = await validarContacto(
-			contactoBody.ContactoId,
-			res,
-		);
-		if (!validarContactoExistente) return;
+		const { existe: contactoExiste } = await validarContacto(contactoBody.ContactoId);
+		if (!contactoExiste) {
+			return res.status(404).send({ status: 'Error', message: 'Contacto no encontrado' });
+		}
 
-		const validarRelacion = await validarRelacionEmpresaContacto(
-			contactoBody.EntidadNegocioId,
-			contactoBody.ContactoId,
-			res,
-		);
-		if (!validarRelacion) return;
+		const { existe: relacionExiste } = await validarRelacionEmpresaContacto(contactoBody.EntidadNegocioId, contactoBody.ContactoId);
+		if (!relacionExiste) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Relación entre entidad de negocio y contacto no encontrada',
+			});
+		}
 
 		await Contacto.update(contactoBody, {
-			where: {
-				ContactoId: contactoBody.ContactoId,
-			},
+			where: { ContactoId: contactoBody.ContactoId },
 		});
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Contacto actualizado correctamente',
-				data: contactoBody,
-			});
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Contacto actualizado correctamente',
+			contacto: contactoBody,
+		});
 	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al actualizar el contacto',
-				Error: error,
-			});
+		Bitacora('editarEmpresaContacto', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
@@ -407,26 +397,20 @@ const buscarContactosPorNombreYEntidad = async (req, res) => {
 		});
 
 		if (contactos.length === 0) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Contactos no encontrados' });
+			return res.status(404).send({ status: 'Error', message: 'Contactos no encontrados' });
 		}
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Contactos encontrados',
-				data: contactos,
-			});
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Contactos encontrados',
+			contacto: contactos,
+		});
 	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al obtener datos',
-				Error: error,
-			});
+		Bitacora('buscarContactosPorNombreYEntidad', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
@@ -458,191 +442,151 @@ const empresaDetalle = async (req, res) => {
 
 // EMPRESA TELEFONO
 const obtenerEmpresaTelefono = async (req, res) => {
-	const entidadId = req.params.id;
-	try {
-		const data = await TelefonosPorEntidadNegocio.findAll({
-			where: { EntidadNegocioId: entidadId },
-		});
+    const entidadId = req.params.id;
+    try {
+        const data = await TelefonosPorEntidadNegocio.findAll({
+            where: { EntidadNegocioId: entidadId },
+        });
 
-		if (data.length === 0) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'No hay teléfonos disponibles' });
-		}
+        if (data.length === 0) {
+            return res.status(404).send({ status: 'Error', message: 'No hay teléfonos disponibles' });
+        }
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Lista de teléfonos obtenida correctamente',
-				data,
-			});
-	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al obtener la lista de teléfonos',
-				Error: error,
-			});
-	}
+        return res.status(200).send({
+            status: 'OK',
+            message: 'Lista de teléfonos obtenida correctamente',
+            telefono: data,
+        });
+    } catch (error) {
+        Bitacora('obtenerEmpresaTelefono', error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'Error interno en el servidor',
+        });
+    }
 };
 
 const crearEmpresaTelefono = async (req, res) => {
-	const telefonoBody = req.body;
+    const telefonoBody = req.body;
 
-	try {
-		const { existe } = await validarEntidad(telefonoBody.EntidadNegocioId, res);
-		if (!existe) return;
+    try {
+        const { existe } = await validarEntidad(telefonoBody.EntidadNegocioId);
+        if (!existe) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'Entidad de negocio no encontrada',
+            });
+        }
 
-		const datosTelefono = await Telefono.create({
-			NumeroTelefonico: telefonoBody.NumeroTelefonico,
-			CreadoPor: telefonoBody.CreadoPor,
-		});
+        const datosTelefono = await Telefono.create({
+            NumeroTelefonico: telefonoBody.NumeroTelefonico,
+            CreadoPor: telefonoBody.CreadoPor,
+        });
 
-		await EmpresaTelefono.create({
-			EntidadNegocioId: telefonoBody.EntidadNegocioId,
-			TelefonoId: datosTelefono.TelefonoId,
-		});
+        await EmpresaTelefono.create({
+            EntidadNegocioId: telefonoBody.EntidadNegocioId,
+            TelefonoId: datosTelefono.TelefonoId,
+        });
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Teléfono creado correctamente',
-				data: datosTelefono,
-			});
-	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al crear el teléfono',
-				Error: error,
-			});
-	}
+        return res.status(200).send({
+            status: 'OK',
+            message: 'Teléfono creado correctamente',
+            telefono: datosTelefono,
+        });
+    } catch (error) {
+        Bitacora('crearEmpresaTelefono', error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'Error interno en el servidor',
+        });
+    }
 };
 
 const editarEmpresaTelefono = async (req, res) => {
-	const telefonoUpdateBody = req.body;
+    const telefonoUpdateBody = req.body;
 
-	try {
-		const { existe: entidadExiste } = await validarEntidad(
-			telefonoUpdateBody.EntidadNegocioId,
-		);
-		if (!entidadExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
-		}
+    try {
+        const { existe: entidadExiste } = await validarEntidad(telefonoUpdateBody.EntidadNegocioId);
+        if (!entidadExiste) {
+            return res.status(404).send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
+        }
 
-		const { existe: telefonoExiste } = await validarTelefono(
-			telefonoUpdateBody.TelefonoId,
-		);
-		if (!telefonoExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Teléfono no encontrado' });
-		}
+        const { existe: telefonoExiste } = await validarTelefono(telefonoUpdateBody.TelefonoId);
+        if (!telefonoExiste) {
+            return res.status(404).send({ status: 'Error', message: 'Teléfono no encontrado' });
+        }
 
-		const { existe: relacionExiste } = await validarRelacionEmpresaTelefono(
-			telefonoUpdateBody.EntidadNegocioId,
-			telefonoUpdateBody.TelefonoId,
-		);
-		if (!relacionExiste) {
-			console.log(
-				'Datos de validación de relación:',
-				telefonoUpdateBody.EntidadNegocioId,
-				telefonoUpdateBody.TelefonoId,
-			);
-			return res
-				.status(404)
-				.send({
-					status: 'Error',
-					message: 'Relación entre entidad de negocio y teléfono no encontrada',
-				});
-		}
+        const { existe: relacionExiste } = await validarRelacionEmpresaTelefono(telefonoUpdateBody.EntidadNegocioId, telefonoUpdateBody.TelefonoId);
+        if (!relacionExiste) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'Relación entre entidad de negocio y teléfono no encontrada',
+            });
+        }
 
-		await Telefono.update(telefonoUpdateBody, {
-			where: { TelefonoId: telefonoUpdateBody.TelefonoId },
-		});
+        await Telefono.update(telefonoUpdateBody, {
+            where: { TelefonoId: telefonoUpdateBody.TelefonoId },
+        });
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Teléfono actualizado correctamente',
-				data: telefonoUpdateBody,
-			});
-	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al actualizar el teléfono',
-				Error: error,
-			});
-	}
+        return res.status(200).send({
+            status: 'OK',
+            message: 'Teléfono actualizado correctamente',
+            telefono: telefonoUpdateBody,
+        });
+    } catch (error) {
+        Bitacora('editarEmpresaTelefono', error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'Error interno en el servidor',
+        });
+    }
 };
 
 const desactivarEmpresaTelefono = async (req, res) => {
-	const { EntidadNegocioId, TelefonoId, BorradoPor } = req.body;
+    const { EntidadNegocioId, TelefonoId, BorradoPor } = req.body;
 
-	try {
-		const { existe: entidadExiste } = await validarEntidad(EntidadNegocioId);
-		if (!entidadExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
-		}
+    try {
+        const { existe: entidadExiste } = await validarEntidad(EntidadNegocioId);
+        if (!entidadExiste) {
+            return res.status(404).send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
+        }
 
-		const { existe: telefonoExiste } = await validarTelefono(TelefonoId);
-		if (!telefonoExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Teléfono no encontrado' });
-		}
+        const { existe: telefonoExiste } = await validarTelefono(TelefonoId);
+        if (!telefonoExiste) {
+            return res.status(404).send({ status: 'Error', message: 'Teléfono no encontrado' });
+        }
 
-		const { existe: relacionExiste } = await validarRelacionEmpresaTelefono(
-			EntidadNegocioId,
-			TelefonoId,
-		);
-		if (!relacionExiste) {
-			return res
-				.status(404)
-				.send({
-					status: 'Error',
-					message: 'Relación entre entidad de negocio y teléfono no encontrada',
-				});
-		}
+        const { existe: relacionExiste } = await validarRelacionEmpresaTelefono(EntidadNegocioId, TelefonoId);
+        if (!relacionExiste) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'Relación entre entidad de negocio y teléfono no encontrada',
+            });
+        }
 
-		await Telefono.update(
-			{
-				Borrado: true,
-				BorradoPor,
-				BorradoEn: new Date(),
-			},
-			{
-				where: { TelefonoId },
-			},
-		);
+        await Telefono.update(
+            {
+                Borrado: true,
+                BorradoPor,
+                BorradoEn: new Date(),
+            },
+            {
+                where: { TelefonoId },
+            },
+        );
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Teléfono desactivado correctamente',
-				data: { TelefonoId },
-			});
-	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al desactivar el teléfono',
-				Error: error,
-			});
-	}
+        return res.status(200).send({
+            status: 'OK',
+            message: 'Teléfono desactivado correctamente',
+            TelefonoId 
+        });
+    } catch (error) {
+        Bitacora('desactivarEmpresaTelefono', error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'Error interno en el servidor',
+        });
+    }
 };
 
 // EMPRESA-EMAIL
@@ -654,29 +598,23 @@ const buscarEmailsPorEmpresa = async (req, res) => {
 		});
 
 		if (data.length === 0) {
-			return res
-				.status(404)
-				.send({
-					status: 'Error',
-					message: 'No existen emails relacionados con esta empresa',
-				});
+			return res.status(404).send({
+				status: 'Error',
+				message: 'No existen emails relacionados con esta empresa',
+			});
 		}
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Lista de emails obtenida correctamente',
-				data,
-			});
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Lista de emails obtenida correctamente',
+			email: data,
+		});
 	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al obtener la lista de emails',
-				Error: error,
-			});
+		Bitacora('buscarEmailsPorEmpresa', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
@@ -684,12 +622,13 @@ const crearEmailEmpresa = async (req, res) => {
 	const emailsBody = req.body;
 
 	try {
-		const { existe } = await validarEntidad(
-			emailsBody.EntidadNegocioId,
-			EntidadNegocio,
-			res,
-		);
-		if (!existe) return;
+		const { existe } = await validarEntidad(emailsBody.EntidadNegocioId);
+		if (!existe) {
+			return res.status(404).send({
+				status: 'Error',
+				message: 'Entidad de negocio no encontrada',
+			});
+		}
 
 		const datosEmail = await Email.create({
 			Email: emailsBody.Email,
@@ -702,12 +641,16 @@ const crearEmailEmpresa = async (req, res) => {
 		});
 
 		return res.status(200).json({
-			status: 200,
-			message: `Se ha creado el correo ${datosEmail.EmailId} para la empresa ${emailsBody.EntidadNegocioId}`,
+			status: 'OK',
+			message: 'Correo creado correctamente',
+			email: datosEmail,
 		});
 	} catch (error) {
-		console.error('Error al crear el correo:', error);
-		return res.status(500).json({ error: 'Error al crear el correo' });
+		Bitacora('crearEmailEmpresa', error);
+		return res.status(500).json({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 
@@ -715,33 +658,22 @@ const editarEmpresaEmails = async (req, res) => {
 	const emailsBody = req.body;
 
 	try {
-		const { existe: empresaExiste } = await validarEntidad(
-			emailsBody.EntidadNegocioId,
-		);
+		const { existe: empresaExiste } = await validarEntidad(emailsBody.EntidadNegocioId);
 		if (!empresaExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
+			return res.status(404).send({ status: 'Error', message: 'Entidad de negocio no encontrada' });
 		}
 
 		const { existe: emailExiste } = await validarEmail(emailsBody.EmailId);
 		if (!emailExiste) {
-			return res
-				.status(404)
-				.send({ status: 'Error', message: 'Email no encontrado' });
+			return res.status(404).send({ status: 'Error', message: 'Email no encontrado' });
 		}
 
-		const { existe: relacionExiste } = await validarRelacionEmpresaEmail(
-			emailsBody.EntidadNegocioId,
-			emailsBody.EmailId,
-		);
+		const { existe: relacionExiste } = await validarRelacionEmpresaEmail(emailsBody.EntidadNegocioId, emailsBody.EmailId);
 		if (!relacionExiste) {
-			return res
-				.status(404)
-				.send({
-					status: 'Error',
-					message: 'El correo no pertenece a la empresa',
-				});
+			return res.status(404).send({
+				status: 'Error',
+				message: 'El correo no pertenece a la empresa',
+			});
 		}
 
 		await Email.update(
@@ -751,27 +683,21 @@ const editarEmpresaEmails = async (req, res) => {
 				ActualizadoEn: new Date(),
 			},
 			{
-				where: {
-					EmailId: emailsBody.EmailId,
-				},
+				where: { EmailId: emailsBody.EmailId },
 			},
 		);
 
-		return res
-			.status(200)
-			.send({
-				status: 'OK',
-				message: 'Correo actualizado correctamente',
-				data: emailsBody,
-			});
+		return res.status(200).send({
+			status: 'OK',
+			message: 'Correo actualizado correctamente',
+			email: emailsBody,
+		});
 	} catch (error) {
-		return res
-			.status(500)
-			.send({
-				status: 'Error',
-				message: 'Error al actualizar el correo',
-				Error: error,
-			});
+		Bitacora('editarEmpresaEmails', error);
+		return res.status(500).send({
+			status: 'Error',
+			message: 'Error interno en el servidor',
+		});
 	}
 };
 

@@ -104,23 +104,17 @@ export const editarSucursal = [
 		.isEmpty()
 		.trim()
 		.escape()
-		.withMessage(
-			'El nombre de la empresa es obligatorio y debe ser un string.',
-		),
+		.withMessage('El nombre de la empresa es obligatorio y debe ser un string.'),
 
 	body('sucursal.*.EntidadNegocioId')
 		.isInt()
 		.exists()
-		.withMessage(
-			'El ID de la entidad de negocio es obligatorio y debe ser un número entero.',
-		),
+		.withMessage('El ID de la entidad de negocio es obligatorio y debe ser un número entero.'),
 
 	body('sucursal.*.ActualizadoPor')
 		.isInt()
 		.exists()
-		.withMessage(
-			'El campo ActualizadoPor es obligatorio y debe ser un número entero.',
-		),
+		.withMessage('El campo ActualizadoPor es obligatorio y debe ser un número entero.'),
 
 	body('datos.*.Calle')
 		.optional()
@@ -149,15 +143,16 @@ export const editarSucursal = [
 		.not()
 		.isEmpty()
 		.withMessage('El código postal es obligatorio y debe ser un string.'),
+
 	body('datos.*.Estado')
 		.optional()
 		.isString()
-		.withMessage('El estado es obligatoria y debe ser un string.')
+		.withMessage('El estado es obligatorio y debe ser un string.')
 		.not()
 		.isEmpty()
 		.withMessage('El estado no puede estar vacío.')
 		.isLength({ min: 3, max: 50 })
-		.withMessage('El estado debe ser un string de almenos 3 dígitos.'),
+		.withMessage('El estado debe ser un string de al menos 3 caracteres.'),
 
 	body('datos.*.Municipio')
 		.optional()
@@ -166,18 +161,16 @@ export const editarSucursal = [
 		.isEmpty()
 		.withMessage('El municipio es obligatorio y debe ser un string.')
 		.isLength({ min: 3, max: 50 })
-		.withMessage('El estado debe ser un string de almenos 3 dígitos.'),
+		.withMessage('El municipio debe ser un string de al menos 3 caracteres.'),
 
 	body('datos.*.Localidad')
 		.optional()
 		.isString()
 		.not()
 		.isEmpty()
-		.withMessage(
-			'La localidad es obligatoria y debe ser un string.',
-		)
+		.withMessage('La localidad es obligatoria y debe ser un string.')
 		.isLength({ min: 3, max: 50 })
-		.withMessage('La clave localidad debe ser un string de almenos 3 dígitos.'),
+		.withMessage('La localidad debe ser un string de al menos 3 caracteres.'),
 
 	body('datos.*.Colonia')
 		.optional()
@@ -186,7 +179,7 @@ export const editarSucursal = [
 		.isEmpty()
 		.withMessage('La colonia es obligatoria y debe ser un string.')
 		.isLength({ min: 3, max: 50 })
-		.withMessage('La clave colonia debe ser un string de almenos 4 dígitos.'),
+		.withMessage('La colonia debe ser un string de al menos 3 caracteres.'),
 
 	body('datos.*.Pais')
 		.optional()
@@ -195,5 +188,5 @@ export const editarSucursal = [
 		.isEmpty()
 		.withMessage('La clave del país es obligatoria y debe ser un string.')
 		.isLength({ min: 3, max: 50 })
-		.withMessage('El país debe ser un string de almenos 3 dígitos.'),
+		.withMessage('El país debe ser un string de al menos 3 caracteres.'),
 ];
