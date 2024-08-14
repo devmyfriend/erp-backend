@@ -9,21 +9,63 @@ import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
 import { Email } from '../models/email.model.js';
 import { EmpresaEmails } from '../models/empresa.emails.model.js';
 
+import { vwObtenerEmpresas } from '../models/vw.ObtenerEmpresas.model.js';
+import { buscarItem, buscarItemPorId } from '../middlewares/finders/index.js';
+
+import { Bitacora } from '../helpers/logs/log.js';
 const obtenerEmpresas = async (req, res) => {
 	try {
-		const empresas = await sequelize.query(
+		
+		const empresas = await vwObtenerEmpresas.findAll();
+		/*const empresas = await sequelize.query(
 			'CALL ObtenerEmpresasDomicilioListado()',
 			{ type: sequelize.QueryTypes.RAW },
-		);
+		); */
 
 		if (empresas.length === 0) {
-			return res.status(404).json({ message: 'No se encontraron empresas' });
+			return res.status(404).send({ status:'Error', message: 'No se encontraron empresas' });
 		}
 
-		return res.status(200).json(empresas);
+		return res.status(200).send({
+			status:'Ok',
+			message:'Datos obtenidos',
+			empresas:empresas
+		
+		});
 	} catch (error) {
 		console.error('Error al obtener las empresas:', error.message);
-		return res.status(500).json({ error: 'Error al obtener las empresas' });
+		Bitacora('obtenerEmpresas',error);
+		return res.status(500).json({ status:'Error', message: 'Error al obtener las empresas',Error:error });
+	}
+
+
+};
+
+
+
+const buscarIdEmpresa = async (req, res) => {
+	const entidadId = req.params.id;
+	try {
+		
+		const entidadNegocio = await buscarItemPorId(vwObtenerEmpresas, entidadId);
+		
+		if(!entidadNegocio){
+			return res.status(404).send({
+				status:'Error',
+					message: 'No se encontró la empresa'
+			})
+		}
+		
+		return res.status(200).send({
+		    status:'Ok',
+			message:'Datos obtenidos',
+			empresa:entidadNegocio
+		})
+	
+	} catch (error) {
+		console.error('Error al obtener la entidad:', error.message);
+		Bitacora('buscarIdEmpresa',error);
+		return res.status(500).send({status:'Ok', message: 'Error al obtener la empresa',Error:error });
 	}
 };
 
@@ -47,28 +89,12 @@ const buscarPorNombreOficial = async (req, res) => {
 		return res.status(200).json(empresas);
 	} catch (error) {
 		console.error('Error al buscar las empresas:', error.message);
+		Bitacora('buscarPorNombreOficial',error);
 		return res.status(500).json({ error: 'Error al buscar las empresas' });
 	}
 };
 
-const buscarIdEmpresa = async (req, res) => {
-	const entidadId = req.params.id;
-	try {
-		const entidad = await sequelize.query('CALL BuscarEntidadNegocio(?)', {
-			replacements: [entidadId],
-			type: sequelize.QueryTypes.RAW,
-		});
 
-		if (entidad.length === 0) {
-			return res.status(404).json({ message: 'No se encontró la empresa' });
-		}
-
-		return res.status(200).json(entidad);
-	} catch (error) {
-		console.error('Error al obtener la entidad:', error.message);
-		return res.status(500).json({ error: 'Error al obtener la empresa' });
-	}
-};
 
 const crearIdEmpresa = async (req, res) => {
 	const { entidad, domicilio, CreadoPor: creadoPor } = req.body;
@@ -124,6 +150,7 @@ const crearIdEmpresa = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al crear la empresa:', error);
+		Bitacora('crearIdEmpresa',error);
 		return res.status(500).json({ error: 'Error al crear la empresa' });
 	}
 };
@@ -231,6 +258,7 @@ const editarIdEmpresa = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al actualizar los datos de la empresa:', error);
+		Bitacora('editarIdEmpresa',error)
 		return res
 			.status(500)
 			.json({ error: 'Error al actualizar los datos de la empresa' });
@@ -262,6 +290,7 @@ const desactivarIdEmpresa = async (req, res) => {
 			message: 'La empresa ' + entidad.EntidadNegocioId + ' ha sido borrada',
 		});
 	} catch (error) {
+		Bitacora('desactivarIdEmpresa',error)
 		return res.status(500).json(error.message);
 	}
 };
@@ -284,6 +313,7 @@ const buscarContactosPorEntidadNegocioId = async (req, res) => {
 		return res.status(200).json(contactos);
 	} catch (error) {
 		console.error('Error al obtener los contactos:', error.message);
+		Bitacora('buscarContactosPorEntidadNegocioId',error)
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
@@ -320,6 +350,7 @@ const crearEmpresaContacto = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al crear el contacto:', error);
+		Bitacora('crearEmpresaContacto',error)
 		return res.status(500).json({ error: 'Error al crear el contacto' });
 	}
 };
@@ -374,6 +405,7 @@ const editarEmpresaContacto = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al actualizar el contacto:', error);
+		Bitacora('editarEmpresaContacto',error)
 		return res.status(500).json({ error: 'Error al actualizar el contacto' });
 	}
 };
@@ -400,6 +432,7 @@ const empresaDetalle = async (req, res) => {
 		return res.status(200).json({ telefono, emails });
 	} catch (error) {
 		console.error('Error al obtener el teléfono:', error.message);
+		Bitacora('empresaDetalle',error)
 		return res.status(500).json({ error: 'Error al obtener el teléfono' });
 	}
 };
@@ -422,6 +455,7 @@ const obtenerEmpresaTelefono = async (req, res) => {
 		return res.status(200).json(telefonos);
 	} catch (error) {
 		console.error('Error al obtener los telefonos:', error.message);
+		Bitacora('obtenerEmpresaTelefono',error)
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
@@ -457,6 +491,7 @@ const crearEmpresaTelefono = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al crear el telefono:', error);
+		Bitacora('crearEmpresaTelefono',error)
 		return res.status(500).json({ error: 'Error al crear el telefono' });
 	}
 };
@@ -517,6 +552,7 @@ const editarEmpresaTelefono = async (req, res) => {
         });
     } catch (error) {
         console.error('Error al actualizar el telefono:', error);
+		Bitacora('editarEmpresaTelefono',error)
         return res.status(500).json({ error: 'Error al actualizar el telefono' });
     }
 };
@@ -580,6 +616,7 @@ const desactivarEmpresaTelefono = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
+		Bitacora('desactivarEmpresaTelefono',error)
 		return res.status(500).json(error.message);
 	}
 };
@@ -601,6 +638,7 @@ const buscarEmailsPorEmpresa = async (req, res) => {
 	return res.status(200).json(emails);
 	} catch (error) {
 		console.error('Error al obtener los emails:', error.message);
+		Bitacora('buscarEmailsPorEmpresa',error)
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
@@ -640,6 +678,7 @@ const crearEmailEmpresa = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al crear el correo:', error);
+		Bitacora('crearEmailEmpresa',error)
 		return res.status(500).json({ error: 'Error al crear el correo' });
 	}
 };
@@ -703,6 +742,7 @@ const editarEmpresaEmails = async (req, res) => {
 		});
 	} catch (error) {
 		console.error('Error al actualizar el email:', error);
+		Bitacora('editarEmpresaEmails',error)
 		return res.status(500).json({ error: 'Error al actualizar el email' });
 	}
 };
@@ -743,6 +783,7 @@ const desactivarEmpresaEmails = async (req, res) => {
 			message: 'Se ha descativado el correo: ' + empresaEmail.EmailId,
 		});
 	} catch (error) {
+		Bitacora('desactivarEmpresaEmails',error)
 		return res.status(500).json(error.message);
 	}
 };
@@ -765,6 +806,7 @@ const buscarContactosPorNombreYEntidad = async (req, res) => {
         return res.status(200).json(contactos);
     } catch (error) {
         console.error('Error al obtener los contactos:', error.message);
+		Bitacora('buscarContactosPorNombreYEntidad',error)
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

@@ -10,6 +10,7 @@ const router = Router();
  *   - name: Contactos Por sucursal
  *     description: Operaciones relacionadas con los contactos segun la sucursal
  *
+ * 
  *   - name: Detalle del Contacto
  *     description: Operaciones relacionadas con los contactos segun su ID
  * 
@@ -68,12 +69,13 @@ const router = Router();
  *         content:
  *           application/json:
  *             example:
- *               error: "Parámetro inválido"
+ *               message: "Parámetro inválido"
  *       500:
  *         description: Error del servidor
  *         content:
  *           application/json:
  *             example:
+ *               status: "Error"
  *               error: "Error interno del servidor"
  */
 

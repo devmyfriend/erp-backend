@@ -1,0 +1,83 @@
+import { DataTypes } from 'sequelize';
+import { Connection } from "../database/mariadb.database.js";
+
+export const vwObtenerEmpresas = Connection.define(
+    'vwObtenerEmpresas',
+    {
+        EntidadNegocioId:{
+            type:DataTypes.INTEGER,
+            allowNull:false,
+            primaryKey:true
+        },
+        NombreOficial:{
+            type:DataTypes.STRING(100),
+            allowNull:false
+        },
+        NombreComercial:{
+            type:DataTypes.STRING(100),
+            allowNull:false
+        },
+        RFC:{
+            type:DataTypes.STRING(13),
+            allowNull:false
+        },
+        ClaveRegimenFiscal:{
+            type:DataTypes.STRING(3),
+             allowNull:false
+        },
+        PersonaMoral:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false
+        },
+        PersonaFisica:{
+            type:DataTypes.BOOLEAN,
+            allowNull:false
+        },
+        DomicilioId:{
+            type:DataTypes.INTEGER,
+            allowNull:false
+        },
+        Calle:{
+            type:DataTypes.STRING(100),
+            allowNull:false
+        },
+        NumeroExt:{
+            type:DataTypes.STRING(50),
+            allowNull:false
+        },
+        NumeroInt:{
+            type:DataTypes.STRING(50),
+            allowNull:false
+        },
+        CodigoPostal:{
+            type:DataTypes.INTEGER,
+            allowNull:false
+        },
+        Pais:{
+            type:DataTypes.STRING(10),
+            allowNull:false
+        },
+        Estado:{
+            type:DataTypes.STRING(10),
+            allowNull:false
+        },
+        Localidad:{
+            type:DataTypes.STRING(10),
+            allowNull:false
+        },
+        Colonia:{
+            type:DataTypes.STRING(10),
+            allowNull:false
+        }
+       
+    },
+    {
+        sequelize:Connection,
+        modelName:'vwObtenerEmpresas',
+        tableName:'vwObtenerEmpresas',
+        timestamps:false,
+        freezeTableName:false
+    }
+    
+    
+    );

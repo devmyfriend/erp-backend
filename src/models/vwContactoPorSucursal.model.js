@@ -1,16 +1,14 @@
 import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
-
-
-export const Contacto = Connection.define(
-	'Contacto',
+export const vwContactoPorSucursal = Connection.define(
+	'vwContactoSucursal',
 	{
 		ContactoId: {
 			type: DataTypes.INTEGER,
-			primaryKey: true,
+            primaryKey: true,
 			allowNull: false,
-			autoIncrement: true,
+		
 		},
 		ApellidoPaterno: {
 			type: DataTypes.STRING,
@@ -51,11 +49,16 @@ export const Contacto = Connection.define(
 		Borrado: {
 			type: DataTypes.BOOLEAN,
 		},
+        SucursalId:{
+            type: DataTypes.INTEGER,
+			allowNull: false,
+        }
+
 	},
 	{
 		sequelize: Connection,
-		modelName: 'Contacto',
-		tableName: 'orgContactos',
+		modelName: 'vwContactoSucursal',
+		tableName: 'vwContactoPorSucursal',
 		timestamps: false,
 		freezeTableName: false,
 	},

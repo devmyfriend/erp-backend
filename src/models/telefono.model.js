@@ -2,7 +2,7 @@ import { DataTypes } from 'sequelize';
 import { Connection } from '../database/mariadb.database.js';
 
 export const Telefono = Connection.define(
-	'Telefonos',
+	'Telefono',
 	{
 		TelefonoId: {
 			type: DataTypes.INTEGER,
