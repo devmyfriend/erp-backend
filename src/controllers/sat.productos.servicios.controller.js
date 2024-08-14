@@ -2,23 +2,30 @@ import { VwProductosServicios } from '../models/vw.Sat.Productos.Servicios.model
 import { Op, Sequelize } from 'sequelize';
 import { handleDBOperation, messages, buscarProductoPorClave } from '../middlewares/finders/index.js';
 import { buscarProducto } from '../helpers/buscador.js';
+import { Bitacora } from '../helpers/logs/log.js';
 
-const findProductServicesByCode = async (req, res) => {
-	const code = req.params.code;
-	await handleDBOperation(
-	  async () => {
-		const data = await buscarProductoPorClave(code);
+const findProductServicesByCode = (req, res) => {
+    const code = req.params.code;
+
+    handleDBOperation(
+        () => {
+            return buscarProductoPorClave(code)
+                .then(data => {
+                    if (!data.existe) {
+                        return { error: messages.errors.notFound };
+                    }
+                    return data.data;
+                });
+        },
+        res,
+        messages.success.found
+    ).catch(error => {
+        console.error(error);
+        Bitacora('findProductServicesByCode', error.message || error); 
+        res.status(500).send({ message: 'Error al buscar el producto por código' });
+    });
+};
   
-		if (!data.existe) {
-		  return { error: messages.errors.notFound };
-		}
-  
-		return data.data;
-	  },
-	  res,
-	  messages.success.found
-	);
-  };
   
   const searchProductServicesByDescription = async (req, res) => {
 	const description = req.params.descripcion;

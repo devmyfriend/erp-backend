@@ -1,108 +1,158 @@
 import { VwFormaDePago, VwMetodoDePago } from '../models/index.js';
 import { handleDBOperation, messages } from '../middlewares/finders/index.js';
 import { buscarFormaDePago, buscarMetodoDePago } from '../helpers/buscador.js';
+import { Bitacora } from '../helpers/logs/log.js';
 
-const createPaymentMethods = async (req, res) => {
+const createPaymentMethods = (req, res) => {
   const paymentBody = req.body;
-  await handleDBOperation(
-    async () => {
-      const existingPaymentMethod = await buscarFormaDePago(paymentBody.ClaveFormaPago);
-      if (existingPaymentMethod.existe) {
-        return { error: messages.errors.alreadyExists };
-      }
-      return await VwFormaDePago.create(paymentBody);
+
+  handleDBOperation(
+    () => {
+      return buscarFormaDePago(paymentBody.ClaveFormaPago)
+        .then(existingPaymentMethod => {
+          if (existingPaymentMethod.existe) {
+            return { error: messages.errors.alreadyExists };
+          }
+          return VwFormaDePago.create(paymentBody);
+        });
     },
     res,
     messages.success.created
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('createPaymentMethods', error.message || error);
+    res.status(500).send({ message: 'Error al crear el método de pago' });
+  });
 };
 
-const updatePaymentMethods = async (req, res) => {
+const updatePaymentMethods = (req, res) => {
   const paymentBody = req.body;
-  await handleDBOperation(
-    async () => {
-      const payment = await buscarFormaDePago(paymentBody.ClaveFormaPago);
-      if (!payment.existe) {
-        return { error: messages.errors.notFound };
-      }
-      return await VwFormaDePago.update(paymentBody, { where: { ClaveFormaPago: paymentBody.ClaveFormaPago } });
+
+  handleDBOperation(
+    () => {
+      return buscarFormaDePago(paymentBody.ClaveFormaPago)
+        .then(payment => {
+          if (!payment.existe) {
+            return { error: messages.errors.notFound };
+          }
+          return VwFormaDePago.update(paymentBody, { where: { ClaveFormaPago: paymentBody.ClaveFormaPago } });
+        });
     },
     res,
     messages.success.updated
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('updatePaymentMethods', error.message || error);
+    res.status(500).send({ message: 'Error al actualizar el método de pago' });
+  });
 };
 
-const deletePaymentMethods = async (req, res) => {
+const deletePaymentMethods = (req, res) => {
   const id = req.params.ClaveFormaPago;
-  await handleDBOperation(
-    async () => {
-      const payment = await buscarFormaDePago(id);
-      if (!payment.existe) {
-        return { error: messages.errors.notFound };
-      }
-      await VwFormaDePago.update({ Activo: 0 }, { where: { ClaveFormaPago: id } });
-      return payment.data;
+
+  handleDBOperation(
+    () => {
+      return buscarFormaDePago(id)
+        .then(payment => {
+          if (!payment.existe) {
+            return { error: messages.errors.notFound };
+          }
+          return VwFormaDePago.update({ Activo: 0 }, { where: { ClaveFormaPago: id } })
+            .then(() => payment.data);
+        });
     },
     res,
     messages.success.deleted
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('deletePaymentMethods', error.message || error);
+    res.status(500).send({ message: 'Error al eliminar el método de pago' });
+  });
 };
 
-const createPaymentType = async (req, res) => {
+const createPaymentType = (req, res) => {
   const paymentTypeBody = req.body;
-  await handleDBOperation(
-    async () => {
-      const existingPaymentType = await buscarMetodoDePago(paymentTypeBody.ClaveMetodoPago);
-      if (existingPaymentType.existe) {
-        return { error: messages.errors.alreadyExists };
-      }
-      return await VwMetodoDePago.create(paymentTypeBody);
+
+  handleDBOperation(
+    () => {
+      return buscarMetodoDePago(paymentTypeBody.ClaveMetodoPago)
+        .then(existingPaymentType => {
+          if (existingPaymentType.existe) {
+            return { error: messages.errors.alreadyExists };
+          }
+          return VwMetodoDePago.create(paymentTypeBody);
+        });
     },
     res,
     messages.success.created
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('createPaymentType', error.message || error);
+    res.status(500).send({ message: 'Error al crear el tipo de pago' });
+  });
 };
 
-const updatedPaymentType = async (req, res) => {
+const updatedPaymentType = (req, res) => {
   const paymentBody = req.body;
-  await handleDBOperation(
-    async () => {
-      const payment = await buscarMetodoDePago(paymentBody.ClaveMetodoPago);
-      if (!payment.existe) {
-        return { error: messages.errors.notFound };
-      }
-      return await VwMetodoDePago.update(paymentBody, { where: { ClaveMetodoPago: paymentBody.ClaveMetodoPago } });
+
+  handleDBOperation(
+    () => {
+      return buscarMetodoDePago(paymentBody.ClaveMetodoPago)
+        .then(payment => {
+          if (!payment.existe) {
+            return { error: messages.errors.notFound };
+          }
+          return VwMetodoDePago.update(paymentBody, { where: { ClaveMetodoPago: paymentBody.ClaveMetodoPago } });
+        });
     },
     res,
     messages.success.updated
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('updatedPaymentType', error.message || error);
+    res.status(500).send({ message: 'Error al actualizar el tipo de pago' });
+  });
 };
 
-const deletePaymentType = async (req, res) => {
+const deletePaymentType = (req, res) => {
   const id = req.params.ClaveMetodoPago;
-  await handleDBOperation(
-    async () => {
-      const payment = await buscarMetodoDePago(id);
-      if (!payment.existe) {
-        return { error: messages.errors.notFound };
-      }
-      await VwMetodoDePago.update({ Activo: 0 }, { where: { ClaveMetodoPago: id } });
-      return payment.data;
+
+  handleDBOperation(
+    () => {
+      return buscarMetodoDePago(id)
+        .then(payment => {
+          if (!payment.existe) {
+            return { error: messages.errors.notFound };
+          }
+          return VwMetodoDePago.update({ Activo: 0 }, { where: { ClaveMetodoPago: id } })
+            .then(() => payment.data);
+        });
     },
     res,
     messages.success.deleted
-  );
+  ).catch(error => {
+    console.error(error);
+    Bitacora('deletePaymentType', error.message || error);
+    res.status(500).send({ message: 'Error al eliminar el tipo de pago' });
+  });
 };
 
-const searchPaymentTypeByDescription = async (req, res) => {
+const searchPaymentTypeByDescription = (req, res) => {
   const description = req.params.Descripcion;
-  const result = await buscarMetodoDePago(description, 1);
 
-  if (!result.existe || !result.data.rows.length) {
-    return res.status(400).json({ error: 'No hay datos disponibles' });
-  }
+  buscarMetodoDePago(description, 1)
+    .then(result => {
+      if (!result.existe || !result.data.rows.length) {
+        return res.status(400).send({ error: 'No hay datos disponibles' });
+      }
 
-  res.status(200).json({ message: messages.success.found, data: result.data.rows });
+      return res.status(200).send({ message: messages.success.found, data: result.data.rows });
+    })
+    .catch(error => {
+      console.error(error);
+      Bitacora('searchPaymentTypeByDescription', error.message || error);
+      res.status(500).send({ message: 'Error al buscar el tipo de pago por descripción' });
+    });
 };
 
 export const methods = {
