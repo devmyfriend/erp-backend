@@ -7,30 +7,6 @@ import { EmpresaSucursal } from '../models/empresa.sucursalmodel.js';
 import { Bitacora } from '../helpers/logs/log.js';
 import { validarSucursal, validarNombreSucursal, buscarDomicilioSucursal} from '../middlewares/finders/index.js'
 
-const validarDatosSucursal = async (sucursalId, nombreSucursal) => {
-    try {
-        const { existe: sucursalExiste, data: sucursalData } = await validarSucursal(sucursalId);
-        if (!sucursalExiste) {
-            return { valido: false, mensaje: "Sucursal no encontrada" };
-        }
-
-        const { existe: nombreExiste } = await validarNombreSucursal(nombreSucursal);
-        if (nombreExiste) {
-            return { valido: false, mensaje: "El nombre de la sucursal ya está en uso" };
-        }
-
-        const { existe: domicilioExiste, data: domicilioData } = await buscarDomicilioSucursal(sucursalId);
-        if (!domicilioExiste) {
-            return { valido: false, mensaje: "Domicilio de la sucursal no encontrado" };
-        }
-
-        return { valido: true, sucursalData, domicilioData };
-    } catch (error) {
-        Bitacora('validarDatosSucursal', error);
-        throw new Error("Error en la validación de los datos de la sucursal");
-    }
-};
-
 const obtenerSucursales = async (req, res) => {
 	const empresaId = req.params.id;
 	// TODO ->  VALIDAR SI LA EXPRESA EXISTE
@@ -118,13 +94,19 @@ const editarSucursal = async (req, res) => {
     const { sucursal, datos } = req.body;
 
     try {
-        const { valido, mensaje, sucursalData, domicilioData } = await validarDatosSucursal(
-            sucursal[0].SucursalId, 
-            sucursal[0].Nombre
-        );
+        const { existe: sucursalExiste, data: sucursalData } = await validarSucursal(sucursal[0].SucursalId);
+        if (!sucursalExiste) {
+            return res.status(404).send({ status: "Error", message: "Sucursal no encontrada" });
+        }
 
-        if (!valido) {
-            return res.status(404).send({ status: "Error", message: mensaje });
+        const { existe: nombreExiste } = await validarNombreSucursal(sucursal[0].Nombre);
+        if (nombreExiste) {
+            return res.status(409).send({ status: "Error", message: "El nombre de la sucursal ya está en uso" });
+        }
+
+        const { existe: domicilioExiste, data: domicilioData } = await buscarDomicilioSucursal(sucursal[0].SucursalId);
+        if (!domicilioExiste) {
+            return res.status(404).send({ status: "Error", message: "Domicilio de la sucursal no encontrado" });
         }
 
         const actualizacionSucursal = {
@@ -150,17 +132,20 @@ const editarSucursal = async (req, res) => {
         return res.status(200).send({ 
             status: "OK", 
             message: "Sucursal actualizada correctamente", 
-            sucursal: actualizacionSucursal, 
-            domicilio: actualizacionDomicilio 
+            data: { 
+                sucursal: actualizacionSucursal, 
+                domicilio: actualizacionDomicilio 
+            } 
         });
     } catch (error) {
         Bitacora('editarSucursal', error);
         return res.status(500).send({ 
             status: "Error", 
-            message: 'Error interno en el servidor',
+            message: "Error interno en el servidor" 
         });
     }
 };
+
 
 export const desactivarSucursal = async (req, res) => {
 	try {
