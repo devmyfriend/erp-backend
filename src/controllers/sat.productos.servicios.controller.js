@@ -5,26 +5,26 @@ import { buscarProducto } from '../helpers/buscador.js';
 import { Bitacora } from '../helpers/logs/log.js';
 
 const findProductServicesByCode = (req, res) => {
-    const code = req.params.code;
-
-    handleDBOperation(
-        () => {
-            return buscarProductoPorClave(code)
-                .then(data => {
-                    if (!data.existe) {
-                        return { error: messages.errors.notFound };
-                    }
-                    return data.data;
-                });
-        },
-        res,
-        messages.success.found
-    ).catch(error => {
-        console.error(error);
-        Bitacora('findProductServicesByCode', error.message || error); 
-        res.status(500).send({ message: 'Error al buscar el producto por código' });
-    });
-};
+	const code = req.params.code;
+  
+	handleDBOperation(
+	  () => {
+		return buscarProductoPorClave(code)
+		  .then(data => {
+			if (!data.existe) {
+			  return res.status(404).send({ status: messages.errors.notFound });
+			}
+			return data;
+		  });
+	  },
+	  res,
+	  messages.success.found
+	).catch(error => {
+	  console.error(error);
+	  Bitacora('findProductServicesByCode', error.message || error); 
+	  res.status(500).send({ status: 'Error al buscar el producto por código' });
+	});
+  };
   
   
   const searchProductServicesByDescription = async (req, res) => {

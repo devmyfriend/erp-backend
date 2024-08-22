@@ -3,7 +3,7 @@ import { methods } from '../controllers/sat.claves.unidades.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/claves.unidades.js';
 import { param } from 'express-validator';
-import { buscarClaveUnidadPorClave } from '../middlewares/finders/index.js';
+
 const router = Router();
 
 /**
@@ -39,7 +39,7 @@ const router = Router();
  *                   items:
  *                     type: object
  *                     properties:
- *                       VwClaveUnidadSat:
+ *                       ClaveUnidadSat:
  *                         type: string
  *                       NombreUnidadSat:
  *                         type: string
@@ -47,16 +47,27 @@ const router = Router();
  *                         type: boolean
  *       500:
  *         description: Error al obtener las unidades
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al obtener las unidades"
  */
 router.get(
-	'/:pagina',
-	[
-		param('pagina')
-			.isInt({ gt: 0 })
-			.withMessage('El número de página debe ser un número entero mayor que 1'),
-	],
-	middleware.validateSchema,
-	methods.findAllUnitKeys,
+    '/:pagina',
+    [
+        param('pagina')
+            .isInt({ gt: 0 })
+            .withMessage('El número de página debe ser un número entero mayor que 1'),
+    ],
+    middleware.validateSchema,
+    methods.findAllUnitKeys,
 );
 
 /**
@@ -83,26 +94,48 @@ router.get(
  *               items:
  *                 type: object
  *                 properties:
- *                   VwClaveUnidadSat:
+ *                   ClaveUnidadSat:
  *                     type: string
  *                   NombreUnidadSat:
  *                     type: string
  *                   Activo:
  *                     type: boolean
- *             example:
- *               - VwClaveUnidadSat: "05"
- *                 NombreUnidadSat: "Ascensor"
- *                 Activo: true
+ *       404:
+ *         description: Clave no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Clave no encontrada"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al buscar la clave de unidad"
  */
 router.get(
-	'/buscar/:clave',
-	param('clave')
-		.isString()
-		.withMessage('La clave de la unidad debe ser de tipo string')
-		.isLength({ min: 1, max: 3 })
-		.withMessage('La clave de la unidad debe tener entre 1 y 3 caracteres'),
-	middleware.validateSchema,
-	methods.findUnitKeysByKey,
+    '/buscar/:clave',
+    param('clave')
+        .isString()
+        .withMessage('La clave de la unidad debe ser de tipo string')
+        .isLength({ min: 1, max: 3 })
+        .withMessage('La clave de la unidad debe tener entre 1 y 3 caracteres'),
+    middleware.validateSchema,
+    methods.findUnitKeysByKey,
 );
 
 /**
@@ -129,26 +162,48 @@ router.get(
  *               items:
  *                 type: object
  *                 properties:
- *                   VwClaveUnidadSat:
+ *                   ClaveUnidadSat:
  *                     type: string
  *                   NombreUnidadSat:
  *                     type: string
  *                   Activo:
  *                     type: boolean
- *             example:
- *               - VwClaveUnidadSat: "05"
- *                 NombreUnidadSat: "Ascensor"
- *                 Activo: true
+ *       404:
+ *         description: Nombre no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Nombre no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al buscar la clave de unidad por nombre"
  */
 router.get(
-	'/buscar/nombre/:nombre',
-	param('nombre')
-		.isString()
-		.withMessage('El nombre de la unidad debe ser de tipo string')
-		.isLength({ min: 1})
-		.withMessage('El nombre de la unidad debe tener por lo menos 1 caracter'),
-	middleware.validateSchema,
-	methods.findUnitKeysByName,
+    '/buscar/nombre/:nombre',
+    param('nombre')
+        .isString()
+        .withMessage('El nombre de la unidad debe ser de tipo string')
+        .isLength({ min: 1 })
+        .withMessage('El nombre de la unidad debe tener por lo menos 1 carácter'),
+    middleware.validateSchema,
+    methods.findUnitKeysByName,
 );
 
 /**
@@ -165,12 +220,12 @@ router.get(
  *           schema:
  *             type: object
  *             properties:
- *               VwClaveUnidadSat:
+ *               ClaveUnidadSat:
  *                 type: string
  *               NombreUnidadSat:
  *                 type: string
  *           example:
- *             VwClaveUnidadSat: "KGM"
+ *             ClaveUnidadSat: "KGM"
  *             NombreUnidadSat: "Kilogramo"
  *     responses:
  *       200:
@@ -180,20 +235,44 @@ router.get(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
  *                 message:
  *                   type: string
- *             example:
- *               success: true
- *               message: "Clave de unidad creada"
+ *                   example: "Clave de unidad creada"
+ *       409:
+ *         description: Clave de unidad ya existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Clave de unidad ya existe"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al crear la clave de unidad"
  */
 router.post(
-	'/clave',
-	schemas.createUnitKeySchema,
-	middleware.validateSchema,
-	buscarClaveUnidadPorClave,
-	methods.createUnitKey,
+    '/clave',
+    schemas.createUnitKeySchema,
+    middleware.validateSchema,
+    methods.createUnitKey,
 );
 
 /**
@@ -210,12 +289,12 @@ router.post(
  *           schema:
  *             type: object
  *             properties:
- *               VwClaveUnidadSat:
+ *               ClaveUnidadSat:
  *                 type: string
  *               NombreUnidadSat:
  *                 type: string
  *           example:
- *             VwClaveUnidadSat: "KGM"
+ *             ClaveUnidadSat: "KGM"
  *             NombreUnidadSat: "Kilogramo"
  *     responses:
  *       200:
@@ -225,23 +304,44 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
  *                 message:
  *                   type: string
- *             example:
- *               success: true
- *               message: "Clave de unidad actualizada"
+ *                   example: "Clave de unidad actualizada"
  *       404:
  *         description: Clave de unidad no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Clave de unidad no encontrada"
  *       500:
- *         description: Error al actualizar la clave de unidad
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al actualizar la clave de unidad"
  */
 router.patch(
-	'/editar',
-	schemas.updateUnitKeySchema,
-	middleware.validateSchema,
-	methods.updateUnitKey,
+    '/editar',
+    schemas.updateUnitKeySchema,
+    middleware.validateSchema,
+    methods.updateUnitKey,
 );
 
 /**
@@ -258,10 +358,10 @@ router.patch(
  *           schema:
  *             type: object
  *             properties:
- *               VwClaveUnidadSat:
+ *               ClaveUnidadSat:
  *                 type: string
  *           example:
- *             VwClaveUnidadSat: "KGM"
+ *             ClaveUnidadSat: "KGM"
  *     responses:
  *       200:
  *         description: Clave de unidad borrada
@@ -270,18 +370,44 @@ router.patch(
  *             schema:
  *               type: object
  *               properties:
- *                 success:
- *                   type: boolean
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
  *                 message:
  *                   type: string
- *             example:
- *               success: true
- *               message: "Clave de unidad borrada"
+ *                   example: "Clave de unidad borrada"
  *       404:
  *         description: Clave de unidad no encontrada
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Clave de unidad no encontrada"
  *       500:
- *         description: Error al borrar la clave de unidad
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al borrar la clave de unidad"
  */
-router.delete('/borrar', methods.deleteUnitKey);
+router.delete(
+    '/borrar',
+    schemas.deleteUnitKeySchema,
+    middleware.validateSchema,
+    methods.deleteUnitKey,
+);
 
 export default router;

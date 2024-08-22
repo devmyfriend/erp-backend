@@ -27,16 +27,47 @@ const router = Router()
  *             schema:
  *               type: object
  *               properties:
- *                 ClaveProductoServicio:
+ *                 status:
  *                   type: string
- *                 Descripcion:
+ *                   example: "OK"
+ *                 message:
  *                   type: string
- *                 PalabrasSimilares:
+ *                   example: "Producto o servicio encontrado"
+ *                 data:
+ *                   type: object
+ *                   properties:
+ *                     ClaveProductoServicio:
+ *                       type: string
+ *                     Descripcion:
+ *                       type: string
+ *                     PalabrasSimilares:
+ *                       type: string
+ *       404:
+ *         description: Producto o servicio no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
  *                   type: string
- *             example:
- *               ClaveProductoServicio: "101"
- *               Descripcion: "Producto Servicio"
- *               PalabrasSimilares: "Palabra 1"
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Producto o servicio no encontrado"
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al buscar el producto o servicio"
  */
 router.get(
     '/servicio/buscar/:code',

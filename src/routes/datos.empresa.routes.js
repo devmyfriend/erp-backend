@@ -948,10 +948,43 @@ router.patch(
  *     responses:
  *       200:
  *         description: Se ha desactivado el email correctamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Se ha desactivado el email correctamente"
  *       404:
  *         description: La empresa o el email no existe
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "La empresa o el email no existe"
  *       500:
  *         description: Error al desactivar el email
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al desactivar el email"
  */
 	router.delete('/api/v1/empresa/emails/desactivar', buscarEmpresaEmailPorId, buscarEmailPorId, methods.desactivarEmpresaEmails);
 

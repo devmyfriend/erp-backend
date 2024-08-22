@@ -710,39 +710,37 @@ const editarEmpresaEmails = async (req, res) => {
 };
 
 const desactivarEmpresaEmails = (req, res) => {
-    handleDBOperation(
-        () => {
-            return buscarEmpresaEmailPorId(req.body.VwEmailId)
-                .then(empresaVwEmail => {
-                    return buscarEmailPorId(req.body.VwEmailId)
-                        .then(VwEmail => {
-                            if (!empresaVwEmail.existe || !VwEmail.existe) {
-                                return { error: messages.errors.notFound };
-                            }
-
-                            return empresaVwEmail.data.update({
-                                Borrado: true,
-                                BorradoPor: req.body.BorradoPor,
-                            }).then(() => {
-                                return VwEmail.data.update({
-                                    Borrado: true,
-                                    BorradoPor: req.body.BorradoPor,
-                                    BorradoEn: new Date(),
-                                });
-                            }).then(() => {
-                                return { success: true, message: `Se ha desactivado el correo: ${empresaVwEmail.data.VwEmailId}` };
-                            });
-                        });
-                });
-        },
-        res,
-        'Correo desactivado exitosamente'
-    ).catch(error => {
-        console.error(error);
-        Bitacora('desactivarEmpresaEmails', error.message || error); 
-        res.status(500).send({ message: 'Error al desactivar el correo' });
-    });
-};
+	handleDBOperation(
+	  () => {
+		return buscarEmpresaEmailPorId(req.body.VwEmailId)
+		  .then(empresaVwEmail => {
+			return buscarEmailPorId(req.body.VwEmailId)
+			  .then(VwEmail => {
+				if (!empresaVwEmail.existe || !VwEmail.existe) {
+				  return res.status(404).send({ status: messages.errors.notFound });
+				}
+  
+				return empresaVwEmail.update({
+				  Borrado: true,
+				  BorradoPor: req.body.BorradoPor,
+				}).then(() => {
+				  return VwEmail.update({
+					Borrado: true,
+					BorradoPor: req.body.BorradoPor,
+					BorradoEn: new Date(),
+				  });
+				});
+			  });
+		  });
+	  },
+	  res,
+	  'Correo desactivado exitosamente'
+	).catch(error => {
+	  console.error(error);
+	  Bitacora('desactivarEmpresaEmails', error.message || error); 
+	  res.status(500).send({ status: 'Error al desactivar el correo' });
+	});
+  };
 
 const buscarContactosPorNombreYEntidad = async (req, res) => {
     const { Nombre, EntidadNegocioId } = req.body;

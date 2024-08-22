@@ -1,8 +1,10 @@
-import { param } from 'express-validator';
+import { Router } from 'express';
 import { methods } from '../controllers/sat.payment.controller.js';
 import * as middleware from '../middlewares/express-validator.js';
 import * as schemas from '../schemas/payment.methods.js';
-import router from './sucursal.routes.js';
+import { param } from 'express-validator';
+
+const router = Router();
 
 /**
  * @swagger
@@ -30,10 +32,43 @@ import router from './sucursal.routes.js';
  *     responses:
  *       200:
  *         description: Método de pago creado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Método de pago creado con éxito"
  *       400:
  *         description: Ya existe un método de pago con esa clave
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Ya existe un método de pago con esa clave"
  *       500:
  *         description: Error al crear el método de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al crear el método de pago"
  */
 router.post(
     '/forma/pago',
@@ -68,10 +103,43 @@ router.post(
  *     responses:
  *       200:
  *         description: Método de pago actualizado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Método de pago actualizado con éxito"
  *       404:
  *         description: No se encontró el método de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "No se encontró el método de pago"
  *       500:
  *         description: Error al actualizar el método de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al actualizar el método de pago"
  */
 router.patch(
     '/forma/pago',
@@ -97,10 +165,43 @@ router.patch(
  *     responses:
  *       200:
  *         description: Método de pago eliminado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Método de pago eliminado con éxito"
  *       404:
  *         description: No se encontró el método de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "No se encontró el método de pago"
  *       500:
  *         description: Error al eliminar el método de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al eliminar el método de pago"
  */
 router.delete(
     '/forma/pago/:ClaveFormaPago',
@@ -108,6 +209,7 @@ router.delete(
         .notEmpty()
         .isLength({ min: 3, max: 3 })
         .withMessage('La clave del método de pago debe tener 3 caracteres'),
+    middleware.validateSchema,
     methods.deletePaymentMethods,
 );
 
@@ -137,10 +239,43 @@ router.delete(
  *     responses:
  *       200:
  *         description: Tipo de pago creado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Tipo de pago creado con éxito"
  *       400:
  *         description: Ya existe un tipo de pago con esa clave
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "Ya existe un tipo de pago con esa clave"
  *       500:
  *         description: Error al crear el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al crear el tipo de pago"
  */
 router.post(
     '/metodo/pago',
@@ -171,6 +306,12 @@ router.post(
  *             schema:
  *               type: object
  *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Tipo de pago obtenido correctamente"
  *                 data:
  *                   type: array
  *                   items:
@@ -180,16 +321,41 @@ router.post(
  *                         type: string
  *                       Activo:
  *                         type: integer
+ *       404:
+ *         description: No se encontró el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "No se encontró el tipo de pago"
  *       500:
  *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error interno del servidor"
  */
 router.get(
     '/metodo/forma/:Descripcion',
     param('Descripcion')
         .notEmpty()
-        .withMessage('La descripcion no puede estar vacia')
+        .withMessage('La descripción no puede estar vacía')
         .isString()
         .withMessage('El campo descripción tiene que ser una cadena de texto'),
+    middleware.validateSchema,
     methods.searchPaymentTypeByDescription,
 );
 
@@ -219,10 +385,43 @@ router.get(
  *     responses:
  *       200:
  *         description: Tipo de pago actualizado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Tipo de pago actualizado con éxito"
  *       404:
  *         description: No se encontró el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "No se encontró el tipo de pago"
  *       500:
  *         description: Error al actualizar el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al actualizar el tipo de pago"
  */
 router.patch(
     '/metodo/pago',
@@ -248,10 +447,43 @@ router.patch(
  *     responses:
  *       200:
  *         description: Tipo de pago eliminado con éxito
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "OK"
+ *                 message:
+ *                   type: string
+ *                   example: "Tipo de pago eliminado con éxito"
  *       404:
  *         description: No se encontró el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 error:
+ *                   type: string
+ *                   example: "No se encontró el tipo de pago"
  *       500:
  *         description: Error al eliminar el tipo de pago
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: "Error"
+ *                 message:
+ *                   type: string
+ *                   example: "Error al eliminar el tipo de pago"
  */
 router.delete(
     '/metodo/pago/:ClaveMetodoPago',
@@ -259,6 +491,7 @@ router.delete(
         .notEmpty()
         .isLength({ min: 3, max: 3 })
         .withMessage('La clave del método de pago debe tener 3 caracteres'),
+    middleware.validateSchema,
     methods.deletePaymentType,
 );
 
