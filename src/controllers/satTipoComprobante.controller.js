@@ -58,7 +58,7 @@ const crearTiposComprobantes = async (req, res) => {
 
 const actualizarTiposComprobantes = async (req, res) => {
 	try{
-		const tiposComprobantesBody = await req.body;
+		const tiposComprobantesBody = req.body;
 		const idExistente = await validaTiposComprobantes(tiposComprobantesBody.ClaveTipoDeComprobante)
 	
 		if (!idExistente.existe) {

@@ -1,0 +1,2 @@
+2024-09-04T08:40:42 crearSubfamilia SequelizeDatabaseError: (conn=9873, no: 1364, SQLState: HY000) Field 'FamiliaId' doesn't have a default value
+sql: INSERT INTO `cat_SubFamilias` (`SubFamiliaId`,`NombreSubFamilia`,`CreadoPor`,`CreadoEn`) VALUES (DEFAULT,?,?,?); - parameters:['SubfamiliaTest 1','2','2024-09-04 13:40:42.093'] 

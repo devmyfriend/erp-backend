@@ -59,7 +59,7 @@ const buscarUbicacionesPorNombre = async (req, res) => {
 		res.status(200).send({
 			status:  "OK",
 			message: `Ubicaciones encontradas con el nombre ${Nombre}`,
-			ubicaciones: resultado 
+			ubicaciones: resultado.data,
 		});
 	}catch(error){
 		console.error(error);
@@ -102,7 +102,7 @@ const crearUbicacion = async (req, res) => {
 
 const actualizarUbicaciones = async (req, res) => {
 	try{
-		const ubicacionBody = await req.body;
+		const ubicacionBody = req.body;
 		const idExistente = await validaUbicacion(ubicacionBody.UbicacionId);
 		const nombreExistente = await validaUbicacionPorNombre(ubicacionBody.Nombre);
 	

@@ -15,6 +15,9 @@ import productosServiciosRoutes from './src/routes/satProductosServicios.routes.
 import unitKeyRoutes from './src/routes/sat.claves.unidades.routes.js';
 import ubicationsRoutes from './src/routes/ubicaciones.routes.js';
 import tiposComprobantesRoutes from './src/routes/satTipoComprobante.routes.js';
+import familiasRoutes from './src/routes/familia.routes.js';
+import subfamiliasRoutes from './src/routes/subfamilia.routes.js';
+import lineasRoutes from './src/routes/linea.routes.js';
 
 // Base de datos
 import { Connection } from './src/database/mariadb.database.js';
@@ -52,6 +55,9 @@ const App = {
     app.use('/api/v1/unidades', unitKeyRoutes);
     app.use('/api/v1/ubicaciones', ubicationsRoutes);
     app.use('/api/v1/comprobante', tiposComprobantesRoutes);
+    app.use('/api/v1/familias', familiasRoutes);
+    app.use('/api/v1/subfamilias', subfamiliasRoutes);
+    app.use('/api/v1/lineas', lineasRoutes);
     app.use('/', (req, res) => {
       res.status(404).json({ message: 'Request not found' });
     });

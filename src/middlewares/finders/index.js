@@ -1,7 +1,10 @@
 import {
     ProductosServicios,
     TiposComprobantes,
-    Ubicaciones
+    Ubicaciones,
+    Familia,
+    Subfamilia,
+    Linea,
 } from '../../models/index.js';
 
 const manejadorDBError = error => {
@@ -33,3 +36,21 @@ export const validaUbicacion = async id =>
 
 export const validaUbicacionPorNombre = async nombre =>
     buscarItem(Ubicaciones, { Nombre: nombre });
+
+export const validaFamiliaPorId = async id =>
+    buscarItem(Familia, { FamiliaId: id, Activo: true });
+
+export const validaFamiliaPorNombre = async nombre =>
+    buscarItem(Familia, { NombreFamilia: nombre });
+
+export const validaSubfamiliaPorId = async id =>
+    buscarItem(Subfamilia, { SubFamiliaId: id });
+
+export const validaSubfamiliaPorNombre = async nombre =>
+    buscarItem(Subfamilia, { NombreSubFamilia: nombre });
+
+export const validaLineaPorId = async id =>
+    buscarItem(Linea, { LineaId: id });
+
+export const validaLineaPorNombre = async nombre =>
+    buscarItem(Linea, { NombreLinea: nombre });

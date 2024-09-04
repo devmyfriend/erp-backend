@@ -2,6 +2,9 @@ import { Op } from 'sequelize';
 import { 
     ProductosServicios,
     Ubicaciones,
+    Familia,
+    Subfamilia,
+    Linea,
 } from '../models/index.js';
 
 const paginado = parseInt(process.env.RegistrosPorPagina) || 10;
@@ -22,6 +25,9 @@ const searchItems = async (modelo, condicion, pagina) => {
     if (pagina > TotalPaginas) {
         return { existe: false, data: [] };
     }
+    if (data.count < 1) {
+        return { existe: false, data: [] };
+    }
     return { existe: true, data: {
         TotalRegistros: data.count,
         PaginaActual: pagina,
@@ -32,6 +38,20 @@ const searchItems = async (modelo, condicion, pagina) => {
     return manejadorDBError(error);
   }
 };
+
+const searchItemsAll = async (modelo, condicion) => {
+    try {
+        const data = await modelo.findAll({
+        where: condicion,
+        });
+        if (data.length < 1) {
+            return { existe: false, data: [] };
+        }
+        return { existe: true, data };
+    } catch (error) {
+        return manejadorDBError(error);
+    }
+}
 
 export const buscadorProductosServiciosPorDescripcion = async (descripcion, pagina) => {
     const condicion = {
@@ -52,4 +72,39 @@ export const buscadorUbicacionesPorNombre = async (nombre, pagina) => {
         Nombre: { [Op.like]: `%${nombre}%` },
     };
     return searchItems(Ubicaciones, condicion, pagina);
+}
+
+export const buscadorFamiliasPorNombre = async (nombre) => {
+    const condicion = {
+        NombreFamilia: { [Op.like]: `%${nombre}%` },
+    };
+    return searchItemsAll(Familia, condicion);
+}
+
+export const buscadorSubfamiliasPorNombre = async (nombre) => {
+    const condicion = {
+        NombreSubFamilia: { [Op.like]: `%${nombre}%` },
+    };
+    return searchItemsAll(Subfamilia, condicion);
+}
+
+export const buscadorLineaPorNombre = async (nombre) => {
+    const condicion = {
+        NombreLinea: { [Op.like]: `%${nombre}%` },
+    };
+    return searchItemsAll(Linea, condicion);
+}
+
+export const buscadorSubfamiliasPorFamiliaId = async (familiaId) => {
+    const condicion = {
+        FamiliaId: familiaId,
+    };
+    return searchItemsAll(Subfamilia, condicion);
+}
+
+export const buscadorLineasPorSubFamiliaId = async (subfamiliaId) => {
+    const condicion = {
+        SubFamiliaId: subfamiliaId,
+    };
+    return searchItemsAll(Linea, condicion);
 }
