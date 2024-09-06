@@ -1,5 +1,5 @@
 import { Connection as sequelize } from '../database/mariadb.database.js';
-import { EntidadNegocio } from '../models/empresa.model.js';
+import { EntidadNegocio } from '../models/Empresa.model.js';
 import { Domicilio } from '../models/domicilios.model.js';
 import { EmpresaDomicilio } from '../models/empresa.domicilio.model.js';
 import { Telefono } from '../models/telefono.model.js';
@@ -8,6 +8,9 @@ import { EmpresaContacto } from '../models/empresa.contacto.model.js';
 import { EmpresaTelefono } from '../models/empresa.telefono.model.js';
 import { Email } from '../models/email.model.js';
 import { EmpresaEmails } from '../models/empresa.emails.model.js';
+import { EmailsPorEntidadNegocio } from '../models/vw.emails.por.entidad.negocio.model.js';
+import { TelefonosPorEntidadNegocio } from '../models/vw.telefonos.por.entidad.negocio.model.js';
+import { Bitacora } from '../logs/log.js';
 
 const obtenerEmpresas = async (req, res) => {
 	try {
@@ -54,7 +57,7 @@ const buscarPorNombreOficial = async (req, res) => {
 const buscarIdEmpresa = async (req, res) => {
 	const entidadId = req.params.id;
 	try {
-		const entidad = await sequelize.query('CALL BuscarEntidadNegocio(?)', {
+		const entidad = await sequelize.query('CALL BuscarEntidadNegocioid', {
 			replacements: [entidadId],
 			type: sequelize.QueryTypes.RAW,
 		});
@@ -72,15 +75,19 @@ const buscarIdEmpresa = async (req, res) => {
 
 const crearIdEmpresa = async (req, res) => {
 	const { entidad, domicilio, CreadoPor: creadoPor } = req.body;
-
+	
+	
 	try {
+		
+		//const { existe } = await EntidadNegocio(entidad)
+		
 		const validarRFC = await EntidadNegocio.findOne({
 			where: {
 				RFC: entidad[0].RFC,
 				PersonaMoral: 1,
 			},
 		});
-
+		
 		const validarNombreOficial = await EntidadNegocio.findOne({
 			where: {
 				NombreOficial: entidad[0].NombreOficial,
@@ -122,9 +129,11 @@ const crearIdEmpresa = async (req, res) => {
 			message: 'Se ha creado la empresa',
 			EmpresaId: crearEntidad.EntidadNegocioId,
 		});
-	} catch (error) {
-		console.error('Error al crear la empresa:', error);
-		return res.status(500).json({ error: 'Error al crear la empresa' });
+		console.log("Labnda");
+	} catch (error) {		
+		console.error('Error al crear la empresa1:', error);
+		Bitacora('crearIdEmpresa',error);
+		return res.status(500).json({ error: 'Error al crear la empresa2' });
 	}
 };
 
@@ -132,6 +141,9 @@ const editarIdEmpresa = async (req, res) => {
 	const { entidad, domicilio, ActualizadoPor: actualizadoPor } = req.body;
 
 	try {
+
+
+		
 		const entidadExistente = await EntidadNegocio.findOne({
 			where: {
 				EntidadNegocioId: entidad[0].EntidadNegocioId,
@@ -378,88 +390,147 @@ const editarEmpresaContacto = async (req, res) => {
 	}
 };
 
-const empresaDetalle = async (req, res) => {
-	const entidadId = req.params.id;
+
+const empresaDetalle1 = async (req, res) => {
+	const entidadId  = req.body;
 	try {
-		const telefono = await sequelize.query(
-			'CALL buscarTelefonoPorEntidadNegocioId(?)',
-			{
-				replacements: [entidadId],
-				type: sequelize.QueryTypes.RAW,
-			},
-		);
+		const telefono = await TelefonosPorEntidadNegocio.findAll({ where : {EntidadNegocioId: entidadId},}); 
 
-		const emails = await sequelize.query(
-			'CALL BuscarEmailsPorEntidadNegocioId(?)',
-			{
-				replacements: [entidadId],
-				type: sequelize.QueryTypes.RAW,
-			},
-		);
+		const emails = await EmailsPorEntidadNegocio.findAll({ where  :{EntidadNegocioId: entidadId},});
 
-		return res.status(200).json({ telefono, emails });
+		return res.status(200).send( res );
 	} catch (error) {
-		console.error('Error al obtener el teléfono:', error.message);
-		return res.status(500).json({ error: 'Error al obtener el teléfono' });
+		console.error('Error al obtener el popo:', error.message);
+		return res.status(500).json({ error: 'Error al obtener el popi' });
+	}
+};
+const empresaDetalle = async (req, res) => {
+    const entidadId = req.params.id;
+
+    try {
+        const telefono = await TelefonosPorEntidadNegocio.findAll({
+            where: { EntidadNegocioId: entidadId },
+        });
+
+        if (telefono.length === 0) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'No hay teléfonos disponibles',
+            });
+        }
+
+        const emails = await EmailsPorEntidadNegocio.findAll({
+            where: { EntidadNegocioId: entidadId },
+        });
+
+        if (emails.length === 0) {
+            return res.status(404).send({
+                status: 'Error',
+                message: 'No existen emails relacionados con esta empresa',
+            });
+        }
+        return res.status(200).send({
+            status: 'OK',
+            message: 'Detalle de la empresa obtenido correctamente',
+            telefono,
+            emails,
+        });
+    } catch (error) {
+        Bitacora('empresaDetalle', error);
+        return res.status(500).send({
+            status: 'Error',
+            message: 'Error interno en el servidor',
+        });
+    }
+};
+
+
+const obtenerEmpresaTelefono = async (req, res) => {
+	const Teledono = req.params.id;
+	try {
+		const telefono = await buscarTelefonoPorEntidadNegocioId.findAll({ 
+			where : {
+				Teledono : Teledono,
+				EntidadNegocio,
+			},
+		}); 
+	
+		if (telefono.length === 0) {
+			return res 
+				.status(404)
+				.send( { status: 'Error', message: 'Contactos no encontrados' });
+		}
+
+		return res.status(200).send({ 				
+				status: 'OK',
+				message: 'Contactos encontrados',				
+				telefono: telefono,
+			});
+
+	} catch (error) {
+		Bitacora('obtenerEmpresaTelefono',error);
+		return res.status(500).send({
+			status:  'Error',
+			message: 'Error interno en el servidor',
+		});
+		
 	}
 };
 
-const obtenerEmpresaTelefono = async (req, res) => {
-	const entidadId = req.params.id;
+const obtenerEmpresaEmail = async (req, res) => {
+	const email = req.params.id;
 	try {
-		const telefonos = await sequelize.query(
-			'CALL buscarTelefonoPorEntidadNegocioId(?)',
-			{
-				replacements: [entidadId],
-				type: sequelize.QueryTypes.RAW,
+		const email = await BuscarEmailsPorEntidadNegocioId.findAll({ 
+			where : { 
+				email:email,
+				EntidadNegocioId,
 			},
-		);
+		  });	
 
-		if (telefonos.length === 0) {
+		if (email.length === 0) {
 			return res.status(404).json({ message: 'No hay telefonos disponibles' });
 		}
 
-		return res.status(200).json(telefonos);
+		return res.status(200).json(email);
 	} catch (error) {
 		console.error('Error al obtener los telefonos:', error.message);
 		return res.status(500).json({ error: 'Internal Server Error' });
 	}
 };
-
 const crearEmpresaTelefono = async (req, res) => {
-	const telefonoBody = req.body;
+			const telefonoBody = req.body;
 
-	try {
-		const validarEmpresa = await EntidadNegocio.findOne({
-			where: {
-				EntidadNegocioId: telefonoBody.EntidadNegocioId,
-				Borrado: 0,
-			},
-		});
+			try {
+				const validarEmpresa = await EntidadNegocio.findOne({
+					where: {
+						EntidadNegocioId: telefonoBody.EntidadNegocioId,
+						Borrado: 0,
+					},
+				});
 
-		if (!validarEmpresa) {
-			return res.status(404).json({ message: 'La empresa no existe' });
-		}
+				if (!validarEmpresa) {
+					return res.status(404).json({ message: 'La empresa no existe' });
+				}
 
-		const datosTelefono = await Telefono.create({
-			NumeroTelefonico: telefonoBody.NumeroTelefonico,
-			CreadoPor: telefonoBody.CreadoPor,
-		});
+				const datosTelefono = await Telefono.create({
+					NumeroTelefonico: telefonoBody.NumeroTelefonico,
+					CreadoPor: telefonoBody.CreadoPor,
+				});
 
-		await EmpresaTelefono.create({
-			EntidadNegocioId: telefonoBody.EntidadNegocioId,
-			TelefonoId: datosTelefono.TelefonoId,
-		});
+				await EmpresaTelefono.create({
+					EntidadNegocioId: telefonoBody.EntidadNegocioId,
+					TelefonoId: datosTelefono.TelefonoId,
+				});
 
-		return res.status(200).json({
-			status: 200,
-			message: 'Se ha creado el telefono ' + datosTelefono.TelefonoId,
-		});
-	} catch (error) {
-		console.error('Error al crear el telefono:', error);
-		return res.status(500).json({ error: 'Error al crear el telefono' });
-	}
-};
+				return res.status(200).json({
+					status: 200,
+					message: 'Se ha creado el telefono ' + datosTelefono.TelefonoId,
+				});
+			} catch (error) {
+				console.error('Error al crear el telefono:', error);
+				return res.status(500).json({ error: 'Error al crear el telefono' });
+			}
+		};
 
 const editarEmpresaTelefono = async (req, res) => {
     const telefonoUpdateBody = req.body;
@@ -768,7 +839,6 @@ const buscarContactosPorNombreYEntidad = async (req, res) => {
         return res.status(500).json({ error: 'Internal Server Error' });
     }
 }
-
 
 export const methods = {
 	buscarIdEmpresa,
